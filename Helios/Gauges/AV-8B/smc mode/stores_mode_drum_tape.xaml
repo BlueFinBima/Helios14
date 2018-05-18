@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg5422" Width="20" Height="120" Margin="10,00,10,0" VerticalAlignment="Top">
+    <Canvas Name="layer1" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <Canvas>
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <!--g-->
+                    <TranslateTransform X="0" Y="-882.45203"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0" Canvas.Top="882" Width="20" Height="120" x:Name="rect5504" Fill="#FF202010"/>
+        </Canvas>
+    </Canvas>
+    <Label Name="Blank" Content="---" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="6" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="1" Canvas.Top="15" Width="24" FontWeight="Bold" />
+    <Label Name="AUT" Content="AUT" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="6" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="-2" Canvas.Top="30" Width="24"/>
+    <Label Name="CP" Content="CP" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="6" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="1" Canvas.Top="45" Width="24"/>
+    <Label Name="DSL" Content="DSL" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="6" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="-1" Canvas.Top="60" Width="24"/>
+    <Label Name="DR" Content="DIR" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="6" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="0" Canvas.Top="75" Width="24"/>
+    <Label Name="AGM" Content="AGM" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="6" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="-2" Canvas.Top="90" Width="24" />
+</Canvas>

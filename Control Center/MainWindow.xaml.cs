@@ -246,21 +246,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 {
                     LoadProfile(_profiles[_profileIndex]);
                 }
-                // before starting the profile, we attempt to start IRIS to import the screen data
-                try {
-                    System.Diagnostics.Process irisprogram = new System.Diagnostics.Process();
-                    irisprogram.StartInfo.FileName = "Iris-Client.exe"; //filePath of the application
-                    irisprogram.StartInfo.Arguments = "";
-                    irisprogram.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized; //Set it to **Normal**
-                    irisprogram.Start();
-                    }
-                catch (Exception ex)
-                    {
-                    ConfigManager.LogManager.LogError("Error when attempting to Start Iris-Client.exe", ex);
-                    }
 
-
-            StartProfile();
+                StartProfile();
             }
         }
 
@@ -274,17 +261,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             _deletingProfile = false;
             StopProfile();
             SetLicenseMessage();
-            // we also want to try to delete the Iris-Client program if it is running
-            try {
-                foreach (var process in System.Diagnostics.Process.GetProcessesByName("Iris-Client"))
-                {
-                    process.Kill();
-                }
-            }
-            catch(Exception ex)
-            {
-                ConfigManager.LogManager.LogError("Error when attempting to kill Iris-Client.exe", ex);
-            }
         }
 
         public void ResetProfile_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -370,8 +346,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void Close_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // we also want to try to kill the Iris-Client program if it is running and other programs used remotely for DCS
-            KillExternalProcesses();
             Close();
         }
 
@@ -478,20 +452,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 window.Close();
             }
 
-            // we also want to try to delete the Iris-Client program if it is running
-            try
-            {
-                foreach (var process in System.Diagnostics.Process.GetProcessesByName("Iris-Client"))
-                {
-                    process.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                ConfigManager.LogManager.LogError("Error when attempting to kill Iris-Client.exe", ex);
-            }
-
-
             _windows.Clear();
 
             HeliosProfile profile = sender as HeliosProfile;
@@ -511,64 +471,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             SetLicenseMessage();
 
             //EGalaxTouch.ReleaseTouchScreens();
-        }
-
-        private void KillExternalProcesses()
-        {
-            //  this routine is to kill off the external tasks which we started either in Helios or from the invocation batch job.
-            //
-            //  we want to try to kill the Iris-Client program if it is running because this is started at the same time as the profile starts
-            try
-            {
-                foreach (var process in System.Diagnostics.Process.GetProcessesByName("Iris-Client"))
-                {
-                    process.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                ConfigManager.LogManager.LogError("Error when attempting to kill Iris-Client.exe", ex);
-            }
-            //
-            //  we want to try to kill the DCStoArduino program if it is running.  This is usually started by cmd script
-            //
-            try
-            {
-                foreach (var process in System.Diagnostics.Process.GetProcessesByName("DCStoArduino"))
-                {
-                    process.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                ConfigManager.LogManager.LogError("Error when attempting to kill DCStoArduino.exe", ex);
-            }
-            //
-            //  we want to try to kill the Face tracking softwareif it is running.  This is usually started by cmd script
-            //
-            try
-            {
-                foreach (var process in System.Diagnostics.Process.GetProcessesByName("FTNOIR"))
-                {
-                    process.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                ConfigManager.LogManager.LogError("Error when attempting to kill Facetrack software", ex);
-            }
-            try
-            {
-                foreach (var process in System.Diagnostics.Process.GetProcessesByName("FaceTrackNoIR"))
-                {
-                    process.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                ConfigManager.LogManager.LogError("Error when attempting to kill Facetrack software", ex);
-            }
-
         }
 
         void DispatcherTimer_Tick(object sender, EventArgs e)

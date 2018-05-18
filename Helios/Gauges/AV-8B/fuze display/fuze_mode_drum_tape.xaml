@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Name="svg5422" Width="40" Height="120" Margin="10,00,10,0" VerticalAlignment="Top">
+    <Canvas x:Name="layer1" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <Canvas>
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <!--g-->
+                    <TranslateTransform X="0" Y="-882.45203"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0" Canvas.Top="882" Width="40" Height="120" x:Name="rect5504" Fill="#FF202010"/>
+        </Canvas>
+    </Canvas>
+    <Label x:Name="SAFE" Content="SA FE" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="8" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Top="15" Width="44" Canvas.Left="-1" />
+    <Label x:Name="NT" Content="NT" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="8" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Top="30" Width="40"/>
+    <Label x:Name="N" Content=" N" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="8" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Top="45" Width="43" Canvas.Left="-3"/>
+    <Label x:Name="T" Content=" T" Height="20" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="8" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="-3" Canvas.Top="60" Width="43"/>
+    <Label x:Name="Blank" Content="-" Height="30" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="24" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Left="-1" Canvas.Top="-14" Width="30" FontWeight="Bold"/>
+    <Label x:Name="Blank1" Content="-" Height="30" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="24" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Canvas.Top="-14" Width="30" FontWeight="Bold" Canvas.Left="20"/>
+    <Label x:Name="Blank1_Copy" Content="-" Height="30" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="24" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Width="30" FontWeight="Bold" Canvas.Left="20" Canvas.Top="15"/>
+    <Label x:Name="Blank1_Copy1" Content="-" Height="30" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="24" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Width="30" FontWeight="Bold" Canvas.Left="20" Canvas.Top="30"/>
+    <Label x:Name="Blank1_Copy2" Content="-" Height="30" VerticalAlignment="Top" FontFamily="MS 33558" FontSize="24" RenderTransformOrigin="0.0,0.0" Background="#00000000" Foreground="#FFF0F0F0" HorizontalAlignment="Center" Width="30" FontWeight="Bold" Canvas.Left="20" Canvas.Top="45"/>
+</Canvas>

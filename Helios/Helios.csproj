@@ -270,11 +270,15 @@
     <Compile Include="Gauges\A-10\TACANChannel\TACANChannel.cs" />
     <Compile Include="Gauges\A-10\TISLCodeWheel\TISLCodeWheel.cs" />
     <Compile Include="Gauges\A-10\VVI\VVI.cs" />
+    <Compile Include="Gauges\AV-8B\fuze display\fuzeDisplay.cs" />
+    <Compile Include="Gauges\AV-8B\smc mode\smcDisplay.cs" />
+    <Compile Include="Gauges\AV-8B\stabiliser display\stabilizerDisplay.cs" />
     <Compile Include="Gauges\AV-8B\1 Digit Display\1DigitDisplay.cs" />
-    <Compile Include="Gauges\AV-8B\ADI\ADI.cs" />
+    <Compile Include="Gauges\AV-8B\ADI\SlipBall.cs" />
     <Compile Include="Gauges\AV-8B\Altimeter\Altimeter.cs" />
     <Compile Include="Gauges\AV-8B\ADI\BackupADI.cs" />
     <Compile Include="Gauges\AV-8B\AOA\AOA.cs" />
+    <Compile Include="Gauges\AV-8B\Trim Position\trimPosition.cs" />
     <Compile Include="Gauges\AV-8B\Voltage\voltage.cs" />
     <Compile Include="Gauges\AV-8B\EDP Nozzle\edpNoz.cs" />
     <Compile Include="Gauges\AV-8B\5 Digit Display\5DigitDisplay.cs" />
@@ -1976,6 +1980,46 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Gauges\AV-8B\ADI\adi_outer_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\ADI\adi_guides.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\ADI\adi_inner_ring.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\ADI\adi_slip_ball.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\stabiliser display\stabilizer_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\smc mode\stores_mode_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\fuze display\fuze_mode_drum_tape.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\stabiliser display\digit_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\fuze display\digit_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\AV-8B\smc mode\digit_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="Gauges\AV-8B\VVI\vvi_faceplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2487,6 +2531,7 @@
     <Resource Include="Gauges\F-16\VVI\vvi_bezel.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Gauges\AV-8B\ADI\adi_bezel.png" />
     <Content Include="Images\AV-8B\Advisory Panel.png" />
     <Content Include="Images\AV-8B\AV8BNA_FLR_SAL_Off.png" />
     <Content Include="Images\AV-8B\AV8BNA_FLR_SAL_On.png" />

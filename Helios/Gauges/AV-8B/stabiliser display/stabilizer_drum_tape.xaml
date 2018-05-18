@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Name="svg5426" Width="10" Height="45" Margin="10,0,10,0" VerticalAlignment="Top">
+    <Canvas Name="layer1">
+        <Canvas>
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <!--g-->
+                    <TranslateTransform X="0" Y="-882.45203"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="0" Canvas.Top="882" Width="10" Height="45" x:Name="rect5504" Fill="#FF000000"/>
+            <Canvas Name="DnArrow" Height="9.75" RenderTransformOrigin="0.5,0.5" Canvas.Left="1.688" Canvas.Top="912.791" Width="6.5">
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="180"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Rectangle Fill="#FFf0f0f0" Height="4.5" RenderTransformOrigin="0.5,0.5" Canvas.Left="0.875" Width="4.5">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="45"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle Height="1.625" OpacityMask="Black" Fill="Black" Canvas.Top="2.25" Width="6.5"/>
+                <Rectangle Fill="#FFf0f0f0" Height="6" Canvas.Left="2" Canvas.Top="2" Width="2"/>
+            </Canvas>
+            <Canvas Name="UpArrow" Height="9.75" Canvas.Left="1.75" Canvas.Top="886.042" Width="6.5">
+                <Rectangle Fill="#FFf0f0f0" Height="4.5" RenderTransformOrigin="0.5,0.5" Canvas.Left="0.875" Width="4.5">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="45"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle Height="1.625" OpacityMask="Black" Fill="Black" Canvas.Top="2.25" Width="6.5"/>
+                <Rectangle Fill="#FFf0f0f0" Height="6" Canvas.Left="2" Canvas.Top="2" Width="2"/>
+            </Canvas>
+            <Canvas Name="g3888">
+                <Canvas>
+                    <Canvas.RenderTransform>
+                        <TransformGroup>
+                            <!--g-->
+                            <TranslateTransform X="65.25" Y="14.75"/>
+                        </TransformGroup>
+                    </Canvas.RenderTransform>
+                    <Rectangle xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Canvas.Left="-64" Canvas.Top="888.625" Width="8" Height="2.25" x:Name="rect3890" Fill="#FFF9F9F9" RenderTransformOrigin="0.484,0.368"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+    </Canvas>
+</Canvas>
