@@ -82,14 +82,15 @@ function ProcessHighImportance(mainPanelDevice)
 			-- This is a 16 segment display so we need to map numerals to a single charcter in the Hornet UFC.ttf font
 			-- the dash has already been catered for and the alphabetic characters should map without change
 			-- Also need to special case 12 because sending ascii 172 is problematic in the Helios code
-			if tonumber(UFCvalue) ~= nil then
-					if tonumber(UFCvalue) == 12 then
+			local number = tonumber(UFCvalue)
+			if (number ~= nil) and (number >= 0) and (number <= 20) then
+					if number == 12 then
 						UFCvalue = string.char(125)  
-					else
-						UFCvalue = string.char(161+UFCvalue)
-					end
+                    else
+                        UFCvalue = string.char(161+number)
+                    end
 			end
-		SendData(UFCcode,string.format("%1s",UFCvalue))
+			SendData(UFCcode,string.format("%1s",UFCvalue))
 		end
         SendData("2080", string.format("%s",check(li.UFC_MainDummy)))
         SendData("2081", string.format("%s",check(li.UFC_mask)))
