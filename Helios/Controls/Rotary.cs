@@ -36,6 +36,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private Point _mouseDownLocation;
 
         private ClickType _clickType = ClickType.Swipe;
+        private bool _mouseWheelAction = true;
         private CalibrationPointCollectionDouble _swipeCalibration;
         private double _swipeThreshold = 45d;
         private double _swipeSensitivity = 0d;
@@ -62,6 +63,23 @@ namespace GadrocsWorkshop.Helios.Controls
                     ClickType oldValue = _clickType;
                     _clickType = value;
                     OnPropertyChanged("ClickType", oldValue, value, true);
+                }
+            }
+        }
+
+        public bool MouseWheelAction
+        {
+            get
+            {
+                return _mouseWheelAction;
+            }
+            set
+            {
+                if (!_clickType.Equals(value))
+                {
+                    bool oldValue = _mouseWheelAction;
+                    _mouseWheelAction = value;
+                    OnPropertyChanged("MouseWheelAction", oldValue, value, true);
                 }
             }
         }
@@ -188,6 +206,14 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 _mouseDown = true;
                 _mouseDownLocation = location;
+            }
+        }
+
+        public override void MouseWheel(int delta)
+        {
+            if (_mouseWheelAction)
+            {
+                Pulse(delta > 0);
             }
         }
 

@@ -240,6 +240,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 writer.WriteElementString("Sensitivity", SwipeSensitivity.ToString(CultureInfo.InvariantCulture));
             }
             writer.WriteEndElement();
+            writer.WriteElementString("MouseWheel", MouseWheelAction.ToString(CultureInfo.InvariantCulture));
         }
 
         public override void ReadXml(XmlReader reader)
@@ -268,6 +269,15 @@ namespace GadrocsWorkshop.Helios.Controls
                 SwipeSensitivity = 0d;
             }
 
+            try { 
+                bool mw;
+                bool.TryParse(reader.ReadElementString("MouseWheel"), out mw);
+                MouseWheelAction = mw;
+            }
+            catch (Exception ex)
+            {
+                MouseWheelAction = true;
+            }
 
             BeginTriggerBypass(true);
             Value = InitialValue;

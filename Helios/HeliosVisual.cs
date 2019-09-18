@@ -561,6 +561,14 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// Called when a mouse wheel is rotated on this control.
+        /// </summary>
+        /// <param name="location">Current location of the mouse relative to this controls upper left corner.</param>
+        public virtual void MouseWheel(int delta)
+        {
+        }
+
+        /// <summary>
         /// Called when a mouse button is pressed on this control.
         /// </summary>
         /// <param name="location">Current location of the mouse relative to this controls upper left corner.</param>

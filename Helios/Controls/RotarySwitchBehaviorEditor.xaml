@@ -68,6 +68,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Orientation="Horizontal">
             <TextBlock Margin="4,10,2,2" FontSize="12" FontWeight="Bold">Positions</TextBlock>
@@ -95,5 +96,10 @@
             <Label.ToolTip>When set left it will take more rotation to switch a position to the right postions will move rapidly.</Label.ToolTip> Sensitivity
         </Label>
         <Slider Grid.Column="1" Grid.Row="6" Margin="0,6,0,0" Minimum="-1" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight" Value="{Binding Control.SwipeSensitivity}" Style="{StaticResource SwipeSliderStyle}" />
+
+        <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Margin="-1,0,1,0">
+            <Label.ToolTip>When set mousewheel will move the rotary.</Label.ToolTip> Mouse Wheel
+        </Label>
+        <CheckBox Grid.Column="1" Grid.Row="7" VerticalAlignment="Top" Margin="0,6,6,6" IsChecked="{Binding Path=Control.MouseWheelAction}" />
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

@@ -35,6 +35,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private Point _mouseDownLocation;
 
         private ClickType _clickType = ClickType.Swipe;
+        private bool _mouseWheelAction = true;
         private CalibrationPointCollectionDouble _swipeCalibration;
         private double _swipeThreshold = 45d;
         private double _swipeSensitivity = 0d;
@@ -101,6 +102,23 @@ namespace GadrocsWorkshop.Helios.Controls
                     ClickType oldValue = _clickType;
                     _clickType = value;
                     OnPropertyChanged("ClickType", oldValue, value, true);
+                }
+            }
+        }
+
+        public bool MouseWheelAction
+        {
+            get
+            {
+                return _mouseWheelAction;
+            }
+            set
+            {
+                if (!_clickType.Equals(value))
+                {
+                    bool oldValue = _mouseWheelAction;
+                    _mouseWheelAction = value;
+                    OnPropertyChanged("MouseWheelAction", oldValue, value, true);
                 }
             }
         }
@@ -477,6 +495,27 @@ namespace GadrocsWorkshop.Helios.Controls
             return Vector.AngleBetween(VectorFromCenter(startPoint), VectorFromCenter(endPoint));
         }
 
+        public override void MouseWheel(int delta)
+        {
+            if (_mouseWheelAction)
+            {
+                if(delta > 0)
+                {
+                    if (_currentPosition <= Positions.Count)
+                    {
+                        CurrentPosition = _currentPosition + 1;
+                    }
+                }
+                else
+                {
+                    if (_currentPosition > 1)
+                    {
+                        CurrentPosition = _currentPosition - 1;
+                    }
+                }
+            }
+        }
+
         public override void MouseDown(Point location)
         {
             if (_clickType == ClickType.Touch)
@@ -611,6 +650,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 writer.WriteElementString("Sensitivity", SwipeSensitivity.ToString(CultureInfo.InvariantCulture));
             }
             writer.WriteEndElement();
+            writer.WriteElementString("MouseWheel", MouseWheelAction.ToString(CultureInfo.InvariantCulture));
         }
 
         public override void ReadXml(XmlReader reader)
@@ -681,6 +721,17 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 ClickType = Controls.ClickType.Swipe;
                 SwipeSensitivity = 0d;
+            }
+
+            try
+            {
+                bool mw;
+                bool.TryParse(reader.ReadElementString("MouseWheel"), out mw);
+                MouseWheelAction = mw;
+            }
+            catch (Exception ex)
+            {
+                MouseWheelAction = true;
             }
 
             BeginTriggerBypass(true);

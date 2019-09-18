@@ -522,5 +522,16 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                 e.Handled = true;
             }
         }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            if (this.IsEnabled)
+            {
+                int delta = e.Delta;
+                Visual.MouseWheel(delta);
+                e.Handled = true;
+            }
+        }
+
     }
 }
