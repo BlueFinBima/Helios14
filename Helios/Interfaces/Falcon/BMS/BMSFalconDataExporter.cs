@@ -74,7 +74,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                     altitidue = 99999.99f - _lastFlightData.z;
                 }
                 SetValue("Altimeter", "altitidue", new BindingValue(altitidue));
-                SetValue("Altimeter", "barimetric pressure", new BindingValue(29.92));
+                //SetValue("Altimeter", "barimetric pressure", new BindingValue(29.92));
+                SetValue("Altimeter", "barimetric pressure", new BindingValue(_lastFlightData2.AltCalReading));
                 SetValue("ADI", "pitch", new BindingValue(_lastFlightData.pitch));
                 SetValue("ADI", "roll", new BindingValue(_lastFlightData.roll));
                 SetValue("ADI", "ils horizontal", new BindingValue((_lastFlightData.AdiIlsHorPos / 2.5f) - 1f));
