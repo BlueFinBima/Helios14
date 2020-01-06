@@ -76,7 +76,8 @@ namespace GadrocsWorkshop.Helios.Gauges.F_16.Altimeter
 
         void AirPressure_Execute(object action, HeliosActionEventArgs e)
         {
-            _airPressureDrum.Value = e.Value.DoubleValue * 100d;
+            //_airPressureDrum.Value = e.Value.DoubleValue * 100d;
+            _airPressureDrum.Value = e.Value.DoubleValue;
         }
     }
 }
