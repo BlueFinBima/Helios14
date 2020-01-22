@@ -106,7 +106,10 @@ namespace GadrocsWorkshop.Helios
             {"F24", 0x87},
             {"NUMLOCK", 0x90},
             {"SCROLLLOCK", 0x91},
-            {"ENTER", 0xCA}
+            {"ENTER_LEGACY", 0xCA }, // not a valid key code, not sure what this was supposed to do, but now we have a name for it in case anyone needs it
+            {"ENTER", 0x0D},
+            // not a real keycode, we fix this up to mean extended ENTER (i.e. ENTER on numpad)
+            {"NUMENTER", 0x10D }
         };
 
         static KeyboardEmulator()
@@ -182,6 +185,11 @@ namespace GadrocsWorkshop.Helios
 
         private static NativeMethods.INPUT CreateInput(ushort virtualKeyCode, bool keyDown)
         {
+            ushort ourCode = virtualKeyCode;
+            if (ourCode > 0xff)
+            {
+                virtualKeyCode = (ushort)(virtualKeyCode & 0x00ff);
+            }
             NativeMethods.INPUT input = new NativeMethods.INPUT();
             input.type = NativeMethods.INPUT_KEYBOARD;
             input.mkhi.ki.wVk = virtualKeyCode;
@@ -190,7 +198,7 @@ namespace GadrocsWorkshop.Helios
             input.mkhi.ki.dwExtraInfo = IntPtr.Zero;
             input.mkhi.ki.dwFlags = NativeMethods.KEY_SCANCODE;
 
-            if (virtualKeyCode == 0x0D ||
+            if (ourCode > 0xff ||
                 (virtualKeyCode >= 0x21 && virtualKeyCode <= 0x28) ||
                 virtualKeyCode == 0x2D ||
                 virtualKeyCode == 0x2E ||
