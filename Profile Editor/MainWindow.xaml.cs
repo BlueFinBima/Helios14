@@ -383,9 +383,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             HeliosEditorDocument editor = null;
 
-            if (profileObject is Helios.Monitor)
+            if (profileObject is Monitor)
             {
-                editor = new MonitorDocument((Helios.Monitor)profileObject);
+                editor = new MonitorDocument((Monitor)profileObject);
             }
             else if (profileObject is HeliosPanel)
             {
@@ -528,7 +528,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 // Load the graphics so everything is more responsive after load
                 if (profile != null)
                 {
-                    foreach (Helios.Monitor monitor in profile.Monitors)
+                    foreach (Monitor monitor in profile.Monitors)
                     {
                         LoadVisual(monitor);
                     }
@@ -860,34 +860,38 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             try
             {
                 // WARNING: monitor naming is 1-based but indexing and NewMonitor references are 0-based
-                Helios.Monitor[] localMonitors = ConfigManager.DisplayManager.Displays.ToArray<Helios.Monitor>();
-                System.Diagnostics.Debug.Assert(resetDialog.MonitorResets.Count == Math.Max(localMonitors.Length, profile.Monitors.Count));
-
+                Monitor[] localMonitors = ConfigManager.DisplayManager.Displays.ToArray<Monitor>();
+                
                 // pass1: process all new and/or old monitors in order
-                int resetItemIndex = 0;
                 int existingMonitors = Math.Min(localMonitors.Length, profile.Monitors.Count);
-                foreach (MonitorResetItem item in resetDialog.MonitorResets)
+                int totalMonitors = Math.Max(localMonitors.Length, profile.Monitors.Count);
+
+                // monitors that are preserved
+                for (int monitorIndex = 0; monitorIndex < existingMonitors; monitorIndex++)
                 {
-                    if (resetItemIndex < existingMonitors)
-                    {
-                        ResetExistingMonitor(resetDialog, resetItemIndex);
-                    }
-                    else if (resetItemIndex < localMonitors.Length)
-                    {
-                        ResetAddedMonitor(profile, resetItemIndex, localMonitors[resetItemIndex]);
-                    }
-                    else
-                    {
-                        ResetRemovedMonitor(profile, resetItemIndex, item, localMonitors.Length);
-                    }
-                    resetItemIndex++;
+                    MonitorResetItem item = resetDialog.MonitorResets[monitorIndex];
+                    ResetExistingMonitor(monitorIndex, item);
+                }
+
+                // monitors added (may be zero iterations)
+                for (int monitorIndex = existingMonitors; monitorIndex < localMonitors.Length; monitorIndex++)
+                {
+                    // monitorIndex does not refer to any reset item, as we are off the end of the list
+                    ResetAddedMonitor(profile, monitorIndex, localMonitors[monitorIndex]);
+                }
+
+                // monitors removed (may be zero iterations)
+                for (int monitorIndex = existingMonitors; monitorIndex < resetDialog.MonitorResets.Count; monitorIndex++)
+                {
+                    MonitorResetItem item = resetDialog.MonitorResets[monitorIndex];
+                    ResetRemovedMonitor(profile, monitorIndex, item, localMonitors.Length);
                 }
 
                 // pass2: place all controls that were temporarily lifted
                 foreach (MonitorResetItem item in resetDialog.MonitorResets)
                 {
                     ConfigManager.LogManager.LogDebug($"Placing controls for old monitor {item.OldMonitor.Name} onto Monitor {item.NewMonitor + 1}");
-                    Dispatcher.Invoke(DispatcherPriority.Background, new Action<Helios.Monitor>(item.PlaceControls), profile.Monitors[item.NewMonitor]);
+                    Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(item.PlaceControls), profile.Monitors[item.NewMonitor]);
                 }
 
                 ConfigManager.UndoManager.CloseBatch();
@@ -905,33 +909,34 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-        private void ResetRemovedMonitor(HeliosProfile profile, int resetItemIndex, MonitorResetItem item, int newMonitorCount)
+        private void ResetRemovedMonitor(HeliosProfile profile, int monitorIndex, MonitorResetItem item, int monitorToRemove)
         {
-            ConfigManager.LogManager.LogDebug($"Removing Monitor {resetItemIndex + 1} and saving its controls for replacement");
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action<HeliosObject>(CloseProfileItem), profile.Monitors[newMonitorCount]);
+            ConfigManager.LogManager.LogDebug($"Removing Monitor {monitorIndex + 1} and saving its controls for replacement");
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action<HeliosObject>(CloseProfileItem), profile.Monitors[monitorToRemove]);
             Dispatcher.Invoke(DispatcherPriority.Background, new Action(item.RemoveControls));
-            ConfigManager.UndoManager.AddUndoItem(new DeleteMonitorUndoEvent(profile, profile.Monitors[newMonitorCount], newMonitorCount));
-            profile.Monitors.RemoveAt(newMonitorCount);
+            ConfigManager.UndoManager.AddUndoItem(new DeleteMonitorUndoEvent(profile, profile.Monitors[monitorToRemove], monitorToRemove));
+            profile.Monitors.RemoveAt(monitorToRemove);
         }
 
-        private void ResetAddedMonitor(HeliosProfile profile, int resetItemIndex, Helios.Monitor display)
+        // WARNING: monitorIndex refers to a new monitor that does not yet exist, and there is no monitor reset item for it
+        private void ResetAddedMonitor(HeliosProfile profile, int monitorIndex, Monitor display)
         {
-            ConfigManager.LogManager.LogDebug($"Adding Monitor {resetItemIndex + 1}");
-            Helios.Monitor monitor = new Helios.Monitor(display);
-            monitor.Name = $"Monitor {resetItemIndex + 1}";
+            ConfigManager.LogManager.LogDebug($"Adding Monitor {monitorIndex + 1}");
+            Monitor monitor = new Monitor(display);
+            monitor.Name = $"Monitor {monitorIndex + 1}";
             ConfigManager.UndoManager.AddUndoItem(new AddMonitorUndoEvent(profile, monitor));
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action<Helios.Monitor>(profile.Monitors.Add), monitor);
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(profile.Monitors.Add), monitor);
         }
 
-        private void ResetExistingMonitor(ResetMonitors resetDialog, int resetItemIndex)
+        private void ResetExistingMonitor(int monitorIndex, MonitorResetItem item)
         {
-            if (resetDialog.MonitorResets[resetItemIndex].NewMonitor != resetItemIndex)
+            if (item.NewMonitor != monitorIndex)
             {
-                ConfigManager.LogManager.LogDebug($"Removing controls from Monitor {resetItemIndex + 1} for replacement");
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(resetDialog.MonitorResets[resetItemIndex].RemoveControls));
+                ConfigManager.LogManager.LogDebug($"Removing controls from Monitor {monitorIndex + 1} for replacement");
+                Dispatcher.Invoke(DispatcherPriority.Background, new Action(item.RemoveControls));
             }
-            ConfigManager.LogManager.LogDebug($"Resetting Monitor {resetItemIndex + 1}");
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action(resetDialog.MonitorResets[resetItemIndex].Reset));
+            ConfigManager.LogManager.LogDebug($"Resetting Monitor {monitorIndex + 1}");
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(item.Reset));
         }
 
         private void DockManager_Loaded(object sender, RoutedEventArgs e)

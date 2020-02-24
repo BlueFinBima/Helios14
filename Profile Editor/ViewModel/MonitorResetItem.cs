@@ -111,6 +111,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             OldMonitor.Height = display.Height;
             OldMonitor.Orientation = display.Orientation;
 
+            // REVISIT: this does not invalidate the profile preview's image of the monitor
+            // after the last height change, so it shows the wrong height (height of old monitor)
+
             double scale = Math.Min(display.Width / _oldWidth, display.Height / _oldHeight);
             foreach (HeliosVisual visual in OldMonitor.Children)
             {
