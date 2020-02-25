@@ -887,11 +887,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     ResetRemovedMonitor(profile, monitorIndex, item, localMonitors.Length);
                 }
 
-                // pass2: place all controls that were temporarily lifted
+                // pass2: place all controls that were temporarily lifted and
+                // copy over any settings from source to target monitors
                 foreach (MonitorResetItem item in resetDialog.MonitorResets)
                 {
                     ConfigManager.LogManager.LogDebug($"Placing controls for old monitor {item.OldMonitor.Name} onto Monitor {item.NewMonitor + 1}");
                     Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(item.PlaceControls), profile.Monitors[item.NewMonitor]);
+                    Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(item.CopySettings), profile.Monitors[item.NewMonitor]);
                 }
 
                 ConfigManager.UndoManager.CloseBatch();
@@ -924,6 +926,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             ConfigManager.LogManager.LogDebug($"Adding Monitor {monitorIndex + 1}");
             Monitor monitor = new Monitor(display);
             monitor.Name = $"Monitor {monitorIndex + 1}";
+            monitor.FillBackground = false;
             ConfigManager.UndoManager.AddUndoItem(new AddMonitorUndoEvent(profile, monitor));
             Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(profile.Monitors.Add), monitor);
         }
