@@ -167,5 +167,22 @@ namespace GadrocsWorkshop.Helios
                 _batch = null;
             }
         }
+
+        /// <summary>
+        /// roll back everything in the currently open batch, not redoable
+        /// </summary>
+        public void UndoBatch()
+        {
+            _working = true;
+            try
+            {
+                _batch?.Undo();
+            }
+            finally
+            {
+                _working = false;
+                _batch = null;
+            }
+        }
     }
 }

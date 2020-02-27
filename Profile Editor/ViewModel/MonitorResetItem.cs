@@ -54,18 +54,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             {
                 return _oldMonitor;
             }
-            set
-            {
-                if ((_oldMonitor == null && value != null)
-                    || (_oldMonitor != null && !_oldMonitor.Equals(value)))
-                {
-                    Monitor oldValue = _oldMonitor;
-                    _oldMonitor = value;
-                    OnPropertyChanged("OldMonitor", oldValue, value, false);
-                }
-            }
         }
-
 
         public int NewMonitor
         {
@@ -105,13 +94,19 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
         {
             Monitor display = ConfigManager.DisplayManager.Displays[_oldId];
 
+            // change the size of the monitor to match the local display
             OldMonitor.Top = display.Top;
             OldMonitor.Left = display.Left;
             OldMonitor.Width = display.Width;
             OldMonitor.Height = display.Height;
             OldMonitor.Orientation = display.Orientation;
 
+            // REVISIT: this does not invalidate the profile preview's image of the monitor
+            // after the last height change, so it shows the wrong height (height of old monitor)
+
+            // REVISIT: does this work if there is an orientation change?
             double scale = Math.Min(display.Width / _oldWidth, display.Height / _oldHeight);
+
             foreach (HeliosVisual visual in OldMonitor.Children)
             {
                 if (Scale)
@@ -131,13 +126,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             foreach (HeliosVisual visual in children)
             {
                 _controls.Add(visual);
-                _oldMonitor.Children.Remove(visual);
+                OldMonitor.Children.Remove(visual);
             }
         }
 
         public void PlaceControls(Monitor newMonitor)
         {
-
             double scale = Math.Min(newMonitor.Width / _oldWidth, newMonitor.Height / _oldHeight);
             foreach (HeliosVisual visual in _controls)
             {
@@ -160,6 +154,30 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                 {
                     CheckBounds(visual, newMonitor);
                 }
+            }
+        }
+
+        public void CopySettings(Monitor newMonitor)
+        {
+            if (_controls.Count == 0)
+            {
+                // nothing transferred
+                // NOTE: this also covers the case where the source and target monitor are the same
+                return;
+            }
+            if (!OldMonitor.FillBackground)
+            {
+                // the transferred controls require a transparent monitor,
+                // so we have to set this, even if it gets combined with controls
+                // from opaque monitors
+                newMonitor.FillBackground = false;
+            }
+            if (OldMonitor.AlwaysOnTop)
+            {
+                // even if we combine multiple monitors,
+                // in order to have any of the source monitors on top, we 
+                // need to set the combined monitor on top
+                newMonitor.AlwaysOnTop = true;
             }
         }
 

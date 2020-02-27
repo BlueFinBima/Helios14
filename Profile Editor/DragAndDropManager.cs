@@ -167,13 +167,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             DataObject data = CurrentDragSourceAdvisor.GetDataObject(_draggedElt, _dragStartPoint);
 
-            data.SetData(DragOffsetFormat, _offsetPoint);
-            DragDropEffects supportedEffects = CurrentDragSourceAdvisor.SupportedEffects;
+            // NOTE: observed as being null during testing
+            if (data != null)
+            {
+                data.SetData(DragOffsetFormat, _offsetPoint);
+                DragDropEffects supportedEffects = CurrentDragSourceAdvisor.SupportedEffects;
 
-            // Perform DragDrop
-
-            DragDropEffects effects = System.Windows.DragDrop.DoDragDrop(_draggedElt, data, supportedEffects);
-            CurrentDragSourceAdvisor.FinishDrag(_draggedElt, _dragStartPoint, effects);
+                // Perform DragDrop
+                DragDropEffects effects = System.Windows.DragDrop.DoDragDrop(_draggedElt, data, supportedEffects);
+                CurrentDragSourceAdvisor.FinishDrag(_draggedElt, _dragStartPoint, effects);
+            }
 
             // Clean up
             RemovePreviewAdorner();

@@ -653,7 +653,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.FA18C
             #endregion
             #region  CMDS
             AddFunction(new PushButton(this, CMDS, "3002", "380", "CMDS", "Dispense Button - Push to dispense flares and chaff", "1", "0", "%1d"));    // elements["pnt_380"]     = default_button(_("Dispense Button - Push to dispense flares and chaff"),  devices.CMDS, cmds_commands.EcmDisp, 380)
-            AddFunction(new Switch(this, CMDS, "517", new SwitchPosition[] { new SwitchPosition("1.0", "BYPASS", "3001"), new SwitchPosition("0.5", "ON", "3001"), new SwitchPosition("0.0", "OFF", "3001") }, "CMDS", "DISPENSER Switch", "%0.1f"));    // elements["pnt_517"]     = default_3_position_tumb(_("DISPENSER Switch, BYPASS/ON/OFF"),             devices.CMDS, cmds_commands.Dispenser, 517, false, anim_speed_default, false, 0.1, {0.0, 0.2})
+            AddFunction(new Switch(this, CMDS, "517", new SwitchPosition[] { new SwitchPosition("0.0", "BYPASS", "3001"), new SwitchPosition("0.1", "ON", "3001"), new SwitchPosition("0.2", "OFF", "3001") }, "CMDS", "DISPENSER Switch", "%0.1f"));    // elements["pnt_517"]     = default_3_position_tumb(_("DISPENSER Switch, BYPASS/ON/OFF"),             devices.CMDS, cmds_commands.Dispenser, 517, false, anim_speed_default, false, 0.1, {0.0, 0.2})
             AddFunction(new PushButton(this, CMDS, "3003", "515", "CMDS", "ECM JETT JETT SEL Button - Push to jettison", "1", "0", "%1d"));    // elements["pnt_515"]     = default_2_position_tumb(_("ECM JETT JETT SEL Button - Push to jettison"), devices.CMDS, cmds_commands.EcmJett, 515)
             #endregion
             #region  ICMCP

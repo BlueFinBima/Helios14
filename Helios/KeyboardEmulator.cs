@@ -32,7 +32,14 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class KeyboardEmulator
     {
+        // selected keyboard layout for mapping of characters to key codes
         private static IntPtr _hkl;
+
+        // keyboard layout of current thread at static init
+        private static IntPtr _defaultLayout;
+
+        private static bool _forceQwerty;
+
         private static KeyboardThread _keyboardThread;
 
         private static Dictionary<string, ushort> _keycodes = new Dictionary<string, ushort>{
@@ -106,17 +113,55 @@ namespace GadrocsWorkshop.Helios
             {"F24", 0x87},
             {"NUMLOCK", 0x90},
             {"SCROLLLOCK", 0x91},
-            {"ENTER", 0xCA}
+            {"ENTER", 0x0D},                  // synonym for "RETURN".  This is deliberate. 
+            {"NUMENTER", 0x10D },             // not a real keycode, high byte used to indicate an extended mapping which results in the scancode for ENTER on the numeric keypad.
+            {"NUMPADENTER", 0x10D }
         };
 
         static KeyboardEmulator()
         {
             _keyboardThread = new KeyboardThread(30);
-            _hkl = NativeMethods.GetKeyboardLayout(0);
+            _defaultLayout = NativeMethods.GetKeyboardLayout(0);
+            _hkl = _defaultLayout;
         }
 
         private KeyboardEmulator()
         {
+        }
+
+        /// <summary>
+        /// somewhat expensive operation to check keyboard layouts, not cached
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckIfForceQwertyAvailable()
+        {
+            return FindQwertyLayout().HasValue;
+        }
+
+        private static IntPtr? FindQwertyLayout()
+        {
+            Int32 allocSize = NativeMethods.GetKeyboardLayoutList(0, null);
+
+            // array of int ptrs, which are not actually pointers but machine word-sized integer handles 
+            // containing padded int32 values that we don't have to deallocate
+            IntPtr[] hkls = new IntPtr[allocSize];
+
+            // native method to fill array with static handles
+            Int32 count = NativeMethods.GetKeyboardLayoutList(hkls.Length, hkls);
+            if (count != allocSize)
+            {
+                // broken native method wrapper? don't use the values
+                return null;
+            }
+            foreach (IntPtr hkl in hkls)
+            {
+                ConfigManager.LogManager.LogDebug($"KeyboardEmulator: keyboard layout 0x{((UInt32)hkl):X8} detected (not necessarily active)");
+                if ((((UInt32)hkl) & 0xffff0000) == 0x04090000)
+                {
+                    return hkl;
+                }
+            }
+            return null;
         }
 
         public static int KeyDelay
@@ -130,6 +175,7 @@ namespace GadrocsWorkshop.Helios
                 _keyboardThread.KeyDelay = value;
             }
         }
+
         public static bool ControlCenterSession
         {
             get
@@ -139,6 +185,42 @@ namespace GadrocsWorkshop.Helios
             set
             {
                 _keyboardThread.ControlCenterSession = value;
+            }
+        }
+
+        /// <summary>
+        /// If enabled, always tries to use an available QWERTY mapping, since various software
+        /// (such as BMS) actually bind to specific key codes instead of key names.  This means that
+        /// hitting 'A' on an AZERTY keyboard and 'Q' on a QWERTY keyboard activate the same BMS key binding.
+        /// To be compatible with this, we can enable this feature and send 'Q' on either keyboard and get
+        /// the right result.   If sending keys to a windows application, this will of course send 'A' 
+        /// if run on an AZERTY layout, since that is the key we are really sending.        /// 
+        /// </summary>
+        public static bool ForceQwerty
+        {
+            get
+            {
+                return _forceQwerty;
+            }
+            set
+            {
+                if (value == _forceQwerty)
+                {
+                    return;
+                }
+                // this will be configured and used only on the main thread,
+                // since the keyboard thread gets pre-cooked events and does not
+                // access _hkl.  therefore, we can safely change it here
+                if (value)
+                {
+                    _hkl = FindQwertyLayout() ?? _defaultLayout;
+                    ConfigManager.LogManager.LogInfo($"KeyboardEmulator: keyboard layout 0x{((UInt32)_hkl):X8} selected for forced QWERTY mode");
+                }
+                else
+                {
+                    _hkl = _defaultLayout;
+                }
+                _forceQwerty = value;
             }
         }
 
@@ -154,7 +236,7 @@ namespace GadrocsWorkshop.Helios
                     int endIndex = keys.IndexOf('}', index + 1);
                     if (endIndex > -1)
                     {
-                        string keycode = keys.Substring(index + 1, endIndex - index - 1);
+                        string keycode = keys.Substring(index + 1, endIndex - index - 1).ToUpper();
                         if (_keycodes.ContainsKey(keycode))
                         {
                             eventList.Add(CreateInput(_keycodes[keycode], keyDown));
@@ -182,6 +264,11 @@ namespace GadrocsWorkshop.Helios
 
         private static NativeMethods.INPUT CreateInput(ushort virtualKeyCode, bool keyDown)
         {
+            ushort ourCode = virtualKeyCode;
+            if (ourCode > 0xff)
+            {
+                virtualKeyCode = (ushort)(virtualKeyCode & 0x00ff);
+            }
             NativeMethods.INPUT input = new NativeMethods.INPUT();
             input.type = NativeMethods.INPUT_KEYBOARD;
             input.mkhi.ki.wVk = virtualKeyCode;
@@ -190,7 +277,7 @@ namespace GadrocsWorkshop.Helios
             input.mkhi.ki.dwExtraInfo = IntPtr.Zero;
             input.mkhi.ki.dwFlags = NativeMethods.KEY_SCANCODE;
 
-            if (virtualKeyCode == 0x0D ||
+            if (ourCode > 0xff ||
                 (virtualKeyCode >= 0x21 && virtualKeyCode <= 0x28) ||
                 virtualKeyCode == 0x2D ||
                 virtualKeyCode == 0x2E ||
@@ -206,7 +293,7 @@ namespace GadrocsWorkshop.Helios
             uint scanCode = NativeMethods.MapVirtualKeyEx(virtualKeyCode, 0, _hkl);
             if (virtualKeyCode == 0x13)
             {
-                scanCode = 0x04C5;
+                scanCode = 0x04C5;                  // extended scancode for Pause
             }
 
             if (keyDown)

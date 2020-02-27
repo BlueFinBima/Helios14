@@ -219,20 +219,15 @@ namespace GadrocsWorkshop.Helios.Controls
 
         void SetPositionAction_Execute(object action, HeliosActionEventArgs e)
         {
-            try
+            BeginTriggerBypass(e.BypassCascadingTriggers);
+            if (int.TryParse(e.Value.StringValue, out int index))
             {
-                BeginTriggerBypass(e.BypassCascadingTriggers);
-                int index = int.Parse(e.Value.StringValue);
                 if (index >= 0 && index < Positions.Count)
                 {
                     CurrentPosition = index;
                 }
-                EndTriggerBypass(e.BypassCascadingTriggers);
             }
-            catch
-            {
-                // No-op if the parse fails we won't set the position.
-            }
+            EndTriggerBypass(e.BypassCascadingTriggers);
         }
 
         #endregion

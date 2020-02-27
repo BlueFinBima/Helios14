@@ -6,7 +6,7 @@
     Background="{StaticResource ToolBackground}" Padding="5"
     Height="Auto" Width="Auto">
     <StackPanel>
-        <GroupBox Header="Properties">
+        <GroupBox Header="Profile-Specific Settings">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -15,16 +15,41 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right">Key Delay</Label>
-                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Interface.KeyDelay}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" MaxWidth="40" />
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Interface.KeyDelay}" VerticalAlignment="Center" HorizontalAlignment="Left" Width="40" MaxWidth="40" />
                 <TextBlock Grid.Column="1" Grid.Row="1" FontSize="10" FontStyle="Italic" TextWrapping="Wrap">Delay in miliseconds between each key up and down event.</TextBlock>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Global Settings for this Computer">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" Content="Always use QWERTY Key Codes"/>
+                <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding Interface.ForceQwerty}" IsEnabled="{Binding Interface.ForceQwertyAvailable}"  VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" FontSize="10" FontStyle="Italic" TextWrapping="Wrap">Always translate keys being sent using the first QWERTY keyboard layout 
+                    that is configured in Windows.  This works around problems with software (e.g. BMS) that binds commands based on key codes and not the names of 
+                    keys ('A', 'Q', etc.)  When enabled, sent keys should be specified using their QWERTY names (i.e. 'Q' for the top left key) regardless of what sort of keyboard is
+                    actually used.
+                    <LineBreak/>
+                    <LineBreak/>
+                    Keyboard layouts and this feature are only checked at Helios start.  Any change to this setting requires restarting Control Center.
+                    <LineBreak/>
+                    <LineBreak/>
+                    To be available, this feature requires a QWERTY keyboard layout to be configured in Windows Language Settings.  This keyboard layout does not need
+                    to be active; it just has to be present when Helios is started.  AZERTY users can select their AZERTY layout as the current layout and Helios will use the 
+                    inactive QWERTY layout to map the keys.</TextBlock>
             </Grid>
         </GroupBox>
         <GroupBox Header="Documentation" Margin="0,4,0,0">
             <StackPanel>
-                <TextBlock Margin="4" TextWrapping="Wrap">Keyboard interface allows emlation of a physical keyboard to control the simulation.</TextBlock>
+                <TextBlock Margin="4" TextWrapping="Wrap" Text="Keyboard interface allows emulation of a physical keyboard to control the simulation."/>
                 <TextBlock Margin="4" TextWrapping="Wrap" Text="{Binding SpecialKeysText}" />
             </StackPanel>
         </GroupBox>

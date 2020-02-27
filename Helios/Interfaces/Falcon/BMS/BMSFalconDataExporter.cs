@@ -68,13 +68,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             {
                 _lastFlightData = (FlightData)_sharedMemory.MarshalTo(typeof(FlightData));
 
-                float altitidue = _lastFlightData.z;
-                if (_lastFlightData.z < 0)
-                {
-                    altitidue = 99999.99f - _lastFlightData.z;
-                }
-                SetValue("Altimeter", "altitidue", new BindingValue(altitidue));
-                SetValue("Altimeter", "barimetric pressure", new BindingValue(29.92));
+                SetValue("Altimeter", "altitidue", new BindingValue(Math.Abs(_lastFlightData.z)));
                 SetValue("ADI", "pitch", new BindingValue(_lastFlightData.pitch));
                 SetValue("ADI", "roll", new BindingValue(_lastFlightData.roll));
                 SetValue("ADI", "ils horizontal", new BindingValue((_lastFlightData.AdiIlsHorPos / 2.5f) - 1f));
@@ -124,15 +118,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits3(_lastFlightData.lightBits3);
 
                 ProcessContacts(_lastFlightData);
-
+            }
+            if(_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
+            {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
-                SetValue("Altimeter", "indicated altitude", new BindingValue(-_lastFlightData2.aauz));
+                SetValue("Altimeter", "indicated altitude", new BindingValue(Math.Abs(_lastFlightData2.aauz)));
+                SetValue("Altimeter", "barimetric pressure", new BindingValue(_lastFlightData2.AltCalReading));
+
                 SetValue("HSI", "nav mode", new BindingValue(_lastFlightData2.navMode));
                 SetValue("Tacan", "ufc tacan band", new BindingValue(_lastFlightData2.tacanInfo[(int)TacanSources.UFC].HasFlag(TacanBits.band) ? 1 : 2));
                 SetValue("Tacan", "aux tacan band", new BindingValue(_lastFlightData2.tacanInfo[(int)TacanSources.AUX].HasFlag(TacanBits.mode) ? 2 : 1));
                 SetValue("Tacan", "ufc tacan mode", new BindingValue(_lastFlightData2.tacanInfo[(int)TacanSources.UFC].HasFlag(TacanBits.band) ? 1 : 2));
                 SetValue("Tacan", "aux tacan mode", new BindingValue(_lastFlightData2.tacanInfo[(int)TacanSources.AUX].HasFlag(TacanBits.mode) ? 2 : 1));
-
             }
         }
 

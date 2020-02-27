@@ -494,7 +494,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                     if (trigger.Device.Length > 0)
                     {
                         ProfileExplorerTreeItem folder = GetFolder(trigger.Device);
-                        folder.Children.Remove(GetChildObject(trigger));
+                        folder.Children.Remove(folder.GetChildObject(trigger));
                         if (folder.Children.Count == 0)
                         {
                             Children.Remove(folder);
@@ -527,7 +527,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                     if (action.Device.Length > 0)
                     {
                         ProfileExplorerTreeItem folder = GetFolder(action.Device);
-                        folder.Children.Remove(GetChildObject(action));
+                        folder.Children.Remove(folder.GetChildObject(action));
                         if (folder.Children.Count == 0)
                         {
                             Children.Remove(folder);

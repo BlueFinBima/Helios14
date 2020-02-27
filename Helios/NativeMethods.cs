@@ -389,6 +389,9 @@ namespace GadrocsWorkshop.Helios
         internal static extern IntPtr GetKeyboardLayout(uint idThread);
 
         [DllImport("user32.dll")]
+        internal static extern Int32 GetKeyboardLayoutList(Int32 bufferSize, IntPtr[] buffer);
+
+        [DllImport("user32.dll")]
         internal static extern short VkKeyScanEx(char ch, IntPtr dwhkl);
 
         [DllImport("user32.dll")]

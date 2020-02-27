@@ -181,6 +181,7 @@ namespace GadrocsWorkshop.Helios
             catch (Exception e)
             {
                 ConfigManager.LogManager.LogError("Error retrieving current version.", e);
+                return _runningVersion;
             }
             return ToVersion(_currentVersion);
         }

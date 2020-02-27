@@ -91,7 +91,7 @@
         <Label Grid.Column="0" Grid.Row="15" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Use Parser">
             <Label.ToolTip>User Parsing Dictionary.</Label.ToolTip>
         </Label>
-        <CheckBox Grid.Column="1" Grid.Row="15" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Control.UseParserDictionary}" />
+        <CheckBox Grid.Column="1" Grid.Row="15" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Control.UseParseDictionary}" />
 
         <HeliosSdk:ColorWell Grid.Column="1" Grid.Row="14" Color="{Binding Path=Control.BackgroundColor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="0,2"  GotFocus="TurnTextDisplayOn" />
         <Label Grid.Column="0" Grid.Row="16" FontSize="10" HorizontalAlignment="Right" Content="Parser Info">

@@ -33,6 +33,9 @@ namespace GadrocsWorkshop.Helios
 
         private HeliosBindingCollection _inputs = new HeliosBindingCollection();
         private HeliosBindingCollection _outputs = new HeliosBindingCollection();
+#if DEVELOPMENT_CONFIGURATION
+        internal bool _tracing = false;
+#endif
 
         protected HeliosObject(string name)
         {

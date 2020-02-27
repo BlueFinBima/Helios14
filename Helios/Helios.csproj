@@ -56,23 +56,39 @@
   <PropertyGroup>
     <ApplicationIcon>Helios.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Development|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEVELOPMENT_CONFIGURATION</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Development|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEVELOPMENT_CONFIGURATION</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EosSharp, Version=1.1.5488.21795, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EosSharp.1.1.5488.21795\lib\net45\EosSharp.dll</HintPath>
     </Reference>
-    <Reference Include="HidSharp, Version=2.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HidSharp.2.0.5\lib\net35\HidSharp.dll</HintPath>
+    <Reference Include="HidSharp, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HidSharp.2.1.0\lib\net35\HidSharp.dll</HintPath>
     </Reference>
-    <Reference Include="KeraLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=04d04586786c6f34, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\KeraLua.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="KeraLua, Version=1.0.26.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL">
+      <HintPath>..\packages\KeraLua.1.0.26\lib\net45\KeraLua.dll</HintPath>
     </Reference>
-    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\NLua.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NLua, Version=1.4.29.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLua.1.4.29\lib\net45\NLua.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -107,6 +123,20 @@
     <Compile Include="CalibrationPointCollectionLong.cs" />
     <Compile Include="CalibrationPointDouble.cs" />
     <Compile Include="CalibrationPointLong.cs" />
+    <Compile Include="Controls\CustomGaugeNeedle.cs" />
+    <Compile Include="Controls\CustomDrum.cs" />
+    <Compile Include="Controls\CustomTape.cs" />
+    <Compile Include="Controls\CustomDrumAppearanceEditor.xaml.cs">
+      <DependentUpon>CustomDrumAppearanceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CustomTapeAppearanceEditor.xaml.cs">
+      <DependentUpon>CustomTapeAppearanceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ImageTranslucent.cs" />
+    <Compile Include="Controls\ImageTranslucentAppearanceEditor.xaml.cs">
+      <DependentUpon>ImageTranslucentAppearanceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ImageTranslucentRenderer.cs" />
     <Compile Include="Controls\PotentiometerEndless.cs" />
     <Compile Include="Controls\PotentiometerEndlessAppearanceEditor.xaml.cs">
       <DependentUpon>PotentiometerEndlessAppearanceEditor.xaml</DependentUpon>
@@ -136,6 +166,7 @@
     <Compile Include="Interfaces\DCS\Common\DCSInterfaceEditor.xaml.cs">
       <DependentUpon>DCSInterfaceEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
     <Compile Include="NonClickableZone.cs" />
     <Compile Include="Collections\HeliosObjectCollection.cs" />
     <Compile Include="Collections\KeyedObservableCollection.cs" />
@@ -460,6 +491,15 @@
     <Compile Include="Gauges\FA-18C\UFC\UFC.cs" />
     <Compile Include="Gauges\FA-18C\IFEI\IFEI.cs" />
     <Compile Include="Gauges\FA-18C\VVI\VVI.cs" />
+    <Content Include="_Documents\Licenses\AvalonDock\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\CommandLineParser\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\EOSSharp\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\hidsharp\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\KeraLua\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\NLua\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\Phidget\License.txt" />
+    <Content Include="_Documents\Licenses\SharpDX.DirectInput\LICENSE.txt" />
+    <Content Include="_Documents\Licenses\SharpDX\LICENSE.txt" />
     <None Include="Gauges\GaugeTextDisplay.cs" />
     <Compile Include="Gauges\KA-50\EGT\EGT.cs" />
     <Compile Include="Gauges\F-16\ADI\ADI.cs" />
@@ -839,6 +879,7 @@
     <Content Include="_Documents\HeliosDiag.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="_Documents\Licenses\VC_redist.x64.exe\VS_2017_ENT_PRO_TRIAL_RTW_ENU_Eula.1033.rtf" />
     <Resource Include="Gauges\M2000C\Common\needleA.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
@@ -860,9 +901,9 @@
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Post.lua" />
     <Resource Include="Interfaces\DCS\AV8B\ExportFunctions - New - Pre.lua" />
     <None Include="_Documents\Helios Release 1.4 Users Guide.docx" />
-    <None Include="_Documents\Helios Release 1.4 Users Guide.pdf">
+    <Content Include="_Documents\Helios Release 1.4 Users Guide.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Gauges\AV-8B\Common\needle_a.xaml">
@@ -1303,6 +1344,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\CustomGaugeBehaviorEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CustomDrumAppearanceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CustomTapeAppearanceEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Controls\ImageTranslucentAppearanceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -3711,8 +3764,10 @@
     <Resource Include="Gauges\FA-18C\IFEI\IFEI_ZONE_DN.png" />
     <Resource Include="Gauges\FA-18C\IFEI\IFEI Reflections.png" />
     <Resource Include="Images\KneeBoards\default_kneeboard_image.png" />
-    <Content Include="Helios.ico" />
-    <Content Include="_Documents\changelog.txt">
+    <Content Include="Helios.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="_Documents\changelog.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="_Documents\GNU Lesser General Public License.txt">
@@ -3743,10 +3798,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.2.1\lib\native\*.*" "$(TargetDir)"
+    <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.4.29\lib\native\*.*" "$(TargetDir)"
 del "$(TargetDir)Templates\*.htpl"
 </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\KeraLua.1.0.26\build\net45\KeraLua.targets" Condition="Exists('..\packages\KeraLua.1.0.26\build\net45\KeraLua.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\KeraLua.1.0.26\build\net45\KeraLua.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\KeraLua.1.0.26\build\net45\KeraLua.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

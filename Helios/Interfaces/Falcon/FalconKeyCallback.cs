@@ -105,7 +105,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             {100, "{F13}"},
             {101, "{F14}"},
             {102, "{F15}"},
-            {156, "{ENTER}"},
+            {156, "{NUMPADENTER}"},
             {157, "{RCONTROL}"},
             {181, "{DIVIDE}"},
             {199, "{HOME}"},

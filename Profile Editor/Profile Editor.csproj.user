@@ -13,4 +13,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <StartArguments>--loglevel=debug</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseX64|x64'">
+    <StartArguments>--loglevel=debug</StartArguments>
+  </PropertyGroup>
 </Project>

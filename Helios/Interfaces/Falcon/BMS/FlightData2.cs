@@ -41,9 +41,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         public float oilPressure2; // Ownship Oil Pressure2 (Percent 0-100)
         public byte navMode;  // current mode selected for HSI/eHSI (added in BMS4)
         public float aauz; // Ownship barometric altitude given by AAU (depends on calibration)
-
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)TacanSources.NUMBER_OF_SOURCES)]
         public TacanBits[] tacanInfo;      // Tacan band/mode settings for UFC and AUX COMM
-
+        public int AltCalReading;	// barometric altitude calibration (depends on CalType)
     }
 }

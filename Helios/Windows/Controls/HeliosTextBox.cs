@@ -30,6 +30,24 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             UndoLimit = 1;  
         }  
  
+        // our UI assumes this attached property is always present and non-empty, so we have to wrap it
+        public string ErrorToolTip
+        {
+            get
+            {
+                System.Collections.Generic.IList<ValidationError> errors = Validation.GetErrors(this);
+                if (errors == null)
+                {
+                    return "";
+                }
+                if (errors.Count > 0)
+                {
+                    return errors[0].ErrorContent as string;
+                }
+                return "";
+            }
+        }
+
         protected override void OnTextChanged(TextChangedEventArgs e)  
         {  
             if (undoBinding == null)  

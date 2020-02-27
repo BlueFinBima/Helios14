@@ -331,7 +331,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, MFCD_LEFT, BUTTON_20, "319", "Left MFCD", "OSB20"));
             AddFunction(new Rocker(this, MFCD_LEFT, BUTTON_21, BUTTON_22, BUTTON_23, BUTTON_23, "320", "Left MFCD", "Moving Map Scale", true));
             AddFunction(new Rocker(this, MFCD_LEFT, BUTTON_24, BUTTON_25, BUTTON_26, BUTTON_26, "321", "Left MFCD", "Backlight", true));
-            AddFunction(new Rocker(this, MFCD_LEFT, BUTTON_27, BUTTON_27, BUTTON_29, BUTTON_29, "322", "Left MFCD", "Brightness", true));
+            AddFunction(new Rocker(this, MFCD_LEFT, BUTTON_27, BUTTON_28, BUTTON_29, BUTTON_29, "322", "Left MFCD", "Brightness", true));
             AddFunction(new Rocker(this, MFCD_LEFT, BUTTON_30, BUTTON_31, BUTTON_32, BUTTON_32, "323", "Left MFCD", "Contrast", true));
             AddFunction(new Rocker(this, MFCD_LEFT, BUTTON_33, BUTTON_34, BUTTON_35, BUTTON_35, "324", "Left MFCD", "Entity Level", false));
             AddFunction(Switch.CreateThreeWaySwitch(this, MFCD_LEFT, BUTTON_36, "325", "0.2", "Day", "0.1", "Night", "0.0", "Off", "Left MFCD", "Day/Night/Off", "%0.1f"));
@@ -360,7 +360,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new PushButton(this, MFCD_RIGHT, BUTTON_20, "345", "Right MFCD", "OSB20"));
             AddFunction(new Rocker(this, MFCD_RIGHT, BUTTON_21, BUTTON_22, BUTTON_23, BUTTON_23, "346", "Right MFCD", "Moving Map Scale", true));
             AddFunction(new Rocker(this, MFCD_RIGHT, BUTTON_24, BUTTON_25, BUTTON_26, BUTTON_26, "347", "Right MFCD", "Backlight", true));
-            AddFunction(new Rocker(this, MFCD_RIGHT, BUTTON_27, BUTTON_27, BUTTON_29, BUTTON_29, "348", "Right MFCD", "Brightness", true));
+            AddFunction(new Rocker(this, MFCD_RIGHT, BUTTON_27, BUTTON_28, BUTTON_29, BUTTON_29, "348", "Right MFCD", "Brightness", true));
             AddFunction(new Rocker(this, MFCD_RIGHT, BUTTON_30, BUTTON_31, BUTTON_32, BUTTON_32, "349", "Right MFCD", "Contrast", true));
             AddFunction(new Rocker(this, MFCD_RIGHT, BUTTON_33, BUTTON_34, BUTTON_35, BUTTON_35, "350", "Right MFCD", "Entity Level", false));
             AddFunction(Switch.CreateThreeWaySwitch(this, MFCD_RIGHT, BUTTON_36, "351", "0.2", "Day", "0.1", "Night", "0.0", "Off", "Right MFCD", "Day/Night/Off", "%0.1f"));
@@ -813,22 +813,29 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Axis(this, VHF_AM_RADIO, BUTTON_5, "133", 0d, 0d, 1d, "VHF AM Radio", "Volume"));
             AddFunction(new PushButton(this, VHF_AM_RADIO, BUTTON_6, "136", "VHF AM Radio", "Load"));
             AddFunction(new Switch(this, VHF_AM_RADIO, "134", new SwitchPosition[] { new SwitchPosition("-1", "Squelch", BUTTON_7), new SwitchPosition("0", "Off", BUTTON_7), new SwitchPosition("1", "Tone", BUTTON_8, BUTTON_8, "0") }, "VHF AM Radio", "Squelch / Tone", "%1d"));
-			AddFunction(new Functions.VHFRadioEncoder1(this, VHF_AM_RADIO, BUTTON_9,"143", 0.1d, 0d, 1d, "VHF AM Radio", "1st Frequency Selector"), true);
+
+            // silently consume values sent by old export scripts generated before these were fixed
+            AddFunction(new SilentValueConsumer(this, "139", "Previous incorrect or out of date assignment for value 143"));
+            AddFunction(new SilentValueConsumer(this, "140", "Previous incorrect or out of date assignment for value 144"));
+            AddFunction(new SilentValueConsumer(this, "141", "Previous incorrect or out of date assignment for value 145"));
+            AddFunction(new SilentValueConsumer(this, "142", "Previous incorrect or out of date assignment for value 146"));
+
+            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_AM_RADIO, BUTTON_9, "143", 0.1d, 0d, 1d, "VHF AM Radio", "1st Frequency Selector"), true);
 			AddFunction(new Functions.VHFRadioEncoder(this, VHF_AM_RADIO, BUTTON_11, "144", 0.1d, 0.0d, 0.9d, "VHF AM Radio", "2nd Frequency Selector"), true);
             AddFunction(new Functions.VHFRadioEncoder3(this, VHF_AM_RADIO, BUTTON_13, "145", 0.1d, 0.0d, 0.9d, "VHF AM Radio", "3rd Frequency Selector"), true);
             AddFunction(new Functions.VHFRadioEncoder4(this, VHF_AM_RADIO, BUTTON_15, "146", 0.25d, 0.0d, 0.9d, "VHF AM Radio", "4th Frequency Selector"), true);
-			//AddFunction(new NetworkValue(this, "143", "VHF AM Radio", "1st Digit", "1st Digit. (0.3 to 0.75) values goes from 0 to 15", "", BindingValueUnits.Numeric, null));
-			//AddFunction(new NetworkValue(this, "144", "VHF AM Radio", "2nd Digit", "1st Digit. (0 to 1) values goes from 0 to 0", "", BindingValueUnits.Numeric, null));
-			//AddFunction(new NetworkValue(this, "145", "VHF AM Radio", "3rd Digit", "1st Digit. (0 to 1) values goes from .0 to .0", "", BindingValueUnits.Numeric, null));
-			//AddFunction(new NetworkValue(this, "146", "VHF AM Radio", "4th Digit", "1st Digit. (0 to 1) values are 00-25-50-75-00", "", BindingValueUnits.Numeric, null));
-
-
-
 			#endregion
 
 			#region VHF FM Radio
 			AddFunction(new Functions.VHFPresetSelector(this, VHF_FM_RADIO, BUTTON_1, "151", 0.01d, 0.00d, 0.19d, "VHF FM Radio", "Preset Channel Selector"));
-			AddFunction(new Functions.VHFRadioEncoder1(this, VHF_FM_RADIO, BUTTON_9, "157", 0.05d, 0d, 1d, "VHF FM Radio", "1st Frequency Selector"), true);
+
+            // silently consume values sent by old export scripts generated before these were fixed
+            AddFunction(new SilentValueConsumer(this, "153", "Previous incorrect or out of date assignment for value 157"));
+            AddFunction(new SilentValueConsumer(this, "154", "Previous incorrect or out of date assignment for value 158"));
+            AddFunction(new SilentValueConsumer(this, "155", "Previous incorrect or out of date assignment for value 159"));
+            AddFunction(new SilentValueConsumer(this, "156", "Previous incorrect or out of date assignment for value 160"));
+
+            AddFunction(new Functions.VHFRadioEncoder1(this, VHF_FM_RADIO, BUTTON_9, "157", 0.05d, 0d, 1d, "VHF FM Radio", "1st Frequency Selector"), true);
 			AddFunction(new Functions.VHFRadioEncoder(this, VHF_FM_RADIO, BUTTON_11,"158", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "2nd Frequency Selector"), true);
             AddFunction(new Functions.VHFRadioEncoder3(this, VHF_FM_RADIO, BUTTON_13,"159", 0.1d, 0.0d, 0.9d, "VHF FM Radio", "3rd Frequency Selector"), true);
             AddFunction(new Functions.VHFRadioEncoder4(this, VHF_FM_RADIO, BUTTON_15,"160", 0.25d, 0.0d, 0.9d, "VHF FM Radio", "4th Frequency Selector"), true);
@@ -837,12 +844,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.A10C
             AddFunction(new Axis(this, VHF_FM_RADIO, BUTTON_5, "147", 0d, 0d, 1d, "VHF FM Radio", "Volume"));
             AddFunction(new PushButton(this, VHF_FM_RADIO, BUTTON_6, "150", "VHF FM Radio", "Load"));
             AddFunction(new Switch(this, VHF_FM_RADIO, "148", new SwitchPosition[] { new SwitchPosition("-1", "Squelch", BUTTON_7), new SwitchPosition("0", "Off", BUTTON_7), new SwitchPosition("1", "Tone", BUTTON_8, BUTTON_8, "0") }, "VHF FM Radio", "Squelch / Tone", "%1d"));
-			//AddFunction(new NetworkValue(this, "157", "VHF FM Radio", "1st Digit", "1st Digit. (0 to 0.75) values goes from 0 to 15", "", BindingValueUnits.Numeric, null));
-			//AddFunction(new NetworkValue(this, "158", "VHF FM Radio", "2nd Digit", "1st Digit. (0 to 1) values goes from 0 to 0", "", BindingValueUnits.Numeric, null));
-			//AddFunction(new NetworkValue(this, "159", "VHF FM Radio", "3rd Digit", "1st Digit. (0 to 1) values goes from .0 to .0", "", BindingValueUnits.Numeric, null));
-			//AddFunction(new NetworkValue(this, "160", "VHF FM Radio", "4th Digit", "1st Digit. (0 to 1) values are 00-25-50-75-00", "", BindingValueUnits.Numeric, null));
-
-
 			#endregion
 
 			#region SAS Panel

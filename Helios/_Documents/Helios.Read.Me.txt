@@ -1,7 +1,7 @@
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * *                                                                         * * 
-* *                       Helios 1.4.2019.1005                              * * 
+* *                       Helios 1.4.2020.0226                              * * 
 * *                                                                         * * 
 * *                                READ.ME                                  * * 
 * *                                                                         * * 
@@ -25,7 +25,7 @@
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-Helios 1.4.2019.1005 is not an explicit collaboration with Craig Courtney, 
+Helios 1.4.2020.0226 is not an explicit collaboration with Craig Courtney, 
 but it relies heavily on the original Helios.  This distribution is not endorsed 
 by Craig Courtney.  
                                                                      
@@ -38,13 +38,13 @@ relevant then open a new issue.
 1) Make a complete back-up of your %userprofile%\Helios directory.  I take no 
 responsibility for messing up your current Helios profiles 
 
-2) Ensure that you back up all of your existing Exports.lua scripts and the 
-like.  I am not expecting that the A-10C interface will change the Exports.LUA 
+2) Ensure that you back up all of your existing Export.lua scripts and the 
+like.  I am not expecting that the A-10C interface will change the Export.LUA 
 from the original Helios 1.3 version, assuming that if you install from this 
 level, however it might do.  If you install the scripting from the new AV-8B or 
 MiG-21Bis intereface, it will *definitely* replace the current export.lua 
       
-3) Uninstall Helios 1.3 (you can always get it back from 
+3) Uninstall previous Helios installations (you can always get it back from 
 http://www.gadrocsworkshop.com/helios/latest (if the site is working)) 
 
 4) You can choose not to Uninstall Helios 1.3 and install this code to a 
@@ -89,12 +89,10 @@ end
 
 4)  1.4.2019.0908 & 1.4.2019.1005 have made minor breaks in backward compatibility
 	for the AV-8B
+5)  1.4.2020.0226 has updated several packages which it uses, and Helios should now
+	be completely 64-bit.
 
 * * * Known issues and work arounds * * *
-
-Loss of bindings on Reset Monitors https://github.com/BlueFinBima/Helios/issues/117
-	Save the profile after doing a reset monitor.  The problem appears to happen 
-	after two successive reset monitors.
 
 The Keypress server means that you might get a firewall popup from the keyboard interface
 when it attempts to find out if there is a Keypress receiver running on a remote PC

@@ -1,23 +1,25 @@
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
 bin
 obj
-"NL Assets"
 
 # mstest test results
 TestResults
 *.suo
-/packages
+Keypress Receiver Installer/*/* [sS]etup.exe
+Helios Installer/*/* [sS]etup.exe
+packages/**/*.*
+!**/*.md
 Helios *.zip
+Helios *.msi
+Helios *.exe
 "/.vs"
 "NL Assets"
-/installer
 /.vs/helios/v15/Server/sqlite3
 /.vs/Helios/v16/Server/sqlite3
-Helios *.zip
-Helios*.msi
-setup.exe
 *.bak
 *.user
-Keypress Receiver Installer/Release/Keypress Receiver Setup.msi
 !/Docs/*.txt
 /UpgradeLog3.htm
+/postbuild.txt
+
+/Keypress Receiver Installer/Debug/Keypress Receiver Installer.msi

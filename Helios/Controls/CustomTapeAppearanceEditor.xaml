@@ -1,0 +1,253 @@
+﻿<HeliosSdk:HeliosPropertyEditor x:Class="GadrocsWorkshop.Helios.Controls.CustomTapeAppearanceEditor" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"                      
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Height="806" Width="261.333">
+    <Grid Background="Transparent" Margin="0,0,0,0
+          " HorizontalAlignment="Left" Width="255">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="59" />
+            <ColumnDefinition Width="34" />
+            <ColumnDefinition Width="37" />
+            <ColumnDefinition Width="37" />
+            <ColumnDefinition Width="40" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Margin="4,10,3,2" FontSize="12" FontWeight="Bold">Images</TextBlock>
+        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right" >
+            <Label.ToolTip>Image used for the foreground</Label.ToolTip> Foreground
+        </Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="3" ImageFilename="{Binding Control.ForegroundImage, Mode=TwoWay}" Grid.ColumnSpan="4" />
+
+        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Image used for the background</Label.ToolTip> Background
+        </Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="4" ImageFilename="{Binding Control.BackgroundImage, Mode=TwoWay}" Grid.ColumnSpan="4" />
+
+
+        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Image used for the "Off Flag"</Label.ToolTip> Off Flag
+        </Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="2" ImageFilename="{Binding Control.OffFlagImage, Mode=TwoWay}" Grid.ColumnSpan="4" />
+
+
+        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Image used for the tape</Label.ToolTip> Tape
+        </Label>
+        <HeliosSdk:ImagePicker Grid.Column="1" Grid.Row="1" ImageFilename="{Binding Control.TapeImage, Mode=TwoWay}" Grid.ColumnSpan="4" />
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Margin="4,6,0,2" FontSize="12" FontWeight="Bold" Grid.RowSpan="1">Tape Properties</TextBlock>
+        <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Width of the tape</Label.ToolTip> Width
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="6" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.Tape_Width}"  />
+        <Label Grid.Column="2" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Center" MinWidth="40">
+            <Label.ToolTip>Height of the tape</Label.ToolTip> Height
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="6" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.Tape_Height}"  />
+
+
+
+        <Label Grid.Column="0" Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Margin="0,0,0,0">
+            <Label.ToolTip>Position X of the tape relative to the gauge</Label.ToolTip> Pos X
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="7" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.Tape_PosX}"  />
+        <Label Grid.Row="7" FontSize="10" HorizontalAlignment="Right" Grid.Column="2" VerticalAlignment="Center">
+            <Label.ToolTip>Position Y of the tape relative to the gauge</Label.ToolTip> Pos Y
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="7" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.Tape_PosY}"  />
+        <Label Grid.Column="0" Grid.Row="8" FontSize="10" HorizontalAlignment="Right" Margin="0,0,0,0">
+            <Label.ToolTip>Rotation center X of the tape relative to the gauge</Label.ToolTip> Center X
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="8" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.Tape_CenterX}"  />
+        <Label Grid.Row="8" FontSize="10" Grid.Column="2" HorizontalAlignment="Right" MinWidth="47" >
+            <Label.ToolTip>Rotation center Y of the tape relative to the gauge</Label.ToolTip> Center Y
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="8" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.Tape_CenterY}"  />
+
+
+
+
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="9" Margin="4,10,0,2" FontSize="12" FontWeight="Bold">"Off Flag" Properties</TextBlock>
+
+        <Label Grid.Column="0" Grid.Row="10" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Width of the "Off Flag" image</Label.ToolTip> Width
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="10" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.OffFlag_Width}" />
+        <Label Grid.Column="2" Grid.Row="10" FontSize="10" HorizontalAlignment="Right" MinWidth="40">
+            <Label.ToolTip>Height of the "Off Flag" relative to gauge</Label.ToolTip> Height
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="10" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.OffFlag_Height}"  />
+
+
+
+        <Label Grid.Column="0" Grid.Row="11" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Position X of the "Off Flag" relative to gauge</Label.ToolTip> Pos X
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="11" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.OffFlag_PosX}"  />
+        <Label Grid.Row="11" FontSize="10" HorizontalAlignment="Right" Grid.Column="2">
+            <Label.ToolTip>Position Y of the "Off Flag" relative to gauge</Label.ToolTip> Pos Y
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="11" FontSize="10" Margin="2,2,3,2" Text="{Binding Control.OffFlag_PosY}"  />
+
+
+
+        <Label Grid.Column="0" Grid.Row="12" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Set if the "Off Flag" is hidden at start</Label.ToolTip> Is hidden
+        </Label>
+        <CheckBox Grid.Column="1" Grid.Row="12" Margin="2,2,1,2" IsChecked="{Binding Control.OffFlag_IsHidden}" FontSize="14" />
+
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="13" Margin="4,10,0,2" FontSize="12" FontWeight="Bold">Tape Limits</TextBlock>
+
+
+        <Label Grid.Column="0" Grid.Row="14" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Horizontal position of the tape at initialization</Label.ToolTip> Horiz Initial
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="14" Minimum="-1500" Maximum="1500" Value="{Binding Control.InitialHorizontal}" Margin="2,2,0,2"  TickPlacement="BottomRight" TickFrequency="300" Grid.ColumnSpan="2"/>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="14" FontSize="10"  Text="{Binding Control.InitialHorizontal}" Margin="2,2,2,6" />
+
+
+        <Label Grid.Column="0" Grid.Row="15" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Horizontal position of the tape at the minimum value</Label.ToolTip> Horiz Min
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="15" Minimum="-1500" Maximum="1500" Value="{Binding Control.MinHorizontal}" Margin="2,2,0,2"  TickPlacement="BottomRight" TickFrequency="300" Grid.ColumnSpan="2"/>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="15" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MinHorizontal}" />
+
+
+        <Label Grid.Column="0" Grid.Row="16" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Horizontal position of the tape at the maximum value</Label.ToolTip> Horiz Max
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="16" Minimum="-1500" Maximum="1500" Value="{Binding Control.HorizontalTravel}" Margin="2,2,0,2" TickPlacement="BottomRight" TickFrequency="300" Grid.ColumnSpan="2"  />
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="16" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.HorizontalTravel}"  />
+
+
+        <Label Grid.Column="0" Grid.Row="17" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Vertical position of the tape at initialization</Label.ToolTip> Vert Initial
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="17" Minimum="-1500" Maximum="1500" Value="{Binding Control.InitialVertical}" Margin="2,2,0,2"  TickPlacement="BottomRight" TickFrequency="300" Grid.ColumnSpan="2"/>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="17" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.InitialVertical}"  />
+
+
+
+        <Label Grid.Column="0" Grid.Row="18" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Vertical position of the tape at minimum value</Label.ToolTip> Vert Min
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="18" Minimum="-1500" Maximum="1500" Value="{Binding Control.MinVertical}" Margin="2,2,0,2"  TickPlacement="BottomRight" TickFrequency="300" Grid.ColumnSpan="2"/>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="18" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MinVertical}" />
+
+
+        <Label Grid.Column="0" Grid.Row="19" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Vertical position of the tape at maximum value</Label.ToolTip> Vert Max
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="19" Minimum="-1500" Maximum="1500" Value="{Binding Control.VerticalTravel}" Margin="2,2,0,9"  TickPlacement="BottomRight" TickFrequency="300" Grid.ColumnSpan="2"  />
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="19" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.VerticalTravel}" />
+
+
+        <Label Grid.Column="0" Grid.Row="20" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Rotation of the tape at initialization</Label.ToolTip> Rot Initial
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="20" Minimum="-180" Maximum="180" Value="{Binding Control.InitialRotation}" Margin="2,2,0,2"  TickPlacement="BottomRight" TickFrequency="45
+                " Grid.ColumnSpan="2"/>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="20" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.InitialRotation}"  />
+
+
+
+        <Label Grid.Column="0" Grid.Row="21" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Rotation of the tape at the minimum value</Label.ToolTip> Rot Min
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="21" Minimum="-180" Maximum="180" Value="{Binding Control.MinRotation}" Margin="2,2,0,1"  TickPlacement="BottomRight" TickFrequency="45" Grid.ColumnSpan="2"/>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="21" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MinRotation}"  />
+
+
+        <Label Grid.Column="0" Grid.Row="22" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Rotation of the tape at the maximum value</Label.ToolTip> Rot Max
+        </Label>
+        <Slider Grid.Column="1" Grid.Row="22" Minimum="-180" Maximum="180" Value="{Binding Control.RotationTravel}" Margin="2,2,0,5" TickPlacement="BottomRight" TickFrequency="45" Grid.ColumnSpan="2"  />
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="22" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.RotationTravel}" />
+
+
+        <Button Grid.Row="23"   Click="OnClick" ClickMode="Press" Grid.ColumnSpan="4" Margin="38,7,27,0" VerticalAlignment="Top">Reset visual to initial values</Button>
+
+
+        <RepeatButton Grid.Row="14" Click="IncInitH" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="14" Click="DecInitH" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+        <RepeatButton Grid.Row="15" Click="IncMinH" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="15" Click="DecMinH" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+        <RepeatButton Grid.Row="16" Click="IncMaxH" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="16" Click="DecMaxH" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+
+        <RepeatButton Grid.Row="17" Click="IncInitV" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="17" Click="DecInitV" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+        <RepeatButton Grid.Row="18" Click="IncMinV" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="18" Click="DecMinV" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+        <RepeatButton Grid.Row="19" Click="IncMaxV" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="19" Click="DecMaxV" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+
+        <RepeatButton Grid.Row="20" Click="IncInitR" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="20" Click="DecInitR" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+        <RepeatButton Grid.Row="21" Click="IncMinR" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="21" Click="DecMinR" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+        <RepeatButton Grid.Row="22" Click="IncMaxR" ClickMode="Press" Delay="500" Interval="10" Margin="20,2,0,6"  Grid.Column="4">+</RepeatButton>
+        <RepeatButton Grid.Row="22" Click="DecMaxR" ClickMode="Press" Delay="500" Interval="10" Margin="0,2,20,6" Grid.Column="4">-</RepeatButton>
+
+
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="24" Margin="4,10,0,2" FontSize="12" FontWeight="Bold">Input Values</TextBlock>
+
+
+        <Label Grid.Column="0" Grid.Row="25" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Input value range for horizontal offset</Label.ToolTip> Horizontal
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="25" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MinInputHorizontal}" />
+        <Label Grid.Column="2" Grid.Row="25" FontSize="10" HorizontalAlignment="Center" >to</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="25" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MaxInputHorizontal}" />
+
+        <Label Grid.Column="0" Grid.Row="26" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Input value range for vertical offset</Label.ToolTip> Vertical
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="26" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MinInputVertical}" />
+        <Label Grid.Column="2" Grid.Row="26" FontSize="10" HorizontalAlignment="Center" >to</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="26" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MaxInputVertical}" />
+
+        <Label Grid.Column="0" Grid.Row="27" FontSize="10" HorizontalAlignment="Right">
+            <Label.ToolTip>Input value range for rotation offset</Label.ToolTip> Rotation
+        </Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="27" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MinInputRotation}" />
+        <Label Grid.Column="2" Grid.Row="27" FontSize="10" HorizontalAlignment="Center" >to</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="3" Grid.Row="27" FontSize="10" Margin="2,2,2,6" Text="{Binding Control.MaxInputRotation}" />
+
+
+
+    </Grid>
+</HeliosSdk:HeliosPropertyEditor>

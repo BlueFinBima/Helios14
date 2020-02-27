@@ -176,7 +176,11 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             if (_started)
             {
-                ConfigManager.LogManager.LogDebug("UDP interface waiting for socket data. (Interface=\"" + Name + "\")");
+                // this message drowns the console output, so only send it if requested
+                if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
+                {
+                    ConfigManager.LogManager.LogDebug("UDP interface waiting for socket data. (Interface=\"" + Name + "\")");
+                }
                 try
                 {
                     _socket.BeginReceiveFrom(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, ref _bindEndPoint, _socketDataCallback, null);

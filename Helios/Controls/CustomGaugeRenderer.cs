@@ -54,13 +54,19 @@ namespace GadrocsWorkshop.Helios.Controls
             CustomGauge customGauge = Visual as CustomGauge;  // ----------BG plate
             CustomNeedle customNeedle = Visual as CustomNeedle;   // ----- needle
 
-            if (customNeedle != null) // needle
+			
+
+			if (customNeedle != null) // needle
             {
                
                 _imageRect.X = customNeedle.Width * customGauge.Needle_PosX; ;
                 _imageRect.Y = customNeedle.Height * customGauge.Needle_PosY; ;
                 _image = ConfigManager.ImageManager.LoadImage(customNeedle.KnobImage);
-                _imageRect.Height = customGauge.Height * customGauge.Needle_Scale;
+				if (_image == null)
+				{
+					_image = ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png"); 
+				}
+				_imageRect.Height = customGauge.Height * customGauge.Needle_Scale;
                 _imageRect.Width = (_image.Width * (customGauge.Height/_image.Height) )*customGauge.Needle_Scale; // uniform image based on Height
                 _brush = new ImageBrush(_image);
                 _center = new Point(customGauge.Width * customGauge.Needle_PivotX, customGauge.Height * customGauge.Needle_PivotY); // calculate rotation point

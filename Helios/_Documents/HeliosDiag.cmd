@@ -84,6 +84,10 @@ echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * Helios Directory   
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 dir >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" "%heliosuserdir%\Documents\Helios\" /s
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * Helios Settings File                              * * *
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+type >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" "%heliosuserdir%\Documents\Helios\HeliosSettings.xml"
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * Helios Control Center log File                    * * *
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 type >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" "%heliosuserdir%\Documents\Helios\ControlCenter.log"
@@ -91,6 +95,14 @@ echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * *
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * Helios Profile Editor log File                    * * *
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 type >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" "%heliosuserdir%\Documents\Helios\ProfileEditor.log"
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * Helios Control Center log previous File           * * *
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+type >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" "%heliosuserdir%\Documents\Helios\ControlCenter.log.bak"
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * Helios Profile Editor log Previous File           * * *
+echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+type >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" "%heliosuserdir%\Documents\Helios\ProfileEditor.log.bak"
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * End Diags                                         * * *
 echo >>"%heliosDiag%\Documents\Helios\heliosDiags.txt" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

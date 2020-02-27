@@ -34,6 +34,7 @@ namespace GadrocsWorkshop.Helios.Gauges
         }
 
         #region Properties
+
         public double Opacity
         {
             get
@@ -49,9 +50,90 @@ namespace GadrocsWorkshop.Helios.Gauges
                 }
             }
         }
-        #endregion
 
-        protected override void OnRender(DrawingContext drawingContext)
+		public string Image
+		{
+			get
+			{
+				return _imageFile;
+			}
+			set
+			{
+				if (value != _imageFile)
+				{
+					_imageFile = value;
+					OnDisplayUpdate();
+				}
+			}
+		}
+
+		public double Width
+		{
+			get
+			{
+				return _rectangle.Width;
+			}
+			set
+			{
+				if (value != _rectangle.Width)
+				{
+					_rectangle.Width = value;
+					OnDisplayUpdate();
+				}
+			}
+		}
+
+		public double Height
+		{
+			get
+			{
+				return _rectangle.Height;
+			}
+			set
+			{
+				if (value != _rectangle.Height)
+				{
+					_rectangle.Height = value;
+					OnDisplayUpdate();
+				}
+			}
+		}
+
+		public double PosX
+		{
+			get
+			{
+				return _rectangle.X;
+			}
+			set
+			{
+				if (value != _rectangle.X)
+				{
+					_rectangle.X = value;
+					OnDisplayUpdate();
+				}
+			}
+		}
+
+		public double PosY
+		{
+			get
+			{
+				return _rectangle.Y;
+			}
+			set
+			{
+				if (value != _rectangle.Y)
+				{
+					_rectangle.Y = value;
+					OnDisplayUpdate();
+				}
+			}
+		}
+
+		#endregion
+
+		protected override void OnRender(DrawingContext drawingContext)
         {
             if (_opacity >= 1.0)
             {

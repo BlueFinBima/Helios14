@@ -288,7 +288,6 @@ namespace GadrocsWorkshop.Helios.Controls
                 return;
             double scale = current.Height / previous.Height;
             TextFormat.FontSize = Clamp(scale*TextFormat.FontSize, 1, 100);
-            // ConfigManager.LogManager.LogWarning("Font Size " + TextFormat.FontSize);
         }
 
         public override void ScaleChildren(double scaleX, double scaleY)
@@ -345,6 +344,11 @@ namespace GadrocsWorkshop.Helios.Controls
             // OnImage = reader.ReadElementString("OnImage");
             reader.ReadStartElement("Font");
             _textFormat.ReadXml(reader);
+
+            // save this size, because the automatic scaling will keep increasing it when we read the size of our rectangle
+            // and we get called back on PostUpdateRectangle
+            double fontSizeFromProfile = _textFormat.FontSize;
+
             reader.ReadEndElement();
             OnTextColor = (Color)colorConverter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("OnTextColor"));
             BackgroundColor = (Color)colorConverter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("BackgroundColor"));
@@ -353,6 +357,9 @@ namespace GadrocsWorkshop.Helios.Controls
             UseBackground = (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("UseBackground"));
             UseParseDictionary = (bool)boolConverter.ConvertFromInvariantString(reader.ReadElementString("UseParserDictionary"));
             base.ReadXml(reader);
+
+            // now the auto scaling has messed up our font size, so we restore it
+            _textFormat.FontSize = fontSizeFromProfile;
         }
 
         private double Clamp(double value, double min, double max)
