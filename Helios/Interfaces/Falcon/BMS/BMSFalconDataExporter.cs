@@ -160,7 +160,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Engine", "fuel flow", new BindingValue(_lastFlightData.fuelFlow));
                 SetValue("Engine", "rpm", new BindingValue(_lastFlightData.rpm));
                 SetValue("Engine", "ftit", new BindingValue(_lastFlightData.ftit * 100));
-                SetValue("Landging Gear", "position", new BindingValue(_lastFlightData.gearPos != 0d)); // TODO Landging should be changed Landing
+                SetValue("Landing Gear", "position", new BindingValue(_lastFlightData.gearPos != 0d));
                 SetValue("General", "speed brake position", new BindingValue(_lastFlightData.speedBrake));
                 SetValue("General", "speed brake indicator", new BindingValue(_lastFlightData.speedBrake > 0d));
                 SetValue("EPU", "fuel", new BindingValue(_lastFlightData.epuFuel));
