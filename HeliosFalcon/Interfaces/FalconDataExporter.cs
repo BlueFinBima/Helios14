@@ -46,8 +46,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             AddValue("IAS", "true air speed", "Current true air speed in feet per second.", "", BindingValueUnits.FeetPerSecond);
             AddValue("General", "Gs", "Current g-force load", "", BindingValueUnits.Numeric);
             AddValue("Engine", "nozzle position", "Current afterburner nozzel position.", "Percent open (0-100)", BindingValueUnits.Numeric);
-            AddValue("Fuel", "internal fuel", "Amount of fuel in the internal tanks.", "", BindingValueUnits.Pounds);
-            AddValue("Fuel", "external fuel", "Amount of fuel in the external tanks.", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "internal fuel", "Amount of fuel in the internal tanks.", "Pounds of fuel", BindingValueUnits.Pounds);
+            AddValue("Fuel", "external fuel", "Amount of fuel in the external tanks.", "Pounds of fuel", BindingValueUnits.Pounds);
             AddValue("Engine", "fuel flow", "Current fuel flow to the engine.", "", BindingValueUnits.PoundsPerHour);
             AddValue("Engine", "rpm", "Current RPM of the engine.", "Percent (0-103)", BindingValueUnits.RPMPercent);
             AddValue("Engine", "ftit", "Forward turbine intake temperature", "", BindingValueUnits.Celsius);

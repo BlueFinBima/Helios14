@@ -14,6 +14,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Windows.Data;
 using GadrocsWorkshop.Helios.Util;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
@@ -116,6 +117,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("POWER", "standby generator", "standby generator is online", "True if online", BindingValueUnits.Boolean);
             AddValue("POWER", "Jetfuel starter", "JFS is running, can be used for magswitch", "True if running", BindingValueUnits.Boolean);
 
+            //Fuel
+            AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "Pounds of fuel", BindingValueUnits.Pounds);
+            AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "Pounds of fuel", BindingValueUnits.Pounds);
+            AddValue("Fuel", "total fuel", "Amount of total fuel", "Pounds of fuel", BindingValueUnits.Pounds);
         }
 
         internal override void InitData()
@@ -173,6 +178,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Trim", "pitch trim", new BindingValue(_lastFlightData.TrimPitch));
                 SetValue("Trim", "yaw trim", new BindingValue(_lastFlightData.TrimYaw));
 
+                SetValue("Fuel", "fwd fuel", new BindingValue(_lastFlightData.fwd));
+                SetValue("Fuel", "aft fuel", new BindingValue(_lastFlightData.aft));
+                SetValue("Fuel", "total fuel", new BindingValue(_lastFlightData.total));
 
                 SetValue("Tacan", "ufc tacan chan", new BindingValue(_lastFlightData.UFCTChan));
                 SetValue("Tacan", "aux tacan chan", new BindingValue(_lastFlightData.AUXTChan));
