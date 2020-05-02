@@ -98,9 +98,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("UHF", "Backup frequency digit 4", "Current Backup UHF frequency digit 4", "", BindingValueUnits.Numeric);
             AddValue("UHF", "Backup frequency digit 5,6", "Current Backup UHF frequency digit 5,6", "", BindingValueUnits.Numeric);
             AddValue("Altitude", "Cabin Altitude", "Current cabin altitude", "", BindingValueUnits.Numeric);
-            AddValue("Hydraulic", "Pressure A", "Current hydraulic pressure a", "", BindingValueUnits.Numeric);
-            AddValue("Hydraulic", "Pressure B", "Current hydraulic pressure b", "", BindingValueUnits.Numeric);
-            AddValue("Time", "Time", "Current tine in seconds", "(max 60 * 60 * 24)", BindingValueUnits.Numeric);
+            AddValue("Hydraulic", "Pressure A", "Current hydraulic pressure a", "", BindingValueUnits.PoundsPerSquareInch);
+            AddValue("Hydraulic", "Pressure B", "Current hydraulic pressure b", "", BindingValueUnits.PoundsPerSquareInch);
+            AddValue("Time", "Time", "Current tine in seconds", "(max 60 * 60 * 24)", BindingValueUnits.Seconds);
             AddValue("Engine", "fuel flow 2", "Current fuel flow to the engine 2.", "", BindingValueUnits.PoundsPerHour);
 
             //AltBits
