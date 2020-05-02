@@ -140,7 +140,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             AddValue("Caution", "fuel oil hot indicator", "Caution panel oil hot indicator.", "True if lit.", BindingValueUnits.Boolean);
             AddValue("Caution", "anti skid indicator", "Caution panel anti skid indicator.", "True if lit.", BindingValueUnits.Boolean);
             AddValue("Misc", "tfs engaged indicator", "Misc panel Terrain Following(TFS) engaged indicator.", "True if lit.", BindingValueUnits.Boolean);
-            AddValue("Gear Handle", "handle indicator", "Landing gear handle indicator light.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Gear Handle", "handle indicator", "Landing gear handle indicator light.", "True if lit.", BindingValueUnits.Boolean, "Landing Gear");
             AddValue("Right Eyebrow", "engine indicator", "Right eyebrow engine indicator.", "True if lit.", BindingValueUnits.Boolean);
 
             // Lightbits3
