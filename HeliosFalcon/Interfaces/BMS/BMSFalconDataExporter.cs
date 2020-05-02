@@ -118,9 +118,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("POWER", "Jetfuel starter", "JFS is running, can be used for magswitch", "True if running", BindingValueUnits.Boolean);
 
             //Fuel
-            AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "Pounds of fuel", BindingValueUnits.Pounds);
-            AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "Pounds of fuel", BindingValueUnits.Pounds);
-            AddValue("Fuel", "total fuel", "Amount of total fuel", "Pounds of fuel", BindingValueUnits.Pounds);
+            AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "total fuel", "Amount of total fuel", "", BindingValueUnits.Pounds);
         }
 
         internal override void InitData()
