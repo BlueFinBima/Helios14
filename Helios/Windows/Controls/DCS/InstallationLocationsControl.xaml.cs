@@ -51,20 +51,22 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
 
         private static void Add_Executed(object target, ExecutedRoutedEventArgs e)
         {
-            List<string> guesses = GenerateDcsRootDirectoryGuesses();
+            List<string> guesses = InstallationLocations.GenerateDcsRootDirectoryGuesses();
 
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             string guessName = InstallationLocation.AUTO_UPDATE_CONFIG;
-            openFileDialog.Title = $"Navigate to DCS Installation and select {InstallationLocation.AUTO_UPDATE_CONFIG} file";
-            openFileDialog.InitialDirectory = "";
-            openFileDialog.FileName = guessName;
-            openFileDialog.DefaultExt = ".cfg";
-            openFileDialog.CheckPathExists = true;
-            openFileDialog.DereferenceLinks = true;
-            openFileDialog.Multiselect = false;
-            openFileDialog.ValidateNames = true;
-            openFileDialog.Filter = $"DCS|{InstallationLocation.AUTO_UPDATE_CONFIG}";
-            openFileDialog.CheckFileExists = true;
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = $"Navigate to DCS Installation and select {InstallationLocation.AUTO_UPDATE_CONFIG} file",
+                InitialDirectory = "",
+                FileName = guessName,
+                DefaultExt = ".cfg",
+                CheckPathExists = true,
+                DereferenceLinks = true,
+                Multiselect = false,
+                ValidateNames = true,
+                Filter = $"DCS|{InstallationLocation.AUTO_UPDATE_CONFIG}",
+                CheckFileExists = true
+            };
 
             foreach (string guess in guesses)
             {
@@ -83,51 +85,6 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
                 InstallationLocations.Singleton.TryAdd(new InstallationLocation(openFileDialog.FileName));
             }
             ((InstallationLocationsControl)target).UpdateStatus();
-        }
-
-        private static List<string> GenerateDcsRootDirectoryGuesses()
-        {
-            HashSet<string> existing = new HashSet<string>(
-                InstallationLocations.Singleton.Items.Select(item => item.Path), 
-                System.StringComparer.OrdinalIgnoreCase);
-
-            string[] guessPaths = new string[] {
-                System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles), "Eagle Dynamics", "DCS World"),
-                System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86), "Steam", "steamapps", "common", "DCSWorld"),
-                System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86), "Steam", "steamapps", "common", "DCSWorld.OpenBeta")
-            };
-
-            // generate a lot of guesses where it might be
-            List<string> guesses = guessPaths.ToList();
-            foreach (System.IO.DriveInfo drive in System.IO.DriveInfo.GetDrives())
-            {
-                if ((drive.DriveType != System.IO.DriveType.Fixed) || (!drive.IsReady))
-                {
-                    continue;
-                }
-
-                if (drive.Name.Substring(1) != ":\\")
-                {
-                    continue;
-                }
-
-                string letter = drive.Name.Substring(0, 1);
-
-                // check if it is a different drive
-                foreach (string guess in guessPaths)
-                {
-                    if ((guess.Substring(1, 2) == ":\\") && (!guess.StartsWith(drive.Name)))
-                    {
-                        guesses.Add($"{letter}{guess.Substring(1)}");
-                    }
-                }
-
-                // check the root too
-                guesses.Add($"{letter}:\\DCS");
-            }
-
-            // now filter to existing directories we haven't already added
-            return guesses.Where(guess => (!existing.Contains(guess)) && (System.IO.Directory.Exists(guess))).ToList();
         }
 
         private static void Remove_Executed(object target, ExecutedRoutedEventArgs e)
