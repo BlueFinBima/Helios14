@@ -134,5 +134,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         // VERSION 4
         public float fuelFlow2;    // Ownship fuel flow2 (Lbs/Hour)
 
+        // VERSION 6
+        public float vtolPos;      // Ownship VTOL exhaust angle
     }
 }
