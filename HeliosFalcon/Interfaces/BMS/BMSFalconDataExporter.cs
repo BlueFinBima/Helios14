@@ -121,6 +121,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "", BindingValueUnits.Pounds);
             AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "", BindingValueUnits.Pounds);
             AddValue("Fuel", "total fuel", "Amount of total fuel", "", BindingValueUnits.Pounds);
+
+            //AV8B values
+            AddValue("AV8B", "vtol exhaust angle position", "angle of vtol exhaust", "", BindingValueUnits.Degrees);
+
         }
 
         internal override void InitData()
@@ -220,6 +224,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Hydraulic", "Pressure A", new BindingValue(_lastFlightData2.hydPressureA));
                 SetValue("Hydraulic", "Pressure B", new BindingValue(_lastFlightData2.hydPressureB));
                 SetValue("Time", "Time", new BindingValue(_lastFlightData2.currentTime));
+
+                //AV8B Values
+                SetValue("AV8B", "vtol exhaust angle position", new BindingValue(_lastFlightData2.vtolPos));
 
                 ProcessHsiBits(_lastFlightData.hsiBits, _lastFlightData.desiredCourse, _lastFlightData.bearingToBeacon, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits(_lastFlightData.lightBits);
