@@ -14,6 +14,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics.Eventing;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Data;
 using GadrocsWorkshop.Helios.Util;
 
@@ -121,6 +126,15 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "", BindingValueUnits.Pounds);
             AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "", BindingValueUnits.Pounds);
             AddValue("Fuel", "total fuel", "Amount of total fuel", "", BindingValueUnits.Pounds);
+
+            //DED
+            AddValue("DED", "DED Line 1", "Data entry display line 1", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 2", "Data entry display line 2", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 3", "Data entry display line 3", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 4", "Data entry display line 4", "", BindingValueUnits.Text);
+            AddValue("DED", "DED Line 5", "Data entry display line 5", "", BindingValueUnits.Text);
+
+
         }
 
         internal override void InitData()
@@ -186,6 +200,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 SetValue("Tacan", "aux tacan chan", new BindingValue(_lastFlightData.AUXTChan));
 
                 ProcessContacts(_lastFlightData);
+                
+                //DED
+                SetValue("DED","DED Line 1", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED,0,26)));
+                SetValue("DED", "DED Line 2", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26, 26)));
+                SetValue("DED", "DED Line 3", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*2, 26)));
+                SetValue("DED", "DED Line 4", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*3, 26)));
+                SetValue("DED", "DED Line 5", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*4, 26)));
+
             }
             if(_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
@@ -226,6 +248,27 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessLightBits2(_lastFlightData.lightBits2, _lastFlightData2.blinkBits, _lastFlightData2.currentTime);
                 ProcessLightBits3(_lastFlightData.lightBits3);
             }
+        }
+
+        internal string DecodeUserInterfaceText(byte[] buffer,int offset,int length)
+        {
+            var sanitized = new StringBuilder();
+            ASCIIEncoding ascii = new ASCIIEncoding();
+
+            // Decode the bytes
+            String decoded = ascii.GetString(buffer, offset, length);
+
+            foreach (var value in decoded)
+            {
+                var thisChar = value;
+                if (value == 0x01) thisChar = '\u2195';
+                if (value == 0x02) thisChar = '*';
+                if (value == 0x5E) thisChar = '\u00B0'; //degree symbol
+                sanitized.Append(thisChar);
+
+            }
+
+            return sanitized.ToString();
         }
 
         protected void ProcessLightBits(BMSLightBits bits)
