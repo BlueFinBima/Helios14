@@ -202,7 +202,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
                 ProcessContacts(_lastFlightData);
                 
                 //DED
-                SetValue("DED","DED Line 1", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED,0,26)));
+                SetValue("DED", "DED Line 1", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED,0,26)));
                 SetValue("DED", "DED Line 2", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26, 26)));
                 SetValue("DED", "DED Line 3", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*2, 26)));
                 SetValue("DED", "DED Line 4", new BindingValue(DecodeUserInterfaceText(_lastFlightData.DED, 26*3, 26)));
