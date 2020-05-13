@@ -16,7 +16,7 @@
 using System.Windows;
 using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Textures
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 {
     [HeliosControl("Helios.Falcon.MFDLeft", "MFD (Left)", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
     public class LeftMFD : FalconTextureDisplay

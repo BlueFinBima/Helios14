@@ -16,7 +16,7 @@
 using System.Windows;
 using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Textures
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 {
     [HeliosControl("Helios.Falcon.OpenFalcon.RWR", "RWR", "Falcon Textures", typeof(FalconTextureDisplayRenderer))]
     public class RWR : FalconTextureDisplay

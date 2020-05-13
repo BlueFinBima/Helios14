@@ -20,7 +20,7 @@ using System.Windows;
 using GadrocsWorkshop.Helios.Interfaces.Falcon.BMS;
 using GadrocsWorkshop.Helios.Util;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Textures
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 {
     public abstract class FalconTextureDisplay : HeliosVisual
     {
@@ -160,7 +160,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Textures
         private void GetTextureArea(FalconTextures texture)
         {
             _sharedMemory2 = new SharedMemory("FalconSharedMemoryArea2");
-            _sharedMemory2.Open();
+            //_sharedMemory2.Open();
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
@@ -169,8 +169,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.Textures
                 var top = _lastFlightData2.RTT_area[(int)texture * 4 + 1];
                 var right = _lastFlightData2.RTT_area[(int)texture * 4 + 2];
                 var bottom = _lastFlightData2.RTT_area[(int)texture * 4 + 3];
-                var width = right - left;
-                var height = bottom - top;
+                var width = (right - 1) - left;
+                var height = (bottom - 1) - top;
                 
                 _textureRectangles.Add(texture, new Rect(left, top, width, height));
             }
