@@ -128,8 +128,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 
         void Profile_ProfileTick(object sender, EventArgs e)
         {
-            if (_textureMemory != null && _textureMemory.IsDataAvailable)
+            if (_textureMemory != null && _textureMemory.IsDataAvailable && _sharedMemory2.IsDataAvailable)
             {
+                GetTextureArea(Texture);
                 OnDisplayUpdate();
             }
         }
