@@ -172,8 +172,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
                 var bottom = _lastFlightData2.RTT_area[(int)texture * 4 + 3];
                 var width = (right - 1) - left;
                 var height = (bottom - 1) - top;
-
-                _textureRectangles.Add(texture, new Rect(left, top, width, height));
+                if (width > 0 && height > 0)
+                {
+                    _textureRectangles.Add(texture, new Rect(left, top, width, height));
+                }
             }
         }
 
