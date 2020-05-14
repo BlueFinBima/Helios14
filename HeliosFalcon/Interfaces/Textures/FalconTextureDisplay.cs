@@ -145,7 +145,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
                 }
                 else if (falconInterface != null && falconInterface.FalconType == FalconTypes.BMS)
                 {
-                    
                     GetTextureArea(Texture);
                 }
             }
@@ -159,8 +158,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 
         private void GetTextureArea(FalconTextures texture)
         {
+            _textureRectangles.Clear();
             _sharedMemory2 = new SharedMemory("FalconSharedMemoryArea2");
-            //_sharedMemory2.Open();
+
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
             {
                 _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
@@ -171,7 +171,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
                 var bottom = _lastFlightData2.RTT_area[(int)texture * 4 + 3];
                 var width = (right - 1) - left;
                 var height = (bottom - 1) - top;
-                
+
                 _textureRectangles.Add(texture, new Rect(left, top, width, height));
             }
         }
