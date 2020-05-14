@@ -158,7 +158,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 
         private void GetTextureArea(FalconTextures texture)
         {
-            _textureRectangles.Clear();
+            _textureRectangles.Remove(Texture);
             _sharedMemory2 = new SharedMemory("FalconSharedMemoryArea2");
 
             if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
