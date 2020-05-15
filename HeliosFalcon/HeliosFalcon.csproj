@@ -74,6 +74,7 @@
     <Compile Include="Interfaces\OpenFalcon\FlightData.cs" />
     <Compile Include="Interfaces\OpenFalcon\FlightData2.cs" />
     <Compile Include="Interfaces\Textures\HUD.cs" />
+    <Compile Include="Interfaces\Textures\HMS.cs" />
     <Compile Include="Interfaces\Textures\LeftMFD.cs" />
     <Compile Include="Interfaces\OpenFalcon\OpenFalconDataExporter.cs" />
     <Compile Include="Interfaces\Textures\FalconTextureDisplay.cs" />

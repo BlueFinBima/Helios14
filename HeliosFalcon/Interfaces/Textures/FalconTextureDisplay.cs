@@ -31,7 +31,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
             DED,
             RWR,
             MFDLeft,
-            MFDRight
+            MFDRight,
+            HMS
         }
 
         private bool _isRunning = false;
