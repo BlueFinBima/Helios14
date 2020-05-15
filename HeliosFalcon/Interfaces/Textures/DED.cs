@@ -22,7 +22,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
     public class DED : FalconTextureDisplay
     {
         //TODO defaultRec values here were specific to OpenFalcon
-        private static readonly Rect _defaultRect = new Rect(0, 0, 0, 0);
+        private static readonly Rect _defaultRect = new Rect(5, 270, 160, 63);
 
         public DED()
             : base("DED", new Size(367, 138))
