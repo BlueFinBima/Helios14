@@ -17,11 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using GadrocsWorkshop.Helios.Interfaces.Falcon.BMS;
 using GadrocsWorkshop.Helios.Util;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 {
-    public abstract class OpenFalconTextureDisplay : HeliosVisual
+    public abstract class FalconTextureDisplay : HeliosVisual
     {
         protected enum FalconTextures
         {
@@ -30,15 +31,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
             DED,
             RWR,
             MFDLeft,
-            MFDRight
+            MFDRight,
+            HMS
         }
 
         private bool _isRunning = false;
 
         private Dictionary<FalconTextures, Rect> _textureRectangles = new Dictionary<FalconTextures, Rect>();
         private SharedMemory _textureMemory;
+        private SharedMemory _sharedMemory2;
+        private FlightData2 _lastFlightData2;
 
-        protected OpenFalconTextureDisplay(string name, Size defaultSize)
+        protected FalconTextureDisplay(string name, Size defaultSize)
             : base(name, defaultSize)
         {
         }
@@ -117,6 +121,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
             _textureMemory.Dispose();
             _textureMemory = null;
 
+            _sharedMemory2.Close();
+            _sharedMemory2.Dispose();
+
             IsRunning = false;
         }
 
@@ -124,6 +131,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
         {
             if (_textureMemory != null && _textureMemory.IsDataAvailable)
             {
+                //If the profile was started prior to BMS running then get the texture area from shared memory
+                FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
+                if (falconInterface != null && falconInterface.FalconType == FalconTypes.BMS && _textureRectangles.Count == 0)
+                {
+                    GetTextureArea(Texture);
+                }
+
                 OnDisplayUpdate();
             }
         }
@@ -133,9 +147,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
             if (Parent != null && Parent.Profile != null && Parent.Profile.Interfaces.ContainsKey("Falcon"))
             {
                 FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
-                if (falconInterface != null)
+                if (falconInterface != null && falconInterface.FalconType == FalconTypes.OpenFalcon)
                 {
                     ParseDatFile(falconInterface.CockpitDatFile);
+                }
+                else if (falconInterface != null && falconInterface.FalconType == FalconTypes.BMS)
+                {
+                    GetTextureArea(Texture);
                 }
             }
 
@@ -144,6 +162,28 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
             _textureMemory.Open();
 
             IsRunning = true;
+        }
+
+        private void GetTextureArea(FalconTextures texture)
+        {
+            _textureRectangles.Remove(Texture);
+            _sharedMemory2 = new SharedMemory("FalconSharedMemoryArea2");
+
+            if (_sharedMemory2 != null & _sharedMemory2.IsDataAvailable)
+            {
+                _lastFlightData2 = (FlightData2)_sharedMemory2.MarshalTo(typeof(FlightData2));
+
+                var left = _lastFlightData2.RTT_area[(int)texture * 4];
+                var top = _lastFlightData2.RTT_area[(int)texture * 4 + 1];
+                var right = _lastFlightData2.RTT_area[(int)texture * 4 + 2];
+                var bottom = _lastFlightData2.RTT_area[(int)texture * 4 + 3];
+                var width = (right - 1) - left;
+                var height = (bottom - 1) - top;
+                if (width > 0 && height > 0)
+                {
+                    _textureRectangles.Add(texture, new Rect(left, top, width, height));
+                }
+            }
         }
 
         private void ParseDatFile(string datFile)

@@ -18,11 +18,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GadrocsWorkshop.Helios.ComponentModel;
 
-namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
+namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 {
-    class OpenFalconTextureDisplayRenderer : HeliosVisualRenderer
+    class FalconTextureDisplayRenderer : HeliosVisualRenderer
     {
-        private OpenFalconTextureDisplay _display;
+        private FalconTextureDisplay _display;
         private ImageBrush _defaultImage;
         private Rect _displayRect = new Rect(0, 0, 0, 0);
 
@@ -30,7 +30,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.OpenFalcon
         {
             if (args.PropertyName.Equals("Visual"))
             {
-                _display = args.NewValue as OpenFalconTextureDisplay;
+                _display = args.NewValue as FalconTextureDisplay;
                 OnRefresh();
             }
             base.OnPropertyChanged(args);
