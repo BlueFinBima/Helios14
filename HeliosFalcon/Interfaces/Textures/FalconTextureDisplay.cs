@@ -131,8 +131,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
         {
             if (_textureMemory != null && _textureMemory.IsDataAvailable)
             {
+                //If the profile was started prior to BMS running then get the texture area from shared memory
                 FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
-                if (falconInterface != null && falconInterface.FalconType == FalconTypes.BMS)
+                if (falconInterface != null && falconInterface.FalconType == FalconTypes.BMS && _textureRectangles.Count == 0)
                 {
                     GetTextureArea(Texture);
                 }
