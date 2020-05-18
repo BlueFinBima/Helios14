@@ -1,37 +1,30 @@
-﻿using System.ComponentModel;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Windows.Controls;
-using System.Windows.Input;
-using GadrocsWorkshop.Helios;
-using GadrocsWorkshop.Helios.ComponentModel;
 
 namespace net.derammo.Helios.SampleProgram.Sample
 {
     /// <summary>
-    /// Interaction logic for SampleView.xaml
+    /// An example view of SampleModel via SampleViewModel
     /// </summary>
     public partial class SampleView : Grid
     {
         public SampleView()
         {
             InitializeComponent();
-            SampleModel sampleModel = new SampleModel();
-            sampleModel.PropertyChanged += SampleModel_PropertyChanged;
-            DataContext = new SampleViewModel(sampleModel);
-        }
-
-        private void SampleModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            // this is what profile editor does
-            PropertyNotificationEventArgs args = e as PropertyNotificationEventArgs;
-            if (args != null)
-            {
-                ConfigManager.UndoManager.AddPropertyChange(sender, args);
-            }
-        }
-
-        private void Undo_Executed(object target, ExecutedRoutedEventArgs e)
-        {
-            ConfigManager.UndoManager.Undo();
         }
     }
 }

@@ -19,6 +19,7 @@
         Topmost="True" 
         Loaded="Window_Loaded" 
         ContentRendered="Window_Opened"
+        Thumb.DragDelta="MoveThumb_DragDelta" 
         d:DataContext="{d:DesignInstance Type=local:MainWindow}">
     <Window.Resources>
         <Style x:Key="CollapsePrefs" TargetType="Canvas">
@@ -59,7 +60,7 @@
         <StackPanel Margin="0,0,0,0">
             <Canvas x:Name="ControlCenterCanvas" Margin="0,0,0,0" Height="276">
                 <Image Source="ControlCenterBackground.png" Canvas.Top="0" Canvas.Left="0" />
-                <Thumb x:Name="ControlCenterDragThumb" Width="504" Height="277" Opacity="0" Canvas.Left="0" DragDelta="MoveThumb_DragDelta" />
+                <Thumb x:Name="ControlCenterDragThumb" Width="504" Height="277" Opacity="0" Canvas.Left="0"/>
                 <StackPanel Canvas.Left="16" Canvas.Top="16">
                     <TextBlock Text="PWR" Style="{StaticResource TopLabel}" Height="Auto"/>
                     <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
@@ -125,7 +126,7 @@
             </Canvas>
             <Canvas DataContext="{Binding Preferences}" Name="PreferencesCanvas" Margin="0" Height="320" Width="504" Style="{StaticResource CollapsePrefs}" >
                 <Image Source="PreferencesBackground.png" />
-                <Thumb Name="PrefsDragThumb" Width="504" Height="320" Opacity="0" DragDelta="MoveThumb_DragDelta" Canvas.Left="0" Canvas.Top="0" />
+                <Thumb Name="PrefsDragThumb" Width="504" Height="320" Opacity="0" Canvas.Left="0" Canvas.Top="0" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="84"/>
@@ -200,10 +201,10 @@
                         <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding SplashScreen}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="2" Visibility="Hidden">
-                        <TextBlock Text="TDB Next" Style="{StaticResource TopLabel}"/>
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <TextBlock Text="HIGH QUALITY BITMAPS" Style="{StaticResource TopLabel}"/>
                         <TextBlock Text="ON" Style="{StaticResource UpLabel}"/>
-                        <CheckBox Style="{StaticResource HeliosSwitchStyle}"/>
+                        <CheckBox Style="{StaticResource HeliosSwitchStyle}" IsChecked="{Binding HighQualityBitmapScaling}"/>
                         <TextBlock Text="OFF" Style="{StaticResource DownLabel}"/>
                     </StackPanel>
                     <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" BorderThickness="1" CornerRadius="4" Padding="2" Style="{StaticResource BorderInFontColor}">

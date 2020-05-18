@@ -17,7 +17,7 @@
         <CommandBinding Command="ApplicationCommands.Undo" CanExecute="OnCanExecuteUndo" Executed="OnExecuteUndo" />
         <CommandBinding Command="ApplicationCommands.Redo" CanExecute="OnCanExecuteRedo" Executed="OnExecuteRedo" />
         <CommandBinding Command="local:ProfileEditorCommands.AddInterface" Executed="AddInterface_Executed" />
-        <CommandBinding Command="local:ProfileEditorCommands.ResetMonitors" Executed="ResetMonitors_Executed" />
+        <CommandBinding Command="heliosWindows:SharedCommands.ResetMonitors" Executed="ResetMonitors_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.SaveLayout" Executed="SaveLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.LoadLayout" Executed="LoadLayout_Executed" />
         <CommandBinding Command="local:ProfileEditorCommands.RestoreDefaultLayout" Executed="RestoreDefaultLayout_Executed" />
@@ -36,60 +36,78 @@
             <MenuItem Header="_Profile">
                 <MenuItem Header="_New" Command="New" InputGestureText="Ctrl+N">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\NewIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE8A5;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\OpenIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE8E5;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="_Save" Command="Save" InputGestureText="Ctrl+S">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\SaveIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE74E;"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save _As..." Command="SaveAs" />
-                <Separator />
-                <MenuItem Header="_Add Interface" Command="local:ProfileEditorCommands.AddInterface" />
-                <Separator />
-                <MenuItem Header="_Reset Monitors" Command="local:ProfileEditorCommands.ResetMonitors">
-                    <MenuItem.ToolTip>Resets this profiles monitor configuration to match the current system configuration.</MenuItem.ToolTip>
+                <MenuItem Header="Save _As..." Command="SaveAs">
+                    <MenuItem.Icon>
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE792;"/>
+                    </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="E_xit" Command="Close" />
+                <MenuItem Header="_Add Interface" Command="local:ProfileEditorCommands.AddInterface">
+                    <MenuItem.Icon>
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE710;"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Reset Monitors" Command="heliosWindows:SharedCommands.ResetMonitors">
+                    <MenuItem.ToolTip>Resets this profiles monitor configuration to match the current system configuration.</MenuItem.ToolTip>
+                    <MenuItem.Icon>
+                        <Grid>
+                            <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE7F4;"/>
+                            <Label FontFamily="Segoe MDL2 Assets" FontSize="5" Margin="0" Padding="0,0,1,3" FontWeight="UltraBlack" VerticalAlignment="Center" HorizontalAlignment="Center" Content="&#xE72C;"/>
+                        </Grid>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="E_xit" Command="Close">
+                    <MenuItem.Icon>
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE711;"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo" Command="ApplicationCommands.Undo">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\UndoIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE7A7;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Redo" Command="ApplicationCommands.Redo">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\RedoIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE7A6;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Cu_t" Command="ApplicationCommands.Cut">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\CutIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE8C6;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Copy" Command="ApplicationCommands.Copy">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\CopyIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE8C8;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Paste" Command="ApplicationCommands.Paste">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\PasteIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE77F;"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Delete" Command="ApplicationCommands.Delete">
                     <MenuItem.Icon>
-                        <Image Source="ToolbarGraphics\DeleteIcon.png" />
+                        <Label FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0" Padding="0" Content="&#xE74D;"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -209,7 +227,7 @@
                     <ad:LayoutPanel  Orientation="Horizontal" DockWidth="*">
                         <ad:LayoutPanel  Orientation="Vertical">
                             <ad:LayoutDocumentPane>
-                                <ad:LayoutAnchorable Title="Inteface Status" CanClose="False" CanHide="True">
+                                <ad:LayoutAnchorable Title="Interface Status" CanClose="False" CanHide="True">
                                     <local:InterfaceStatusView x:Name="InterfaceStatusPanel"/>
                                 </ad:LayoutAnchorable>
                             </ad:LayoutDocumentPane>

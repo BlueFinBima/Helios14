@@ -1,17 +1,17 @@
-﻿//  Copyright 2014 Craig Courtney
-//    
-//  Helios is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -23,12 +23,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
     /// <summary>
     /// This is the glue code to interact with an editable combobox in a WPF dialog
     /// </summary>
-    public class EditableComboBoxModel: DependencyObject
+    public class EditableComboBoxModel : DependencyObject
     {
-        public EditableComboBoxModel()
-        {
-        }
-
         // lambdas to be provided by the parent
         public Func<SortedSet<string>> LoadItemSet;
         public Func<string> GetDefaultValue;
@@ -63,6 +59,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         public class NewItemAddedArgs : EventArgs
         {
             public string Value { get; }
+
             internal NewItemAddedArgs(string value)
             {
                 Value = value;
@@ -70,21 +67,18 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         }
 
         /// <summary>
-        /// this Property is bound to the text content of the combobox to detect when the user enters 
+        /// this Property is bound to the text content of the combobox to detect when the user enters
         /// a value that is not in the combobox list
         /// </summary>
         public string Text
         {
-            get { 
-                return (string)GetValue(TextProperty); 
-            }
-            set
-            {
-                SetValue(TextProperty, value);
-            }
+            get => (string) GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
         }
+
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(EditableComboBoxModel), new PropertyMetadata(TextChanged));
+            DependencyProperty.Register("Text", typeof(string), typeof(EditableComboBoxModel),
+                new PropertyMetadata(TextChanged));
 
         private static void TextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -102,7 +96,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                     // recurse once, since we will presumably get called again
                     model.SetValue(TextProperty, value);
                 }
-            } 
+            }
             else
             {
                 model.AddItem(value);
@@ -114,16 +108,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
         /// </summary>
         public string SelectedItem
         {
-            get { 
-                string configured = (string)GetValue(SelectedItemProperty);
+            get
+            {
+                string configured = (string) GetValue(SelectedItemProperty);
                 return configured ?? GetDefaultValue();
             }
-            set { 
-                SetValue(SelectedItemProperty, value); 
-            }
+            set => SetValue(SelectedItemProperty, value);
         }
+
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(string), typeof(EditableComboBoxModel), new PropertyMetadata(SelectedItemChanged));
+            DependencyProperty.Register("SelectedItem", typeof(string), typeof(EditableComboBoxModel),
+                new PropertyMetadata(SelectedItemChanged));
 
         private static void SelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -135,18 +130,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 // unset to use default
                 value = null;
             }
+
             model.SetCurrentValue(value);
         }
 
         /// <summary>
         /// this is the list of currently allowed values for the combobox
         /// </summary>
-        public ObservableCollection<string> ItemsSource
-        {
-            get { return (ObservableCollection<string>)GetValue(ItemsSourceProperty); }
-        }
+        public ObservableCollection<string> ItemsSource => (ObservableCollection<string>) GetValue(ItemsSourceProperty);
+
         public static readonly DependencyPropertyKey ItemsSourcePropertyKey = DependencyProperty.RegisterReadOnly(
-            "ItemsSource", typeof(ObservableCollection<string>), typeof(EditableComboBoxModel), new PropertyMetadata(null));
+            "ItemsSource", typeof(ObservableCollection<string>), typeof(EditableComboBoxModel),
+            new PropertyMetadata(null));
+
         public static readonly DependencyProperty ItemsSourceProperty = ItemsSourcePropertyKey.DependencyProperty;
 
         // customizable set of values for combo box
@@ -165,6 +161,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             {
                 return;
             }
+
             _items.Add(value);
             // this is very inefficient but almost never happens
             // so I will do this rather than include some sorted observable collection
@@ -175,8 +172,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 {
                     break;
                 }
+
                 index++;
             }
+
             _itemsExport.Insert(index, value);
             NewItemAdded?.Invoke(this, new NewItemAddedArgs(value));
         }

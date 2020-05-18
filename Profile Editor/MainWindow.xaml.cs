@@ -13,9 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Diagnostics;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Common;
+using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
 using GadrocsWorkshop.Helios.Windows;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor
@@ -23,7 +23,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Controls;
     using GadrocsWorkshop.Helios.ProfileEditor.UndoEvents;
-    using GadrocsWorkshop.Helios.ProfileEditor.ViewModel;
     using GadrocsWorkshop.Helios.Windows.Controls;
     using GadrocsWorkshop.Helios.Windows.ViewModel;
     using System;
@@ -54,7 +53,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, ResetMonitorsWork.ICallbacks
     { 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -71,16 +70,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private delegate HeliosProfile LoadProfileDelegate(string filename);
         private delegate void LayoutDelegate(string filename);
 
-        private XmlLayoutSerializer _layoutSerializer;
+        private readonly XmlLayoutSerializer _layoutSerializer;
         private string _systemDefaultLayout;
-        private string _defaultLayoutFile;
+        private readonly string _defaultLayoutFile;
 
         private LoadingAdorner _loadingAdorner;
-        private List<DocumentMeta> _documents = new List<DocumentMeta>();
+        private readonly List<DocumentMeta> _documents = new List<DocumentMeta>();
 
         private bool _initialLoad = true;
 
-        private InterfaceStatusScanner _configurationCheck = new InterfaceStatusScanner();
+        private readonly InterfaceStatusScanner _configurationCheck = new InterfaceStatusScanner();
 
         public MainWindow()
         {
@@ -90,10 +89,10 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             DockManager.ActiveContentChanged += DockManager_ActiveDocumentChanged;
             NewProfile();
 
-            _layoutSerializer = new XmlLayoutSerializer(this.DockManager);
+            _layoutSerializer = new XmlLayoutSerializer(DockManager);
             _layoutSerializer.LayoutSerializationCallback += LayoutSerializer_LayoutSerializationCallback;
 
-            _defaultLayoutFile = System.IO.Path.Combine(ConfigManager.DocumentPath, "DefaultLayout.hply");
+            _defaultLayoutFile = Path.Combine(ConfigManager.DocumentPath, "DefaultLayout.hply");
 
             // arm this to tell us if any interface reports status above a configured threshold
             _configurationCheck.Triggered += ConfigurationCheck_Triggered;
@@ -114,7 +113,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                     AddDocumentMeta(profileObject, (LayoutDocument)e.Model, editor);
                 } else
                 {
-                    ConfigManager.LogManager.LogDebug("Layout Serializer: Unable to resolve Layout Document " + e.Model.ContentId);
+                    Logger.Debug("Layout Serializer: Unable to resolve Layout Document " + e.Model.ContentId);
                 }
             }
         }
@@ -324,53 +323,24 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private DocumentMeta AddDocumentMeta(HeliosObject profileObject, LayoutDocument document, HeliosEditorDocument editor)
         {
-            DocumentMeta meta = new DocumentMeta();
-            meta.editor = editor;
-            meta.document = document;
-            meta.hobj = profileObject;
-
+            DocumentMeta meta = new DocumentMeta {editor = editor, document = document, hobj = profileObject};
             _documents.Add(meta);
-
             return meta;
         }
 
         private DocumentMeta FindDocumentMeta(HeliosObject profileObject)
         {
-            foreach(DocumentMeta meta in _documents)
-            {
-                if (meta.hobj == profileObject)
-                {
-                    return meta;
-                }
-            }
-
-            return null;
+            return _documents.FirstOrDefault(meta => meta.hobj == profileObject);
         }
 
         private DocumentMeta FindDocumentMeta(LayoutDocument document)
         {
-            foreach (DocumentMeta meta in _documents)
-            {
-                if (meta.document == document)
-                {
-                    return meta;
-                }
-            }
-
-            return null;
+            return _documents.FirstOrDefault(meta => meta.document == document);
         }
 
         private DocumentMeta FindDocumentMeta(HeliosEditorDocument editor)
         {
-            foreach (DocumentMeta meta in _documents)
-            {
-                if (meta.editor == editor)
-                {
-                    return meta;
-                }
-            }
-
-            return null;
+            return _documents.FirstOrDefault(meta => meta.editor == editor);
         }
 
         private DocumentMeta AddNewDocument(HeliosObject profileObject)
@@ -384,23 +354,27 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
 
             HeliosEditorDocument editor = CreateDocumentEditor(profileObject);
-            if (editor != null)
+            if (editor == null)
             {
-                LayoutDocument document = new LayoutDocument();
-
-                document.Title = editor.Title;
-                document.IsSelected = true;
-                document.ContentId = HeliosSerializer.GetReferenceName(profileObject);
-                document.Content = CreateDocumentContent(editor);
-                // Since a new LayoutRoot object is created upon de-serialization, the Child LayoutDocumentPane no longer belongs to the LayoutRoot 
-                // therefore the LayoutDocumentPane 'DocumentPane' must be referred to dynamically
-                LayoutDocumentPane documentPane = DockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
-                documentPane?.Children.Add(document);
-                document.Closed += Document_Closed;
-
-                meta = AddDocumentMeta(profileObject, document, editor);
-                profileObject.PropertyChanged += DocumentObject_PropertyChanged;
+                return null;
             }
+
+            LayoutDocument document = new LayoutDocument
+            {
+                Title = editor.Title,
+                IsSelected = true,
+                ContentId = HeliosSerializer.GetReferenceName(profileObject),
+                Content = CreateDocumentContent(editor)
+            };
+
+            // Since a new LayoutRoot object is created upon de-serialization, the Child LayoutDocumentPane no longer belongs to the LayoutRoot 
+            // therefore the LayoutDocumentPane 'DocumentPane' must be referred to dynamically
+            LayoutDocumentPane documentPane = DockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+            documentPane?.Children.Add(document);
+            document.Closed += Document_Closed;
+
+            meta = AddDocumentMeta(profileObject, document, editor);
+            profileObject.PropertyChanged += DocumentObject_PropertyChanged;
 
             return meta;
         }
@@ -434,10 +408,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return editor;
             }
 
-            ScrollViewer scroller = new ScrollViewer();
-            scroller.Content = editor;
-            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            ScrollViewer scroller = new ScrollViewer
+            {
+                Content = editor,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+            };
             return scroller;
         }
 
@@ -583,8 +559,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             } 
             else
             {
-                // XXX need a popup here
-                ConfigManager.LogManager.LogError($"Failed to load profile '{path}'; continuing with previously loaded profile");
+                Logger.Error($"Failed to load profile '{path}'; continuing with previously loaded profile");
+                MessageBox.Show(
+                    "Profile Editor will continuing with the previously loaded profile.  Please inspect the Profile Editor logs and file a bug if appropriate.",
+                    $"Failed to load profile '{path}'",
+                    MessageBoxButton.OK);
             }
 
             RemoveLoadingAdorner();
@@ -612,7 +591,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
             // now pump the UI or find out that the Dispatcher is null or dead
             bool bRunning = false;
-            Dispatcher?.Invoke(() => { bRunning = true; }, DispatcherPriority.ApplicationIdle);
+            Dispatcher?.Invoke(() => { bRunning = true; }, DispatcherPriority.ContextIdle);
             if (_bClosing || !bRunning)
             {
                 // Profile Editor main window canceling work because window is closing or application is shut down
@@ -765,8 +744,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            Splash.About dialog = new Splash.About();
-            dialog.Owner = this;
+            Splash.About dialog = new Splash.About {Owner = this};
             dialog.ShowDialog();
         }
 
@@ -805,12 +783,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void OpenProfileItem_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             DocumentMeta meta = AddNewDocument(e.Parameter as HeliosObject);
-            if (meta != null)
+            if (meta?.document.Content is HeliosVisualContainerEditor)
             {
-                if (meta.document.Content is HeliosVisualContainerEditor)
-                {
-                    meta.editor.SetBindingFocus((HeliosObject)e.Parameter);
-                }
+                meta.editor.SetBindingFocus((HeliosObject)e.Parameter);
             }
         }
 
@@ -819,15 +794,17 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             CloseProfileItem(e.Parameter);
         }
 
-        private void CloseProfileItem(object item)
+        public void CloseProfileItem(object item)
         {
             DocumentMeta meta = FindDocumentMeta(item as HeliosObject);
 
-            if (meta != null)
+            if (meta == null)
             {
-                meta.document.Close();
-                meta.hobj.PropertyChanged -= DocumentObject_PropertyChanged;
+                return;
             }
+
+            meta.document.Close();
+            meta.hobj.PropertyChanged -= DocumentObject_PropertyChanged;
         }
 
         public void OnExecuteUndo(object sender, ExecutedRoutedEventArgs e)
@@ -852,32 +829,36 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void AddInterface_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AddInterfaceDialog dialog = new AddInterfaceDialog(Profile);
+            AvailableInterfaces availableInterfaces = new AvailableInterfaces(Profile);
+            AddInterfaceDialog dialog = new AddInterfaceDialog();
+            dialog.DataContext = availableInterfaces;
             dialog.Owner = this;
 
             try
             {
                 bool? result = dialog.ShowDialog();
-                if (result != true || dialog.SelectedInterface == null)
+                if (result != true || availableInterfaces.SelectedInterface == null)
                 {
                     return;
                 }
-
-                string name = dialog.SelectedInterface.Name;
+                
+                // retrieve the interface instance, which may be created now or may already be in the item
+                HeliosInterface heliosInterface = availableInterfaces.SelectedInterface.HeliosInterface;
+                string name = heliosInterface.Name;
                 int count = 0;
                 while (Profile.Interfaces.ContainsKey(name))
                 {
-                    name = dialog.SelectedInterface.Name + " " + ++count;
+                    name = heliosInterface.Name + " " + ++count;
                 }
-                dialog.SelectedInterface.Name = name;
+                heliosInterface.Name = name;
 
-                ConfigManager.UndoManager.AddUndoItem(new InterfaceAddUndoEvent(Profile, dialog.SelectedInterface));
-                Profile.Interfaces.Add(dialog.SelectedInterface);
-                AddNewDocument(dialog.SelectedInterface);
+                ConfigManager.UndoManager.AddUndoItem(new InterfaceAddUndoEvent(Profile, heliosInterface));
+                Profile.Interfaces.Add(heliosInterface);
+                AddNewDocument(heliosInterface);
             }
             catch (Exception ex)
             {
-                ConfigManager.LogManager.LogError("AddInterface - Error during add Interface dialog or creation", ex);
+                Logger.Error(ex, "AddInterface - Error during add Interface dialog or creation");
             }
         }
 
@@ -928,7 +909,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             DataTemplate template = parameter.DataTemplate ?? (DataTemplate)host.TryFindResource(new DataTemplateKey(parameter.Content.GetType()));
 
             // display the dialog appropriate to the content
-            Window generic = new DialogWindow
+            Window generic = new DefaultDialogWindow
             {
                 ContentTemplate = template, 
                 Content = parameter.Content
@@ -1018,79 +999,40 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void Show_TemplateManager(object sender, RoutedEventArgs e)
         {
-            TemplateManagerWindow tm = new TemplateManagerWindow();
-            tm.Owner = this;
+            TemplateManagerWindow tm = new TemplateManagerWindow {Owner = this};
             tm.ShowDialog();
         }
 
         private void ResetMonitors_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            ResetMonitors resetDialog = new ResetMonitors(Profile);
-            resetDialog.Owner = this;
+            ResetMonitors resetDialog = new ResetMonitors(Profile) {Owner = this};
             bool? reset = resetDialog.ShowDialog();
 
-            if (reset.HasValue && reset.Value)
+            if (!reset.HasValue || !reset.Value)
             {
-                GetLoadingAdorner();
-
-                // WARNING: this value comes from a dependency property that can only be 
-                // read on this thread
-                HeliosProfile profile = Profile;
-
-                // now run monitor import as another thread
-                new System.Threading.Thread(() => { ResetMonitorsThread(resetDialog, profile); }).Start();
+                return;
             }
-        }
 
-        private void ResetMonitorsThread(ResetMonitors resetDialog, HeliosProfile profile)
-        {
-            ConfigManager.UndoManager.StartBatch();
-            ConfigManager.LogManager.LogDebug("Resetting Monitors");
-            try
-            {
-                // WARNING: monitor naming is 1-based but indexing and NewMonitor references are 0-based
-                Monitor[] localMonitors = ConfigManager.DisplayManager.Displays.ToArray<Monitor>();
-                
-                // pass1: process all new and/or old monitors in order
-                int existingMonitors = Math.Min(localMonitors.Length, profile.Monitors.Count);
-                int totalMonitors = Math.Max(localMonitors.Length, profile.Monitors.Count);
+            GetLoadingAdorner();
 
-                // monitors that are preserved
-                for (int monitorIndex = 0; monitorIndex < existingMonitors; monitorIndex++)
+            try {
+                ConfigManager.UndoManager.StartBatch();
+                foreach (string progress in ResetMonitorsWork.ResetMonitors(this, resetDialog, Profile))
                 {
-                    MonitorResetItem item = resetDialog.MonitorResets[monitorIndex];
-                    ResetExistingMonitor(monitorIndex, item);
+                    if (!PumpUserInterface())
+                    {
+                        Logger.Warn("Aborting and rolling back any undoable operations from monitor reset");
+                        ConfigManager.UndoManager.UndoBatch();
+                        return;
+                    }
+                    ResetMonitorsWork.Logger.Debug(progress);
                 }
-
-                // monitors added (may be zero iterations)
-                for (int monitorIndex = existingMonitors; monitorIndex < localMonitors.Length; monitorIndex++)
-                {
-                    // monitorIndex does not refer to any reset item, as we are off the end of the list
-                    ResetAddedMonitor(profile, monitorIndex, localMonitors[monitorIndex]);
-                }
-
-                // monitors removed (may be zero iterations)
-                for (int monitorIndex = existingMonitors; monitorIndex < resetDialog.MonitorResets.Count; monitorIndex++)
-                {
-                    MonitorResetItem item = resetDialog.MonitorResets[monitorIndex];
-                    ResetRemovedMonitor(profile, monitorIndex, item, localMonitors.Length);
-                }
-
-                // pass2: place all controls that were temporarily lifted and
-                // copy over any settings from source to target monitors
-                foreach (MonitorResetItem item in resetDialog.MonitorResets)
-                {
-                    ConfigManager.LogManager.LogDebug($"Placing controls for old monitor {item.OldMonitor.Name} onto Monitor {item.NewMonitor + 1}");
-                    Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(item.PlaceControls), profile.Monitors[item.NewMonitor]);
-                    Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(item.CopySettings), profile.Monitors[item.NewMonitor]);
-                }
-
                 ConfigManager.UndoManager.CloseBatch();
             }
             catch (Exception ex)
             {
-                ConfigManager.LogManager.LogError("Reset Monitors - Unhandled exception", ex);
-                ConfigManager.LogManager.LogError("Rolling back any undoable operations from monitor reset");
+                Logger.Error(ex, "Reset Monitors - Unhandled exception");
+                Logger.Error("Rolling back any undoable operations from monitor reset");
                 ConfigManager.UndoManager.UndoBatch();
                 MessageBox.Show("Error encountered while resetting monitors; please file a bug with the contents of the application log", "Error");
             }
@@ -1099,37 +1041,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 Dispatcher.Invoke(DispatcherPriority.Background, new Action(RemoveLoadingAdorner));
                 Dispatcher.Invoke(DispatcherPriority.Background, new Action(OnResetMonitorsComplete));
             }
-        }
-
-        private void ResetRemovedMonitor(HeliosProfile profile, int monitorIndex, MonitorResetItem item, int monitorToRemove)
-        {
-            ConfigManager.LogManager.LogDebug($"Removing Monitor {monitorIndex + 1} and saving its controls for replacement");
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action<HeliosObject>(CloseProfileItem), profile.Monitors[monitorToRemove]);
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action(item.RemoveControls));
-            ConfigManager.UndoManager.AddUndoItem(new DeleteMonitorUndoEvent(profile, profile.Monitors[monitorToRemove], monitorToRemove));
-            profile.Monitors.RemoveAt(monitorToRemove);
-        }
-
-        // WARNING: monitorIndex refers to a new monitor that does not yet exist, and there is no monitor reset item for it
-        private void ResetAddedMonitor(HeliosProfile profile, int monitorIndex, Monitor display)
-        {
-            ConfigManager.LogManager.LogDebug($"Adding Monitor {monitorIndex + 1}");
-            Monitor monitor = new Monitor(display);
-            monitor.Name = $"Monitor {monitorIndex + 1}";
-            monitor.FillBackground = false;
-            ConfigManager.UndoManager.AddUndoItem(new AddMonitorUndoEvent(profile, monitor));
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action<Monitor>(profile.Monitors.Add), monitor);
-        }
-
-        private void ResetExistingMonitor(int monitorIndex, MonitorResetItem item)
-        {
-            if (item.NewMonitor != monitorIndex)
-            {
-                ConfigManager.LogManager.LogDebug($"Removing controls from Monitor {monitorIndex + 1} for replacement");
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(item.RemoveControls));
-            }
-            ConfigManager.LogManager.LogDebug($"Resetting Monitor {monitorIndex + 1}");
-            Dispatcher.Invoke(DispatcherPriority.Background, new Action(item.Reset));
         }
 
         /// <summary>
@@ -1155,7 +1066,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             System.Diagnostics.Process.Start("https://github.com/BlueFinBima/Helios/wiki/Donations");
         }
-
 
         private void Explorer_ItemDeleting(object sender, ItemDeleteEventArgs e)
         {

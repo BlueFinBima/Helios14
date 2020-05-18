@@ -1,14 +1,17 @@
 ﻿<Grid x:Class="GadrocsWorkshop.Helios.Windows.Controls.ShareDialog"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
-             xmlns:heliosWindows="clr-namespace:GadrocsWorkshop.Helios.Windows"
-             xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel"
-             mc:Ignorable="d"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+      xmlns:viewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel"
+      mc:Ignorable="d"
+             local:DialogWindow.DialogInitialHeight="600"
+             local:DialogWindow.DialogInitialWidth="600"
+             local:DialogWindow.DialogMaxHeight="Infinity"
+             local:DialogWindow.DialogMaxWidth="Infinity"
              d:DataContext="{d:DesignInstance d:Type=viewModel:ShareInterfaceStatus}"
-             d:DesignHeight="100" d:DesignWidth="640">
+             d:DesignHeight="300" d:DesignWidth="640">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
@@ -22,7 +25,7 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.RowSpan="7" Background="{StaticResource EmptySpaceBetweenWhiteItems}" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.RowSpan="7" Background="{StaticResource EmptySpaceBetweenWhiteItems}" HorizontalScrollBarVisibility="Disabled">
         <Grid Background="White" Margin="6" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

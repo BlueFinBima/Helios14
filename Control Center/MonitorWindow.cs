@@ -34,13 +34,14 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         //private HeliosVisual _touchDownControl;
 
         public MonitorWindow(Monitor monitor)
-            : this(monitor, true)
+            : this(monitor, false, true)
         {
         }
 
-        public MonitorWindow(Monitor monitor, bool autoInvalidate)
+        public MonitorWindow(Monitor monitor, bool highQualityBitmapScaling, bool autoInvalidate)
         {
             _viewer = new HeliosVisualView();
+            _viewer.HighQualityBitmapScaling = highQualityBitmapScaling;
             _viewer.Visual = monitor;
             Content = _viewer;
 
@@ -130,7 +131,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 HwndSource hwndSource = PresentationSource.FromVisual(this) as System.Windows.Interop.HwndSource;
                 if (null == hwndSource)
                 {
-                    // XXX find out why this happens when screen is high DPI
+                    // REVISIT find out why this happens when screen is high DPI
                     ConfigManager.LogManager.LogInfo("Cannot determine rendering mode for " + _display.Name);
                     return;
                 }

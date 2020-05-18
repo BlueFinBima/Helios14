@@ -38,10 +38,12 @@
     </ApplicationDefinition>
     <Compile Include="Sample\SampleDependencyAutoUndo.cs" />
     <Compile Include="Sample\SampleModel.cs" />
+    <Compile Include="Sample\SampleModel_DesignData.cs" />
     <Compile Include="Sample\SampleView.xaml.cs">
       <DependentUpon>SampleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sample\SampleViewModel.cs" />
+    <Compile Include="Sample\SampleViewModel_DesignData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

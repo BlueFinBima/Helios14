@@ -237,10 +237,6 @@ namespace GadrocsWorkshop.Helios
 
         /// <summary>
         /// Notification method for profile changes.
-        ///
-        /// WARNING: this method is called on the profile loading thread when
-        /// loading a saved profile, and otherwise on main thread when adding
-        /// an interface to a running profile
         /// </summary>
         protected virtual void OnProfileChanged(HeliosProfile oldProfile)
         {
@@ -277,6 +273,13 @@ namespace GadrocsWorkshop.Helios
             // Default No-Op
         }
 
+        /// <summary>
+        /// Called to read any XML content if the object is not instantiated from an
+        /// empty element in <tag/> form
+        /// 
+        /// WARNING: Name property has not been set when this is called
+        /// </summary>
+        /// <param name="reader"></param>
         public abstract void ReadXml(XmlReader reader);
 
         public abstract void WriteXml(XmlWriter writer);

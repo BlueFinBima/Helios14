@@ -1,139 +1,196 @@
-﻿ <HeliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.AdditionalViewportsEditor"
+﻿<heliosSdk:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Patching.DCS.AdditionalViewportsEditor"
                                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                                 xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-                                 xmlns:HeliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
+                                 xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
+                                 xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                  xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
                                  xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-                                 x:Name="ViewportsWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
+                                 x:Name="ViewportsWindow" Height="Auto" Width="Auto"
+                                 Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
-        <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.UpToDate}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="OutOfDateStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="CannotApplyStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.Incompatible}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
-            <Setter Property="Margin" Value="0,0,0,12"/>
-        </Style>
-        <Style x:Key="Documentation" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="FontStyle" Value="Italic"/>
-            <Setter Property="TextWrapping" Value="Wrap"/>
-        </Style>
+            <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                                       Value="{x:Static util:StatusCodes.UpToDate}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="OutOfDateStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                                       Value="{x:Static util:StatusCodes.OutOfDate}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="PartialStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                                       Value="{x:Static util:StatusCodes.ResetRequired}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="CannotApplyStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                                       Value="{x:Static util:StatusCodes.Incompatible}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Hidden" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding ElementName=ViewportsWindow, Path=Patching.Status}"
+                                       Value="{x:Static util:StatusCodes.NoLocations}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
+                <Setter Property="Margin" Value="0,0,0,12" />
+            </Style>
+            <Style x:Key="Documentation" TargetType="{x:Type TextBlock}">
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="FontStyle" Value="Italic" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+        </ResourceDictionary>
     </FrameworkElement.Resources>
     <StackPanel>
-        <HeliosDcs:InstallationLocationsGroup/>
+        <heliosDcs:InstallationLocationsGroup />
         <GroupBox Header="DCS Additional Viewports" Style="{StaticResource BasicGroup}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="120"/>
+                    <ColumnDefinition Width="Auto" MinWidth="120" />
                     <!-- primary labels -->
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
                     <!-- primary controls and long messages-->
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!-- REVISIT this should show a list of additional viewports installed and their source (documents folder vs installation) -->
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}" />
                 <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">All viewport patches are installed.</TextBlock>
-                    <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Style="{StaticResource InterfaceEditorButton}">Revert Patches</Button>
+                    <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click"
+                            Style="{StaticResource InterfaceEditorButton}">
+                        Revert Patches
+                    </Button>
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You need to install patches to add additional viewports to DCS.</TextBlock>
-                    <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Install Patches</Button>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                               Foreground="Red">
+                        You need to install patches to add additional viewports to DCS.
+                    </TextBlock>
+                    <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click"
+                            Style="{StaticResource InterfaceEditorButton}">
+                        Install Patches
+                    </Button>
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource CannotApplyStyle}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">The patches to install additional viewports are not compatible with this version of DCS.  
-                        You will need a more recent version of Helios or additional patch files.</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                               Foreground="Red">
+                        The patches to install additional viewports are not compatible with this version of DCS.
+                        You will need a more recent version of Helios or additional patch files.
+                    </TextBlock>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource PartialStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                               Foreground="Red">
+                        The patches for additional viewports are partially installed or may have failed to install.
+                    </TextBlock>
+                    <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click"
+                            Style="{StaticResource InterfaceEditorButton}">
+                        Revert Patches
+                    </Button>
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before installing patches.</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                               Foreground="Red">
+                        You must configure DCS installation locations before installing patches.
+                    </TextBlock>
                 </Grid>
             </Grid>
         </GroupBox>
     </StackPanel>
-</HeliosSdk:HeliosInterfaceEditor>
+</heliosSdk:HeliosInterfaceEditor>

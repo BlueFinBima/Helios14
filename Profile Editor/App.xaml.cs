@@ -19,6 +19,7 @@
 using GadrocsWorkshop.Helios.Windows;
 using System.Windows.Markup;
 
+// NOTE: URL used to resolve XAML references without breaking on our assembly name that has spaces in it
 [assembly: XmlnsDefinition("http://Helios.local/ProfileEditor", "GadrocsWorkshop.Helios.ProfileEditor")]
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {

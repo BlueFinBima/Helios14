@@ -35,6 +35,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             _hotKey = LoadSetting("HotKey", Key.None.ToString());
             _hotKeyModifiers = LoadSetting("HotKeyModifiers", ModifierKeys.None.ToString());
             _splashScreen = LoadSetting("SplashScreen", true);
+            _highQualityBitmapScaling = LoadSetting("HighQualityBitmapScaling", false);
 
             // NOTE: do not try to implement auto start in registry even if enabled, we may not have rights
             _autoStart = LoadSetting("AutoStart", false);
@@ -267,6 +268,28 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                 _splashScreen = value;
                 _preferences.SaveSetting(GROUP_NAME, "SplashScreen", value);
                 OnPropertyChanged("SplashScreen", oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// backing field for property HighQualityBitmapScaling,
+        /// if true, all visuals on all monitors use slower "Fant" scaling for bitmaps to increase visual quality 
+        /// </summary>
+        private bool _highQualityBitmapScaling;
+
+        /// <summary>
+        /// if true, all visuals on all monitors use slower "Fant" scaling for bitmaps to increase visual quality 
+        /// </summary>
+        public bool HighQualityBitmapScaling
+        {
+            get => _highQualityBitmapScaling;
+            set
+            {
+                if (_highQualityBitmapScaling == value) return;
+                bool oldValue = _highQualityBitmapScaling;
+                _highQualityBitmapScaling = value;
+                _preferences.SaveSetting(GROUP_NAME, "HighQualityBitmapScaling", value);
+                OnPropertyChanged("", oldValue, value, true);
             }
         }
     }

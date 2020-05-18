@@ -7,7 +7,7 @@
              xmlns:statusViewer="clr-namespace:GadrocsWorkshop.Helios.ControlCenter.StatusViewer"
              xmlns:heliosControls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
              mc:Ignorable="d"
-             Height="320" Width="504"
+             Width="504" Height="320" 
              d:DataContext="{d:DesignInstance d:Type=statusViewer:StatusViewer}">
     <Canvas.Resources>
         <DataTemplate DataType="{x:Type statusViewer:ShareConsoleStatus}">
@@ -15,8 +15,8 @@
         </DataTemplate>
     </Canvas.Resources>
     <Image Source="StatusBackground.png" />
-    <!-- XXX copied over from other panels, find out what this is supposed to do and hook it up
-    <Thumb Name="StatusDragThumb" Width="504" Height="320" Opacity="0" DragDelta="MoveThumb_DragDelta" Canvas.Left="0" Canvas.Top="0" /> -->
+    <!-- provides handle to drag the whole Control Center by grabbing anywhere on this panel -->
+    <Thumb Name="StatusDragThumb" Width="504" Height="320" Opacity="0" Canvas.Left="0" Canvas.Top="0" />
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="88"/>

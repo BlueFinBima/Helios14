@@ -1,4 +1,19 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         #region Nested
 
         private delegate StatusReportItem ProcessMonitorSetupFile(InstallationLocation location, string name,
-            string directoryPath, string filePath);
+            string directoryPath, string filePath, string correctContents);
 
         #endregion
 
@@ -23,9 +38,24 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         private readonly MonitorSetup _parent;
 
         /// <summary>
+        /// the entire text of the combined monitor setup lua file
+        /// </summary>
+        private string _combinedMonitorSetup;
+
+        /// <summary>
         /// the entire text of the monitor setup lua file
         /// </summary>
         private string _monitorSetup;
+
+        /// <summary>
+        /// the viewport setup file for the current profile or null, written to disk only if we finish configuration
+        /// </summary>
+        private ViewportSetupFile _localViewports;
+
+        /// <summary>
+        /// the viewport setup file containing all viewports for the current monitor setup
+        /// </summary>
+        private ViewportSetupFile _allViewports;
 
         #endregion
 
@@ -33,17 +63,6 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         {
             _parent = parent;
             SubscribeToLocationChanges();
-            _parent.Profile.PropertyChanged += Profile_PropertyChanged;
-        }
-
-        private void Profile_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Path":
-                    Update();
-                    break;
-            }
         }
 
         protected override void Update()
@@ -51,39 +70,32 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             _parent.InvalidateStatusReport();
         }
 
-        private const StatusReportItem.StatusFlags Informational = StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate;
+        private const StatusReportItem.StatusFlags INFORMATIONAL =
+            StatusReportItem.StatusFlags.Verbose | StatusReportItem.StatusFlags.ConfigurationUpToDate;
 
         /// <summary>
-        /// generate the monitor setup file but do not write it out yet
+        /// generate the monitor setup file but do not write it out yet (verbose version that reports all main windows and monitors
+        /// also)
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<StatusReportItem> UpdateMonitorSetup()
+        private IEnumerable<StatusReportItem> UpdateMonitorSetupVerbose(MonitorSetupTemplate template)
         {
-            string shortName = GenerateShortName();
-            List<string> lines = new List<string>
+            List<string> lines = CreateHeader(template);
+
+            foreach (StatusReportItem item in GatherViewports(template))
             {
-                // NOTE: why do we need to run this string through a local function?  does this create a ref somehow or prevent string interning?
-                "_  = function(p) return p; end;",
-                $"name = _('H_{shortName}')",
-                $"description = 'Generated from {shortName} Helios profile'"
-            };
+                yield return item;
+            }
 
-
-            // emit extra viewports
-            foreach (ShadowVisual viewPort in _parent.Viewports)
+            // emit in sorted canonical order so we can compare files later
+            foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
             {
-                Rect rect = MonitorSetup.VisualToRect(viewPort.Visual);
-                rect.Offset(viewPort.Monitor.Left, viewPort.Monitor.Top);
-                rect.Offset(_parent.GlobalOffset);
-
-                string code =
-                    $"{viewPort.Viewport.ViewportName} = {{ x = {rect.Left}, y = {rect.Top}, width = {rect.Width}, height = {rect.Height} }}";
+                string code = CreateViewport(lines, viewport);
                 yield return new StatusReportItem
                 {
-                    Status = code,
-                    Flags = Informational
+                    Status = $"{template.MonitorSetupFileBaseName}: {code}",
+                    Flags = INFORMATIONAL
                 };
-                lines.Add(code);
             }
 
             // find main and ui view extents
@@ -98,7 +110,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} is not included in monitor setup",
-                        Flags = Informational
+                        Flags = INFORMATIONAL
                     };
                     continue;
                 }
@@ -110,7 +122,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} is used for main view",
-                        Flags = Informational
+                        Flags = INFORMATIONAL
                     };
                 }
 
@@ -120,17 +132,17 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     yield return new StatusReportItem
                     {
                         Status = $"{monitorDescription} is used to display the DCS user interface",
-                        Flags = Informational
+                        Flags = INFORMATIONAL
                     };
                 }
 
                 if (monitor.ViewportCount > 0)
                 {
-                    string plural = (monitor.ViewportCount > 1) ? "s" : "";
+                    string plural = monitor.ViewportCount > 1 ? "s" : "";
                     yield return new StatusReportItem
                     {
-                        Status = $"{monitorDescription} has {monitor.ViewportCount} viewport{plural}",
-                        Flags = Informational
+                        Status = $"{monitorDescription} has {monitor.ViewportCount} viewport{plural} from this profile",
+                        Flags = INFORMATIONAL
                     };
                 }
             }
@@ -138,6 +150,132 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             mainView.Offset(_parent.GlobalOffset);
             uiView.Offset(_parent.GlobalOffset);
 
+            CreateMainView(lines, mainView);
+            yield return new StatusReportItem
+            {
+                Status =
+                    $"MAIN = {{ x = {mainView.Left}, y = {mainView.Top}, width = {mainView.Width}, height = {mainView.Height} }}",
+                Flags = INFORMATIONAL
+            };
+
+            // check for separate UI view
+            yield return CreateUserInterfaceViewIfRequired(lines, mainView, uiView, out string uiViewName);
+
+            // set up required names for viewports (well-known to DCS)
+            lines.Add($"UIMainView = {uiViewName}");
+            lines.Add("GU_MAIN_VIEWPORT = Viewports.Center");
+
+            foreach (string line in lines)
+            {
+                ConfigManager.LogManager.LogDebug(line);
+            }
+
+            if (template.Combined)
+            {
+                _combinedMonitorSetup = string.Join("\n", lines);
+            }
+            else
+            {
+                _monitorSetup = string.Join("\n", lines);
+            }
+        }
+
+
+        /// <summary>
+        /// generate the monitor setup file but do not write it out yet
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<StatusReportItem> UpdateMonitorSetup(MonitorSetupTemplate template)
+        {
+            List<string> lines = CreateHeader(template);
+
+            foreach (StatusReportItem item in GatherViewports(template))
+            {
+                yield return item;
+            }
+
+            // emit in sorted canonical order so we can compare files later
+            foreach (KeyValuePair<string, Rect> viewport in _allViewports.Viewports.OrderBy(p => p.Key))
+            {
+                string code = CreateViewport(lines, viewport);
+                yield return new StatusReportItem
+                {
+                    Status = $"{template.MonitorSetupFileBaseName}: {code}",
+                    Flags = INFORMATIONAL
+                };
+            }
+
+            // find main and ui view extents
+            Rect mainView = Rect.Empty;
+            Rect uiView = Rect.Empty;
+            foreach (ShadowMonitor monitor in _parent.Monitors)
+            {
+                if (!monitor.Included)
+                {
+                    continue;
+                }
+
+                Rect rect = MonitorSetup.VisualToRect(monitor.Monitor);
+                if (monitor.Main)
+                {
+                    mainView.Union(rect);
+                }
+
+                if (monitor.UserInterface)
+                {
+                    uiView.Union(rect);
+                }
+            }
+
+            mainView.Offset(_parent.GlobalOffset);
+            uiView.Offset(_parent.GlobalOffset);
+
+            CreateMainView(lines, mainView);
+
+            // check for separate UI view
+            CreateUserInterfaceViewIfRequired(lines, mainView, uiView, out string uiViewName);
+
+            // set up required names for viewports (well-known to DCS)
+            lines.Add($"UIMainView = {uiViewName}");
+            lines.Add("GU_MAIN_VIEWPORT = Viewports.Center");
+
+            foreach (string line in lines)
+            {
+                ConfigManager.LogManager.LogDebug(line);
+            }
+
+            if (template.Combined)
+            {
+                _combinedMonitorSetup = string.Join("\n", lines);
+            }
+            else
+            {
+                _monitorSetup = string.Join("\n", lines);
+            }
+        }
+
+        private static string CreateViewport(List<string> lines, KeyValuePair<string, Rect> viewport)
+        {
+            string code =
+                $"{viewport.Key} = {{ x = {viewport.Value.Left}, y = {viewport.Value.Top}, width = {viewport.Value.Width}, height = {viewport.Value.Height} }}";
+            lines.Add(code);
+            return code;
+        }
+
+        private static List<string> CreateHeader(MonitorSetupTemplate template)
+        {
+            List<string> lines = new List<string>
+            {
+                // NOTE: why do we need to run this string through a local function?  does this create a ref somehow or prevent string interning?
+                "_  = function(p) return p end",
+                $"name = _('{template.MonitorSetupName}')",
+                $"description = 'Generated from {template.SourcesList}'"
+            };
+            return lines;
+        }
+
+        private static void CreateMainView(List<string> lines, Rect mainView)
+        {
             // calling the MAIN viewport "Center" to match DCS' built-in monitor setups, even though it doesn't matter
             lines.Add("Viewports = {");
             lines.Add("  Center = {");
@@ -150,44 +288,129 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             lines.Add("    dy = 0");
             lines.Add("  }");
             lines.Add("}");
-            yield return new StatusReportItem
+        }
+
+        private IEnumerable<StatusReportItem> UpdateLocalViewports(MonitorSetupTemplate template)
+        {
+            _localViewports = new ViewportSetupFile
             {
-                Status =
-                    $"MAIN = {{ x = {mainView.Left}, y = {mainView.Top}, width = {mainView.Width}, height = {mainView.Height} }}",
-                Flags = Informational
+                MonitorLayoutKey = _parent.MonitorLayoutKey
             };
-
-            // check for separate UI view
-            yield return CreateUserInterfaceViewIfRequired(lines, mainView, uiView, out string uiViewName);
-
-            // main set up required names for viewports (well-known to DCS)
-            lines.Add($"UIMainView = {uiViewName}");
-            lines.Add("GU_MAIN_VIEWPORT = Viewports.Center");
-
-            foreach (string line in lines)
+            foreach (ShadowVisual shadow in _parent.Viewports)
             {
-                ConfigManager.LogManager.LogDebug(line);
+                string name = shadow.Viewport.ViewportName;
+                if (_localViewports.Viewports.ContainsKey(name))
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status =
+                            $"The viewport '{name}' exists more than once in this profile.  Each viewport must have a unique name.",
+                        Recommendation = $"Rename one of the duplicated viewports with name '{name}' in this profile",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                    };
+                    continue;
+                }
+
+                Rect rect = MonitorSetup.VisualToRect(shadow.Visual);
+                rect.Offset(shadow.Monitor.Left, shadow.Monitor.Top);
+                rect.Offset(_parent.GlobalOffset);
+                _localViewports.Viewports.Add(name, rect);
             }
 
-            _monitorSetup = string.Join("\n", lines);
+            // now check against our saved state, which we also have to update
+            ViewportSetupFile saved = _parent.Combined.Load(template.ProfileName);
+            if (null == saved)
+            {
+                yield return new StatusReportItem
+                {
+                    Status = "The viewport data for this profile does not exist",
+                    Recommendation = $"Configure {_parent.Name}"
+                };
+            }
+            else if (saved.MonitorLayoutKey != _localViewports.MonitorLayoutKey
+                     || !saved.Viewports.OrderBy(e => e.Key)
+                         .SequenceEqual(_localViewports.Viewports.OrderBy(e => e.Key)))
+            {
+                // monitor layout key and the viewport rectangles in order must be equal
+                yield return new StatusReportItem
+                {
+                    Status = "The viewport data for this profile is out of date",
+                    Recommendation = $"Configure {_parent.Name}"
+                };
+            }
+        }
+
+        private IEnumerable<StatusReportItem> GatherViewports(MonitorSetupTemplate template)
+        {
+            foreach (StatusReportItem item in UpdateLocalViewports(template))
+            {
+                yield return item;
+            }
+
+            if (!template.Combined)
+            {
+                _allViewports = _localViewports;
+            }
+            else
+            {
+                _allViewports = new ViewportSetupFile
+                {
+                    MonitorLayoutKey = _parent.MonitorLayoutKey
+                };
+                foreach (string name in _parent.Combined.CalculateCombinedSetupNames())
+                {
+                    if (name == template.ProfileName)
+                    {
+                        // this is the current profile so we take the data from where we generate it instead
+                        // of from a file
+                        foreach (StatusReportItem item in _allViewports.Merge(name, _localViewports))
+                        {
+                            yield return item;
+                        }
+
+                        continue;
+                    }
+
+                    ViewportSetupFile generated = _parent.Combined.Load(name);
+                    if (null == generated)
+                    {
+                        yield return new StatusReportItem
+                        {
+                            Status =
+                                $"Could not include the viewports for Helios profile '{name}' because no generated viewport data was found",
+                            Recommendation =
+                                $"Configure DCS Monitor Setup for Helios profile '{name}', then configure DCS Monitor Setup for current Helios profile",
+                            Severity = StatusReportItem.SeverityCode.Warning,
+                            Link = StatusReportItem.ProfileEditor
+                        };
+                        continue;
+                    }
+
+                    foreach (StatusReportItem item in _allViewports.Merge(name, generated))
+                    {
+                        yield return item;
+                    }
+                }
+            }
         }
 
         public object GenerateAnonymousPath(string savedGamesName)
         {
             string savedGamesTranslated = Path.GetFileName(KnownFolders.SavedGames);
+            // ReSharper disable once AssignNullToNotNullAttribute not possible with saved games folder
             return Path.Combine(savedGamesTranslated, savedGamesName, "Config", "MonitorSetup");
         }
-
-        public string GenerateFileName() => $"{GenerateShortName()}.lua";
-
-        public string GenerateShortName() => Path.GetFileNameWithoutExtension(_parent.Profile.Path).Replace(" ", "");
 
         private string GenerateSavedGamesPath(string savedGamesName) =>
             Path.Combine(KnownFolders.SavedGames, savedGamesName, "Config", "MonitorSetup");
 
-        private IEnumerable<StatusReportItem> EnumerateMonitorSetupFiles(ProcessMonitorSetupFile handler)
+        public ViewportSetupFile LocalViewports => _localViewports;
+
+        private IEnumerable<StatusReportItem> EnumerateMonitorSetupFiles(ProcessMonitorSetupFile handler,
+            MonitorSetupTemplate template)
         {
-            string fileName = GenerateFileName();
+            string fileName = template.FileName;
             HashSet<string> done = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
             foreach (InstallationLocation location in InstallationLocations.Singleton.Active)
             {
@@ -199,15 +422,16 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 string monitorSetupsDirectory = GenerateSavedGamesPath(location.SavedGamesName);
                 string monitorSetupPath = Path.Combine(monitorSetupsDirectory, fileName);
-                yield return handler(location, fileName, monitorSetupsDirectory, monitorSetupPath);
+                string correctContents = template.Combined ? _combinedMonitorSetup : _monitorSetup;
+                yield return handler(location, fileName, monitorSetupsDirectory, monitorSetupPath, correctContents);
             }
         }
 
         public StatusReportItem InstallFile(InstallationLocation location, string name, string directoryPath,
-            string filePath)
+            string filePath, string correctContents)
         {
             Directory.CreateDirectory(directoryPath);
-            File.WriteAllText(filePath, _monitorSetup);
+            File.WriteAllText(filePath, correctContents);
             return new StatusReportItem
             {
                 Status = $"generated monitor setup file '{name}' in {GenerateAnonymousPath(location.SavedGamesName)}",
@@ -216,7 +440,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         public StatusReportItem CheckSetupFile(InstallationLocation location, string name,
-            string _, string filePath)
+            string _, string filePath, string correctContents)
         {
             if (!File.Exists(filePath))
             {
@@ -231,7 +455,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             string contents = File.ReadAllText(filePath);
-            if (contents != _monitorSetup)
+            if (contents != correctContents)
             {
                 return new StatusReportItem
                 {
@@ -286,6 +510,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         /// <summary>
         /// attempt to write the monitor setup file to all configured Saved Games folders
+        /// and also persist our viewports information
         /// </summary>
         /// <param name="callbacks"></param>
         /// <returns></returns>
@@ -305,9 +530,19 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         "UI should have disabled monitor setup without a profile name; implementation error");
                 }
 
-                // WARNING: have to read the enumeration or it won't run (yield return)
-                List<StatusReportItem> results = new List<StatusReportItem>(
-                    EnumerateMonitorSetupFiles(InstallFile));
+                // create template for combined monitor setup
+                MonitorSetupTemplate combinedTemplate = CreateCombinedTemplate();
+
+                // gather all the results into a list to enumerate the yield returns
+                List<StatusReportItem> results =
+                    new List<StatusReportItem>(EnumerateMonitorSetupFiles(InstallFile, combinedTemplate));
+                if (!_parent.GenerateCombined)
+                {
+                    // add the same tests for separate monitor setup
+                    results.AddRange(EnumerateMonitorSetupFiles(InstallFile, CreateSeparateTemplate()));
+                }
+
+                // now scan results
                 foreach (StatusReportItem item in results)
                 {
                     if (item.Severity >= StatusReportItem.SeverityCode.Error)
@@ -321,6 +556,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                     // REVISIT we should have simulated first to gather warnings and errors so we can show a danger prompt
                 }
+
+                _parent.Combined.Save(combinedTemplate.ProfileName, _localViewports);
 
                 callbacks.Success(
                     "Monitor setup generation successful",
@@ -356,7 +593,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             {
                 yield return new StatusReportItem
                 {
-                    Status = "You must save the profile before you can use Monitor Setup, because it uses the profile name as the name of the monitor setup",
+                    Status =
+                        "You must save the profile before you can use Monitor Setup, because it uses the profile name as the name of the monitor setup",
                     Recommendation = "Save the profile at least once before configuring Monitor Setup",
                     Link = StatusReportItem.ProfileEditor,
                     Severity = StatusReportItem.SeverityCode.Error
@@ -409,21 +647,25 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                         Recommendation =
                             "Add an Additional Viewports interface or configure the viewport extent not to require patches",
                         Link = StatusReportItem.ProfileEditor,
-                        Severity = StatusReportItem.SeverityCode.Error
+                        Severity = StatusReportItem.SeverityCode.Error,
+                        Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                     };
                 }
             }
 
-            // calculate monitor config
-            foreach (StatusReportItem item in UpdateMonitorSetup())
+            bool updated = true;
+            bool hasFile = false;
+
+            // calculate shared monitor config
+            // and see if it is up to date in all locations
+            MonitorSetupTemplate combinedTemplate = CreateCombinedTemplate();
+            string monitorSetupName = combinedTemplate.MonitorSetupName;
+            foreach (StatusReportItem item in UpdateMonitorSetupVerbose(combinedTemplate))
             {
                 yield return item;
             }
 
-            // see if it is up to date in all locations
-            bool updated = true;
-            bool hasFile = false;
-            foreach (StatusReportItem item in EnumerateMonitorSetupFiles(CheckSetupFile))
+            foreach (StatusReportItem item in EnumerateMonitorSetupFiles(CheckSetupFile, combinedTemplate))
             {
                 if (!item.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
                 {
@@ -432,6 +674,29 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
                 hasFile = true;
                 yield return item;
+            }
+
+            // also calculate separate config, if applicable
+            // and see if it is up to date in all locations
+            if (!_parent.GenerateCombined)
+            {
+                MonitorSetupTemplate separateTemplate = CreateSeparateTemplate();
+                monitorSetupName = separateTemplate.MonitorSetupName;
+                foreach (StatusReportItem item in UpdateMonitorSetup(separateTemplate))
+                {
+                    yield return item;
+                }
+
+                foreach (StatusReportItem item in EnumerateMonitorSetupFiles(CheckSetupFile, separateTemplate))
+                {
+                    if (!item.Flags.HasFlag(StatusReportItem.StatusFlags.ConfigurationUpToDate))
+                    {
+                        updated = false;
+                    }
+
+                    hasFile = true;
+                    yield return item;
+                }
             }
 
             // XXX check if monitor setup selected in DCS (should be a gentle message but error)
@@ -452,19 +717,36 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 {
                     Status = "This version of Helios does not select the monitor setup in DCS directly",
                     Recommendation =
-                        $"Using DCS, please set 'Monitors' in the 'System' options to '{GenerateShortName()}'",
+                        $"Using DCS, please set 'Monitors' in the 'System' options to '{monitorSetupName}'",
                     Severity = StatusReportItem.SeverityCode.Info,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
+                if (_parent.GenerateCombined)
+                {
+                    yield break;
+                }
+
                 yield return new StatusReportItem
                 {
-                    Status = "This version of Helios generates a separate monitor setup file for each profile",
+                    Status = "This profile requires a specific monitor setup file",
                     Recommendation =
-                        $"You will need to switch 'Monitors' in DCS when you switch Helios Profile",
+                        "You will need to switch 'Monitors' in DCS when you switch Helios Profile",
                     Severity = StatusReportItem.SeverityCode.Info,
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
                 };
             }
         }
+
+        private MonitorSetupTemplate CreateCombinedTemplate() =>
+            new MonitorSetupTemplate(
+                _parent.CombinedMonitorSetupName,
+                _parent.CurrentProfileName,
+                true);
+
+        private MonitorSetupTemplate CreateSeparateTemplate() =>
+            new MonitorSetupTemplate(
+                _parent.CombinedMonitorSetupName,
+                _parent.CurrentProfileName,
+                false);
     }
 }

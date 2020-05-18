@@ -4,476 +4,621 @@
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
                                  xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS;assembly=Helios"
                                  xmlns:heliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
-                                 x:Name="MonitorSetupWindow" Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
+                                 xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
+                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                 xmlns:windows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
+                                 mc:Ignorable="d"
+                                 d:DesignHeight="800" d:DesignWidth="800"
+                                 d:DataContext="{d:DesignInstance Type=dcs:MonitorSetupViewModel, IsDesignTimeCreatable=False}"
+                                 x:Name="MonitorSetupWindow"
+                                 Height="Auto" Width="Auto"
+                                 Background="{StaticResource ToolBackground}"
+                                 Padding="5">
     <FrameworkElement.Resources>
-        <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.UpToDate}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="OutOfDateStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="MonitorSetupAllowedStyle" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="UIElement.Visibility" Value="Visible"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.ResetMonitorsRequired}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="ResetMonitorsRequiredStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.ResetMonitorsRequired}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="ProfileSaveRequiredStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.ProfileSaveRequired}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="IsMainStyle" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Data.Main}" Value="True"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="IsUserInterfaceStyle" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Data.UserInterface}" Value="True"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
-            <Setter Property="Margin" Value="0,0,0,12"/>
-        </Style>
-        <Style TargetType="{x:Type CheckBox}" x:Key="AircraftCheckbox">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Border"  
-                                BorderBrush="Transparent" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                ToolTipService.ShowOnDisabled="True">
-                            <!-- these paths are from free for commercial use, no attribution required icons -->
-                            <Canvas Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <Canvas>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources />
+            </ResourceDictionary.MergedDictionaries>
+
+            <windows:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
+
+            <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.UpToDate}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="OutOfDateStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.OutOfDate}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ResetMonitorsRequiredStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}"
+                                       Value="{x:Static util:StatusCodes.ResetMonitorsRequired}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ProfileSaveRequiredStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}"
+                                       Value="{x:Static util:StatusCodes.ProfileSaveRequired}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Hidden" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="{x:Static util:StatusCodes.NoLocations}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="IsMainStyle" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="UIElement.Visibility" Value="Hidden" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=Data.Main}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="IsUserInterfaceStyle" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="UIElement.Visibility" Value="Hidden" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=Data.UserInterface}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="MonitorLayoutGroup" TargetType="{x:Type Control}" BasedOn="{StaticResource BasicGroup}">
+                <Setter Property="UIElement.Visibility" Value="Visible" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}"
+                                       Value="{x:Static util:StatusCodes.ResetMonitorsRequired}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="HideIfNotSavedStyle" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}"
+                                       Value="{x:Static util:StatusCodes.ProfileSaveRequired}" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="{x:Type CheckBox}" x:Key="AircraftCheckbox">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type CheckBox}">
+                            <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Border"
+                                    BorderBrush="Transparent" Background="Transparent" VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <!-- these paths are from free for commercial use, no attribution required icons -->
+                                <Canvas Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <Canvas.RenderTransform>
-                                        <MatrixTransform Matrix="0.05 0 0 0.05 -20 -10"/>
+                                        <ScaleTransform
+                                            ScaleX="{Binding Path=Data.IconScale, Source={StaticResource BindingProxy}}"
+                                            ScaleY="{Binding Path=Data.IconScale, Source={StaticResource BindingProxy}}" />
                                     </Canvas.RenderTransform>
-                                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="AircraftPath1" Fill="#FF231F20">
-                                        <Path.Data>
-                                            <PathGeometry Figures="m 428.31 410.87 14.94 -9.47 c 0.96 -0.61 2.06 -0.95 3.19 -1 l 19.21 -0.721 c 1.35 -0.05 2.65 -0.529 3.71 -1.359 l 116.7 -90.95 c 2.97 -2.3 3.33 -6.65 0.78 -9.41 l -10.9 -11.85 c -2.24 -2.42 -5.95 -2.761 -8.59 -0.771 L 417.4 398.23 c 0.46 2.05 0.7 4.17 0.7 6.35 v 5.76 z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
-                                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="AircraftPath2" Fill="#FF231F20">
-                                        <Path.Data>
-                                            <PathGeometry Figures="m 841.532 410.255 -25.372 3.729 c -1.94 0.293 -3.587 1.577 -4.336 3.396 l -29.88 72.825 c -1.904 4.658 -6.44 7.696 -11.469 7.696 H 574.686 c -0.606 -11.562 -9.787 -21.099 -21.626 -21.876 l -86.799 -5.699 -0.214 -2.981 c -0.499 -6.876 -6.483 -12.047 -13.36 -11.548 l -51.582 3.743 v -20.09 l 63.059 8.389 c 1.124 0.149 2.189 0.595 3.087 1.289 l 15.195 11.772 c 1.065 0.824 2.363 1.294 3.709 1.341 l 147.87 5.17 c 3.753 0.131 6.818 -2.971 6.641 -6.723 l -0.76 -16.075 c -0.156 -3.299 -2.787 -5.941 -6.085 -6.111 L 401.106 426.485 V 404.58 c 0 -6.927 -5.615 -12.543 -12.542 -12.543 -6.927 0 -12.543 5.616 -12.543 12.543 v 22.37 L 177.61 324.799 c -2.936 -1.512 -6.539 -0.551 -8.333 2.221 l -8.744 13.513 c -2.04 3.152 -0.952 7.376 2.358 9.15 l 130.404 69.906 c 1.188 0.637 2.545 0.885 3.88 0.707 l 19.054 -2.531 c 1.124 -0.148 2.269 0.003 3.316 0.439 l 56.474 23.53 v 19.628 l -54.941 3.987 c -6.877 0.499 -12.047 6.477 -11.548 13.353 l 0.977 13.51 -28.973 2.646 c -6.391 0.584 -12.397 3.288 -17.069 7.689 l -41.478 39.031 c -3.188 3.003 -6.833 5.464 -10.799 7.304 l -36.292 16.813 c -11.149 5.164 -19.38 15.093 -22.383 27.012 l -0.877 3.48 c -2.61 10.329 4.379 20.621 14.943 22.005 1.505 0.2 2.974 0.585 4.372 1.155 1.398 0.563 2.725 1.313 3.938 2.219 l 37.02 27.568 c 6.191 4.608 13.738 7.033 21.448 6.897 l 45.24 -0.802 -5.359 39.083 -9.467 0.243 c -3.337 0.06 -6.523 -1.443 -8.545 -4.087 l -18.181 -23.775 c -3.589 -4.694 -10.304 -5.591 -14.998 -2 -4.694 3.59 -5.589 10.305 -2 14.998 l 18.181 23.775 c 6.012 7.861 15.413 12.49 25.281 12.49 0.27 0 0.541 -0.003 0.811 -0.011 l 248.387 -6.38 c 5.907 -0.152 10.573 -5.063 10.421 -10.971 -0.149 -5.813 -4.909 -10.425 -10.69 -10.425 -0.093 0 -0.187 0.002 -0.28 0.004 l -48.353 1.242 8.496 -37.623 30.941 -0.549 c 12.34 -0.221 23.652 -6.947 29.729 -17.696 l 29.751 -52.576 c 4.052 -7.169 11.263 -11.983 19.43 -12.989 l 230.675 -28.346 c 5.278 -0.649 9.551 -4.586 10.628 -9.793 l 23.339 -112.956 c 0.778 -3.786 -2.438 -7.189 -6.262 -6.632 z m -496.166 143.647 20.186 -45.293 0.371 -0.835 c 0.899 -2.011 2.903 -3.31 5.107 -3.31 h 45.472 c 0.642 0 1.262 0.106 1.833 0.313 2.182 0.757 3.751 2.832 3.751 5.272 v 46.128 c 0 3.089 -2.503 5.585 -5.585 5.585 h -66.029 c -4.043 0.001 -6.754 -4.164 -5.106 -7.86 z m -70.101 55.024 c -1.627 2.631 -4.494 4.229 -7.575 4.229 h -20.251 c -5.364 0 -9.508 -4.693 -8.845 -10.015 l 4.85 -38.781 c 0.207 -1.669 0.892 -3.252 1.962 -4.551 l 32.062 -38.988 c 1.698 -2.054 4.216 -3.245 6.883 -3.245 h 48.596 c 6.398 0 10.713 6.548 8.181 12.425 l -16.841 39.131 c -1.27 2.96 -4.044 5 -7.247 5.343 l -17.568 1.848 c -2.746 0.285 -5.2 1.833 -6.647 4.173 z m 173.508 80.901 -158.904 4.082 8.811 -39.02 155.261 -2.753 z m 29.548 -144.705 -13.509 15.62 c -0.556 0.649 -1.37 1.021 -2.225 1.021 h -20.529 c -1.59 0 -2.896 -1.255 -2.946 -2.846 l -1.462 -44.102 -0.242 -7.304 c -0.057 -1.669 1.277 -3.046 2.939 -3.046 h 32.319 c 1.519 0 2.789 1.156 2.931 2.668 l 0.992 10.335 2.439 25.45 c 0.078 0.799 -0.178 1.598 -0.707 2.204 z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
+                                    <Canvas>
+                                        <Canvas.RenderTransform>
+                                            <MatrixTransform Matrix="0.05 0 0 0.05 -20 -10" />
+                                        </Canvas.RenderTransform>
+                                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                              Name="AircraftPath1" Fill="#FF231F20">
+                                            <Path.Data>
+                                                <PathGeometry
+                                                    Figures="m 428.31 410.87 14.94 -9.47 c 0.96 -0.61 2.06 -0.95 3.19 -1 l 19.21 -0.721 c 1.35 -0.05 2.65 -0.529 3.71 -1.359 l 116.7 -90.95 c 2.97 -2.3 3.33 -6.65 0.78 -9.41 l -10.9 -11.85 c -2.24 -2.42 -5.95 -2.761 -8.59 -0.771 L 417.4 398.23 c 0.46 2.05 0.7 4.17 0.7 6.35 v 5.76 z"
+                                                    FillRule="NonZero" />
+                                            </Path.Data>
+                                        </Path>
+                                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                              Name="AircraftPath2" Fill="#FF231F20">
+                                            <Path.Data>
+                                                <PathGeometry
+                                                    Figures="m 841.532 410.255 -25.372 3.729 c -1.94 0.293 -3.587 1.577 -4.336 3.396 l -29.88 72.825 c -1.904 4.658 -6.44 7.696 -11.469 7.696 H 574.686 c -0.606 -11.562 -9.787 -21.099 -21.626 -21.876 l -86.799 -5.699 -0.214 -2.981 c -0.499 -6.876 -6.483 -12.047 -13.36 -11.548 l -51.582 3.743 v -20.09 l 63.059 8.389 c 1.124 0.149 2.189 0.595 3.087 1.289 l 15.195 11.772 c 1.065 0.824 2.363 1.294 3.709 1.341 l 147.87 5.17 c 3.753 0.131 6.818 -2.971 6.641 -6.723 l -0.76 -16.075 c -0.156 -3.299 -2.787 -5.941 -6.085 -6.111 L 401.106 426.485 V 404.58 c 0 -6.927 -5.615 -12.543 -12.542 -12.543 -6.927 0 -12.543 5.616 -12.543 12.543 v 22.37 L 177.61 324.799 c -2.936 -1.512 -6.539 -0.551 -8.333 2.221 l -8.744 13.513 c -2.04 3.152 -0.952 7.376 2.358 9.15 l 130.404 69.906 c 1.188 0.637 2.545 0.885 3.88 0.707 l 19.054 -2.531 c 1.124 -0.148 2.269 0.003 3.316 0.439 l 56.474 23.53 v 19.628 l -54.941 3.987 c -6.877 0.499 -12.047 6.477 -11.548 13.353 l 0.977 13.51 -28.973 2.646 c -6.391 0.584 -12.397 3.288 -17.069 7.689 l -41.478 39.031 c -3.188 3.003 -6.833 5.464 -10.799 7.304 l -36.292 16.813 c -11.149 5.164 -19.38 15.093 -22.383 27.012 l -0.877 3.48 c -2.61 10.329 4.379 20.621 14.943 22.005 1.505 0.2 2.974 0.585 4.372 1.155 1.398 0.563 2.725 1.313 3.938 2.219 l 37.02 27.568 c 6.191 4.608 13.738 7.033 21.448 6.897 l 45.24 -0.802 -5.359 39.083 -9.467 0.243 c -3.337 0.06 -6.523 -1.443 -8.545 -4.087 l -18.181 -23.775 c -3.589 -4.694 -10.304 -5.591 -14.998 -2 -4.694 3.59 -5.589 10.305 -2 14.998 l 18.181 23.775 c 6.012 7.861 15.413 12.49 25.281 12.49 0.27 0 0.541 -0.003 0.811 -0.011 l 248.387 -6.38 c 5.907 -0.152 10.573 -5.063 10.421 -10.971 -0.149 -5.813 -4.909 -10.425 -10.69 -10.425 -0.093 0 -0.187 0.002 -0.28 0.004 l -48.353 1.242 8.496 -37.623 30.941 -0.549 c 12.34 -0.221 23.652 -6.947 29.729 -17.696 l 29.751 -52.576 c 4.052 -7.169 11.263 -11.983 19.43 -12.989 l 230.675 -28.346 c 5.278 -0.649 9.551 -4.586 10.628 -9.793 l 23.339 -112.956 c 0.778 -3.786 -2.438 -7.189 -6.262 -6.632 z m -496.166 143.647 20.186 -45.293 0.371 -0.835 c 0.899 -2.011 2.903 -3.31 5.107 -3.31 h 45.472 c 0.642 0 1.262 0.106 1.833 0.313 2.182 0.757 3.751 2.832 3.751 5.272 v 46.128 c 0 3.089 -2.503 5.585 -5.585 5.585 h -66.029 c -4.043 0.001 -6.754 -4.164 -5.106 -7.86 z m -70.101 55.024 c -1.627 2.631 -4.494 4.229 -7.575 4.229 h -20.251 c -5.364 0 -9.508 -4.693 -8.845 -10.015 l 4.85 -38.781 c 0.207 -1.669 0.892 -3.252 1.962 -4.551 l 32.062 -38.988 c 1.698 -2.054 4.216 -3.245 6.883 -3.245 h 48.596 c 6.398 0 10.713 6.548 8.181 12.425 l -16.841 39.131 c -1.27 2.96 -4.044 5 -7.247 5.343 l -17.568 1.848 c -2.746 0.285 -5.2 1.833 -6.647 4.173 z m 173.508 80.901 -158.904 4.082 8.811 -39.02 155.261 -2.753 z m 29.548 -144.705 -13.509 15.62 c -0.556 0.649 -1.37 1.021 -2.225 1.021 h -20.529 c -1.59 0 -2.896 -1.255 -2.946 -2.846 l -1.462 -44.102 -0.242 -7.304 c -0.057 -1.669 1.277 -3.046 2.939 -3.046 h 32.319 c 1.519 0 2.789 1.156 2.931 2.668 l 0.992 10.335 2.439 25.45 c 0.078 0.799 -0.178 1.598 -0.707 2.204 z"
+                                                    FillRule="NonZero" />
+                                            </Path.Data>
+                                        </Path>
+                                    </Canvas>
+                                    <Canvas>
+                                        <Canvas.RenderTransform>
+                                            <MatrixTransform Matrix="0.07 0 0 0.07 -30 -45" />
+                                        </Canvas.RenderTransform>
+                                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                              Name="AircraftPath3" Fill="#FF231F20">
+                                            <Path.Data>
+                                                <PathGeometry
+                                                    Figures="m 343.618 423.568 h -0.009 c -21.758 0 -42.784 7.078 -59.999 19.938 0.516 0.629 0.976 1.314 1.398 2.057 1.276 1.707 11.705 14.436 39.283 14.436 2.262 0 4.618 -0.085 6.993 -0.264 16.051 -1.154 37.095 -7.631 61.332 -18.819 -0.423 -0.301 -0.845 -0.601 -1.258 -0.912 l -1.755 -1.295 c -13.32 -9.827 -29.437 -15.141 -45.985 -15.141 z"
+                                                    FillRule="NonZero" />
+                                            </Path.Data>
+                                        </Path>
+                                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                              Name="AircraftPath4" Fill="#FF231F20">
+                                            <Path.Data>
+                                                <PathGeometry
+                                                    Figures="m 402.819 585.094 c -6.101 -1.736 -11.695 -5.021 -16.201 -9.574 l -1.605 -1.614 c -0.723 -0.723 -1.361 -1.502 -1.915 -2.318 l -0.366 -0.009 c -5.144 -0.17 -9.772 2.205 -12.71 5.978 -5.266 0.263 -10.259 2.459 -13.986 6.224 l -1.614 1.624 c -0.629 0.638 -0.629 1.661 0 2.3 l 1.614 1.623 c 3.548 3.586 8.251 5.764 13.245 6.195 2.666 4.074 7.209 6.843 12.457 7.012 l 230.254 7.397 c 4.703 0.15 8.636 -3.538 8.786 -8.232 l 0.065 -1.897 -197.692 -6.354 c -7.631 -0.244 -14.841 -3.267 -20.332 -8.355 z"
+                                                    FillRule="NonZero" />
+                                            </Path.Data>
+                                        </Path>
+                                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                              Name="AircraftPath5" Fill="#FF231F20">
+                                            <Path.Data>
+                                                <PathGeometry
+                                                    Figures="M 654.916 553.942 424.66 546.543 c -5.145 -0.166 -9.771 2.208 -12.71 5.979 -5.267 0.267 -10.264 2.463 -13.991 6.229 l -1.609 1.624 c -0.629 0.637 -0.629 1.659 0 2.296 l 1.609 1.624 c 3.552 3.588 8.254 5.763 13.245 6.192 2.672 4.081 7.215 6.846 12.461 7.014 l 230.257 7.4 c 4.7 0.15 8.632 -3.537 8.783 -8.237 l 0.448 -13.939 c 0.151 -4.7 -3.537 -8.631 -8.237 -8.783 z"
+                                                    FillRule="NonZero" />
+                                            </Path.Data>
+                                        </Path>
+                                        <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                              Name="AircraftPath6" Fill="#FF231F20">
+                                            <Path.Data>
+                                                <PathGeometry
+                                                    Figures="m 846.277 524.287 c -2.789 -2.818 -6.482 -4.525 -10.402 -4.863 -2.099 -3.205 -5.667 -5.376 -9.787 -5.509 l -21.936 -0.705 c -2.038 -4.188 -5.655 -7.537 -10.242 -9.164 l -47.94 -17.005 c -6.85 -2.43 -10.595 -9.8 -8.521 -16.766 l 19.216 -64.511 c 2.333 -7.831 -3.534 -15.7 -11.705 -15.7 h -25.144 c -8.835 0 -17.208 3.947 -22.831 10.763 l -49.949 60.548 c -6.183 7.495 -15.65 11.478 -25.331 10.656 l -70.202 -5.951 0.102 -3.097 c 0.151 -4.623 -3.473 -8.493 -8.096 -8.645 -4.623 -0.151 -8.493 3.474 -8.644 8.097 l -0.073 2.228 -47.4 -4.019 0.271 -8.264 c 0.151 -4.622 -3.473 -8.492 -8.096 -8.644 -4.622 -0.151 -8.492 3.473 -8.643 8.096 l -0.243 7.395 -36.497 -3.095 c -8.393 -0.711 -16.585 -2.686 -24.324 -5.805 -21.76 10.827 -52.01 23.492 -77.434 25.327 -45.525 3.285 -60.897 -21.53 -60.897 -21.53 l -35.527 6.235 c -17.665 3.102 -34.985 7.925 -51.71 14.401 l -25.934 10.043 c -8.222 3.184 -8.405 14.751 -0.288 18.193 l 36.033 15.281 c 7.304 3.098 13.1 8.938 16.143 16.264 4.526 10.895 14.969 18.171 26.758 18.642 l 33.148 1.326 -0.217 6.639 c -0.151 4.623 3.473 8.492 8.096 8.644 4.623 0.151 8.493 -3.474 8.644 -8.096 l 0.213 -6.519 42.875 1.714 -0.393 11.991 c -0.151 4.623 3.473 8.493 8.096 8.643 4.623 0.151 8.493 -3.473 8.644 -8.096 l 0.389 -11.87 22.607 0.904 c 3.682 -1.693 7.696 -2.668 11.862 -2.831 0.833 -2.363 2.164 -4.588 4.031 -6.477 l 1.62 -1.636 c 4.915 -4.967 11.084 -8.4 17.813 -9.986 5.528 -4.48 12.425 -6.959 19.718 -6.959 0.339 0 0.679 0.006 1.02 0.017 l 230.255 7.399 c 13.486 0.434 24.106 11.758 23.674 25.243 l -0.201 6.228 c 16.011 -1.416 31.776 -5.115 46.805 -11.021 19.641 -7.717 40.555 -11.679 61.657 -11.679 h 0.482 c 6.777 0 12.677 -3.724 15.79 -9.23 l 21.67 0.696 c 4.041 0.13 7.674 -1.734 9.982 -4.696 4.137 -0.21 8.062 -1.934 10.989 -4.893 l 1.264 -1.275 c 0.494 -0.5 0.494 -1.304 0 -1.803 z"
+                                                    FillRule="NonZero" />
+                                            </Path.Data>
+                                        </Path>
+                                    </Canvas>
                                 </Canvas>
-                                <Canvas>
-                                    <Canvas.RenderTransform>
-                                        <MatrixTransform Matrix="0.07 0 0 0.07 -30 -45"/>
-                                    </Canvas.RenderTransform>
-                                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="AircraftPath3" Fill="#FF231F20">
-                                        <Path.Data>
-                                            <PathGeometry Figures="m 343.618 423.568 h -0.009 c -21.758 0 -42.784 7.078 -59.999 19.938 0.516 0.629 0.976 1.314 1.398 2.057 1.276 1.707 11.705 14.436 39.283 14.436 2.262 0 4.618 -0.085 6.993 -0.264 16.051 -1.154 37.095 -7.631 61.332 -18.819 -0.423 -0.301 -0.845 -0.601 -1.258 -0.912 l -1.755 -1.295 c -13.32 -9.827 -29.437 -15.141 -45.985 -15.141 z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
-                                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="AircraftPath4" Fill="#FF231F20">
-                                        <Path.Data>
-                                            <PathGeometry Figures="m 402.819 585.094 c -6.101 -1.736 -11.695 -5.021 -16.201 -9.574 l -1.605 -1.614 c -0.723 -0.723 -1.361 -1.502 -1.915 -2.318 l -0.366 -0.009 c -5.144 -0.17 -9.772 2.205 -12.71 5.978 -5.266 0.263 -10.259 2.459 -13.986 6.224 l -1.614 1.624 c -0.629 0.638 -0.629 1.661 0 2.3 l 1.614 1.623 c 3.548 3.586 8.251 5.764 13.245 6.195 2.666 4.074 7.209 6.843 12.457 7.012 l 230.254 7.397 c 4.703 0.15 8.636 -3.538 8.786 -8.232 l 0.065 -1.897 -197.692 -6.354 c -7.631 -0.244 -14.841 -3.267 -20.332 -8.355 z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
-                                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="AircraftPath5" Fill="#FF231F20">
-                                        <Path.Data>
-                                            <PathGeometry Figures="M 654.916 553.942 424.66 546.543 c -5.145 -0.166 -9.771 2.208 -12.71 5.979 -5.267 0.267 -10.264 2.463 -13.991 6.229 l -1.609 1.624 c -0.629 0.637 -0.629 1.659 0 2.296 l 1.609 1.624 c 3.552 3.588 8.254 5.763 13.245 6.192 2.672 4.081 7.215 6.846 12.461 7.014 l 230.257 7.4 c 4.7 0.15 8.632 -3.537 8.783 -8.237 l 0.448 -13.939 c 0.151 -4.7 -3.537 -8.631 -8.237 -8.783 z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
-                                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="AircraftPath6" Fill="#FF231F20">
-                                        <Path.Data>
-                                            <PathGeometry Figures="m 846.277 524.287 c -2.789 -2.818 -6.482 -4.525 -10.402 -4.863 -2.099 -3.205 -5.667 -5.376 -9.787 -5.509 l -21.936 -0.705 c -2.038 -4.188 -5.655 -7.537 -10.242 -9.164 l -47.94 -17.005 c -6.85 -2.43 -10.595 -9.8 -8.521 -16.766 l 19.216 -64.511 c 2.333 -7.831 -3.534 -15.7 -11.705 -15.7 h -25.144 c -8.835 0 -17.208 3.947 -22.831 10.763 l -49.949 60.548 c -6.183 7.495 -15.65 11.478 -25.331 10.656 l -70.202 -5.951 0.102 -3.097 c 0.151 -4.623 -3.473 -8.493 -8.096 -8.645 -4.623 -0.151 -8.493 3.474 -8.644 8.097 l -0.073 2.228 -47.4 -4.019 0.271 -8.264 c 0.151 -4.622 -3.473 -8.492 -8.096 -8.644 -4.622 -0.151 -8.492 3.473 -8.643 8.096 l -0.243 7.395 -36.497 -3.095 c -8.393 -0.711 -16.585 -2.686 -24.324 -5.805 -21.76 10.827 -52.01 23.492 -77.434 25.327 -45.525 3.285 -60.897 -21.53 -60.897 -21.53 l -35.527 6.235 c -17.665 3.102 -34.985 7.925 -51.71 14.401 l -25.934 10.043 c -8.222 3.184 -8.405 14.751 -0.288 18.193 l 36.033 15.281 c 7.304 3.098 13.1 8.938 16.143 16.264 4.526 10.895 14.969 18.171 26.758 18.642 l 33.148 1.326 -0.217 6.639 c -0.151 4.623 3.473 8.492 8.096 8.644 4.623 0.151 8.493 -3.474 8.644 -8.096 l 0.213 -6.519 42.875 1.714 -0.393 11.991 c -0.151 4.623 3.473 8.493 8.096 8.643 4.623 0.151 8.493 -3.473 8.644 -8.096 l 0.389 -11.87 22.607 0.904 c 3.682 -1.693 7.696 -2.668 11.862 -2.831 0.833 -2.363 2.164 -4.588 4.031 -6.477 l 1.62 -1.636 c 4.915 -4.967 11.084 -8.4 17.813 -9.986 5.528 -4.48 12.425 -6.959 19.718 -6.959 0.339 0 0.679 0.006 1.02 0.017 l 230.255 7.399 c 13.486 0.434 24.106 11.758 23.674 25.243 l -0.201 6.228 c 16.011 -1.416 31.776 -5.115 46.805 -11.021 19.641 -7.717 40.555 -11.679 61.657 -11.679 h 0.482 c 6.777 0 12.677 -3.724 15.79 -9.23 l 21.67 0.696 c 4.041 0.13 7.674 -1.734 9.982 -4.696 4.137 -0.21 8.062 -1.934 10.989 -4.893 l 1.264 -1.275 c 0.494 -0.5 0.494 -1.304 0 -1.803 z" FillRule="NonZero"/>
-                                        </Path.Data>
-                                    </Path>
-                                </Canvas>
-                            </Canvas>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="AircraftPath1" Property="Fill" Value="#FF231F20"/>
-                                <Setter TargetName="AircraftPath2" Property="Fill" Value="#FF231F20"/>
-                                <Setter TargetName="AircraftPath3" Property="Fill" Value="#FF231F20"/>
-                                <Setter TargetName="AircraftPath4" Property="Fill" Value="#FF231F20"/>
-                                <Setter TargetName="AircraftPath5" Property="Fill" Value="#FF231F20"/>
-                                <Setter TargetName="AircraftPath6" Property="Fill" Value="#FF231F20"/>
-                                <Setter TargetName="Border" Property="ToolTip" Value="This monitor is used for DCS 3D Views"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter TargetName="AircraftPath1" Property="Fill" Value="#20231F20"/>
-                                <Setter TargetName="AircraftPath2" Property="Fill" Value="#20231F20"/>
-                                <Setter TargetName="AircraftPath3" Property="Fill" Value="#20231F20"/>
-                                <Setter TargetName="AircraftPath4" Property="Fill" Value="#20231F20"/>
-                                <Setter TargetName="AircraftPath5" Property="Fill" Value="#20231F20"/>
-                                <Setter TargetName="AircraftPath6" Property="Fill" Value="#20231F20"/>
-                                <Setter TargetName="Border" Property="ToolTip" Value="Click here to use this monitor for DCS 3D Views"/>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="AircraftPath1" Property="Fill" Value="#FF231F20" />
+                                    <Setter TargetName="AircraftPath2" Property="Fill" Value="#FF231F20" />
+                                    <Setter TargetName="AircraftPath3" Property="Fill" Value="#FF231F20" />
+                                    <Setter TargetName="AircraftPath4" Property="Fill" Value="#FF231F20" />
+                                    <Setter TargetName="AircraftPath5" Property="Fill" Value="#FF231F20" />
+                                    <Setter TargetName="AircraftPath6" Property="Fill" Value="#FF231F20" />
+                                    <Setter TargetName="Border" Property="ToolTip"
+                                            Value="This monitor is used for DCS 3D Views" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsChecked" Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="AircraftPath1" Property="Fill" Value="#20231F20" />
+                                    <Setter TargetName="AircraftPath2" Property="Fill" Value="#20231F20" />
+                                    <Setter TargetName="AircraftPath3" Property="Fill" Value="#20231F20" />
+                                    <Setter TargetName="AircraftPath4" Property="Fill" Value="#20231F20" />
+                                    <Setter TargetName="AircraftPath5" Property="Fill" Value="#20231F20" />
+                                    <Setter TargetName="AircraftPath6" Property="Fill" Value="#20231F20" />
+                                    <Setter TargetName="Border" Property="ToolTip"
+                                            Value="Click here to use this monitor for DCS 3D Views" />
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style TargetType="{x:Type CheckBox}" x:Key="UserInterfaceCheckbox">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" BorderBrush="Transparent" Background="Transparent" Name="Border" ToolTipService.ShowOnDisabled="True">
-                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36" FontWeight="UltraBold" Content="&#xE71D;"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="AppIcon" Property="Foreground" Value="#FF231F20"/>
-                                <Setter TargetName="Border" Property="ToolTip" Value="This monitor is used for the DCS User Interface and Menus"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsChecked" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter TargetName="AppIcon" Property="Foreground" Value="#20231F20"/>
-                                <Setter TargetName="Border" Property="ToolTip" Value="Click here to use this monitor for DCS User Interface and Menus"/>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style TargetType="{x:Type CheckBox}" x:Key="UserInterfaceCheckbox">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type CheckBox}">
+                            <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
+                                    BorderBrush="Transparent" Background="Transparent" Name="Border"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"
+                                       Name="AppIcon" FontFamily="Segoe MDL2 Assets" FontSize="36"
+                                       FontWeight="UltraBold" Content="&#xE71D;">
+                                    <Label.RenderTransform>
+                                        <ScaleTransform
+                                            CenterX="14"
+                                            CenterY="14"
+                                            ScaleX="{Binding PresentationTraceSources.TraceLevel=High, Path=Data.IconScale, Source={StaticResource BindingProxy}}"
+                                            ScaleY="{Binding PresentationTraceSources.TraceLevel=High, Path=Data.IconScale, Source={StaticResource BindingProxy}}" />
+                                    </Label.RenderTransform>
+                                </Label>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="AppIcon" Property="Foreground" Value="#FF231F20" />
+                                    <Setter TargetName="Border" Property="ToolTip"
+                                            Value="This monitor is used for the DCS User Interface and Menus" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsChecked" Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="AppIcon" Property="Foreground" Value="#20231F20" />
+                                    <Setter TargetName="Border" Property="ToolTip"
+                                            Value="Click here to use this monitor for DCS User Interface and Menus" />
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="MonitorIncludedCheckbox" TargetType="CheckBox">
-            <Setter Property="IsChecked" Value="{Binding Path=Data.Included}"/>
-            <Setter Property="IsEnabled" Value="{Binding CanBeExcluded}"/>
-            <Setter Property="ToolTip">
-                <Setter.Value>
-                    <TextBlock Text="{Binding Path=IncludedNarrative}"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ToolTipService.ShowOnDisabled" Value="true"/>
-            <Setter Property="Panel.ZIndex" Value="10"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Margin" Value="6"/>
-        </Style>
+            <Style x:Key="MonitorIncludedCheckbox" TargetType="CheckBox">
+                <Setter Property="IsChecked" Value="{Binding Path=Data.Included}" />
+                <Setter Property="IsEnabled" Value="{Binding CanBeExcluded}" />
+                <Setter Property="ToolTip">
+                    <Setter.Value>
+                        <TextBlock Text="{Binding Path=IncludedNarrative}" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ToolTipService.ShowOnDisabled" Value="true" />
+                <Setter Property="Panel.ZIndex" Value="10" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Margin" Value="6" />
+            </Style>
 
-        <Style x:Key="DimIfNotIncluded" TargetType="{x:Type Shape}">
-            <Setter Property="Stroke" Value="Black"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Data.Included}" Value="False"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Stroke" Value="LightGray"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="DimIfNotIncluded" TargetType="{x:Type Shape}">
+                <Setter Property="Stroke" Value="Black" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=Data.Included}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Stroke" Value="LightGray" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="ResolutionFrame" TargetType="Rectangle">
-            <Setter Property="StrokeDashArray" Value="3" />
-            <Setter Property="Stroke" Value="Green" />
-        </Style>
+            <Style x:Key="ResolutionFrame" TargetType="Rectangle">
+                <Setter Property="StrokeDashArray" Value="3" />
+                <Setter Property="Stroke" Value="Green" />
+            </Style>
+        </ResourceDictionary>
     </FrameworkElement.Resources>
     <StackPanel>
-        <heliosDcs:InstallationLocationsGroup/>
-        <GroupBox Header="DCS Monitor Setup" Style="{StaticResource BasicGroup}">
+        <heliosDcs:InstallationLocationsGroup />
+        <GroupBox Header="Monitor Layout" Style="{StaticResource MonitorLayoutGroup}">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Disabled">
-                <Grid Style="{StaticResource MonitorSetupAllowedStyle}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="120"/>
-                        <!-- primary labels -->
-                        <ColumnDefinition Width="*"/>
-                        <!-- primary controls and long messages-->
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="In-Game View" MinHeight="24"/>
-                    
-                    <!-- monitors -->
-                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" 
-                                  ItemsSource="{Binding Monitors}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
-                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="SkyBlue" Style="{StaticResource IsMainStyle}"/>
-                                    <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
-                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" IsChecked="{Binding Path=Data.Main}" IsEnabled="{Binding CanBeRemovedFromMain}" Style="{StaticResource AircraftCheckbox}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- viewports -->
-                    <ItemsControl Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Viewports}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas IsHitTestVisible="False" Opacity="0.2" Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Red" Fill="Red"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- DCS resolution -->
-                    <Canvas Grid.Row="1" Grid.Column="1">
-                        <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0" Width="{Binding ScaledResolutionWidth}" Height="{Binding ScaledResolutionHeight}" Style="{StaticResource ResolutionFrame}"/>
-                    </Canvas>
-
-                    <!-- DCS main view -->
-                    <Canvas Panel.ZIndex="-1"  Grid.Row="1" Grid.Column="1">
-                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}" Canvas.Top="{Binding Path=ScaledMain.Top}" Width="{Binding Path=ScaledMain.Width}" Height="{Binding Path=ScaledMain.Height}" Stroke="SkyBlue">
-                            <Rectangle.Fill>
-                                <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                                    <VisualBrush.Visual>
-                                        <Grid Background="Transparent">
-                                            <Path Data="M 0 0 L 10 10" Stroke="SkyBlue"/>
-                                        </Grid>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </Canvas>
-
-                    <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Content="Menus / Loading" MinHeight="24"/>
-                    
-                    <!-- monitors2 -->
-                    <ItemsControl Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Rectangle Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Style="{StaticResource DimIfNotIncluded}"/>
-                                    <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Stroke="Transparent" Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}"/>
-                                    <CheckBox Style="{StaticResource MonitorIncludedCheckbox}"/>
-                                    <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}" Panel.ZIndex="9" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Path=Data.UserInterface}" IsEnabled="{Binding CanBeRemovedFromUserInterface}" Style="{StaticResource UserInterfaceCheckbox}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <!-- DCS resolution -->
-                    <Canvas Grid.Row="3" Grid.Column="1">
-                        <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0" Width="{Binding ScaledResolutionWidth}" Height="{Binding ScaledResolutionHeight}"
-                                   Style="{StaticResource ResolutionFrame}" />
-                    </Canvas>
-
-                    <!-- DCS UI view -->
-                    <Canvas Panel.ZIndex="-1"  Grid.Row="3" Grid.Column="1">
-                        <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}" Canvas.Top="{Binding Path=ScaledUserInterface.Top}" Width="{Binding Path=ScaledUserInterface.Width}" Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
-                            <Rectangle.Fill>
-                                <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute" Viewbox="0,0,10,10" ViewboxUnits="Absolute">
-                                    <VisualBrush.Visual>
-                                        <Grid Background="Transparent">
-                                            <Path Data="M 0 0 L 10 10" Stroke="LightGray"/>
-                                        </Grid>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </Canvas>
-
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="120" />
+                    <!-- primary labels -->
+                    <ColumnDefinition Width="*" />
+                    <!-- primary controls and long messages-->
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Content="In-Game View" />
+                    <Slider HorizontalAlignment="Right" Margin="6" Orientation="Vertical" Value="{Binding Scale}"
+                            Minimum="0.04" Maximum="0.18" LargeChange="0.01" SmallChange="0.005" />
                 </Grid>
+                <ScrollViewer Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <!-- monitors -->
+                        <ItemsControl HorizontalAlignment="Left"
+                                      ItemsSource="{Binding Monitors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Rectangle Width="{Binding Path=Rect.Width}"
+                                                   Height="{Binding Path=Rect.Height}"
+                                                   Style="{StaticResource DimIfNotIncluded}" />
+                                        <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}"
+                                                   Height="{Binding Path=Rect.Height}" Stroke="Transparent"
+                                                   Fill="SkyBlue" Style="{StaticResource IsMainStyle}" />
+                                        <CheckBox Style="{StaticResource MonitorIncludedCheckbox}" />
+                                        <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}"
+                                                  Panel.ZIndex="9" IsChecked="{Binding Path=Data.Main}"
+                                                  IsEnabled="{Binding CanBeRemovedFromMain}"
+                                                  Style="{StaticResource AircraftCheckbox}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- viewports -->
+                        <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Viewports}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas IsHitTestVisible="False" Opacity="0.2" Width="{Binding ScaledTotalWidth}"
+                                            Height="{Binding ScaledTotalHeight}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Rectangle Width="{Binding Path=Rect.Width}"
+                                                   Height="{Binding Path=Rect.Height}" Stroke="Red" Fill="Red" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- DCS resolution -->
+                        <Canvas>
+                            <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0"
+                                       Width="{Binding ScaledResolutionWidth}"
+                                       Height="{Binding ScaledResolutionHeight}"
+                                       Style="{StaticResource ResolutionFrame}" />
+                        </Canvas>
+
+                        <!-- DCS main view -->
+                        <Canvas Panel.ZIndex="-1">
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledMain.Left}"
+                                       Canvas.Top="{Binding Path=ScaledMain.Top}"
+                                       Width="{Binding Path=ScaledMain.Width}"
+                                       Height="{Binding Path=ScaledMain.Height}" Stroke="SkyBlue">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
+                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="SkyBlue" />
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+                    </Grid>
                 </ScrollViewer>
-                <Grid Grid.Row="1">
+                <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}"
+                       Content="Menus / Loading" />
+
+                <ScrollViewer Grid.Row="3" Grid.Column="1" HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <!-- monitors2 -->
+                        <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Monitors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding ScaledTotalWidth}" Height="{Binding ScaledTotalHeight}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Rectangle Width="{Binding Path=Rect.Width}"
+                                                   Height="{Binding Path=Rect.Height}"
+                                                   Style="{StaticResource DimIfNotIncluded}" />
+                                        <Rectangle IsHitTestVisible="False" Width="{Binding Path=Rect.Width}"
+                                                   Height="{Binding Path=Rect.Height}" Stroke="Transparent"
+                                                   Fill="LightGray" Style="{StaticResource IsUserInterfaceStyle}" />
+                                        <CheckBox Style="{StaticResource MonitorIncludedCheckbox}" />
+                                        <CheckBox Width="{Binding Path=Rect.Width}" Height="{Binding Path=Rect.Height}"
+                                                  Panel.ZIndex="9" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  IsChecked="{Binding Path=Data.UserInterface}"
+                                                  IsEnabled="{Binding CanBeRemovedFromUserInterface}"
+                                                  Style="{StaticResource UserInterfaceCheckbox}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- DCS resolution -->
+                        <Canvas>
+                            <Rectangle Panel.ZIndex="8" Canvas.Left="0" Canvas.Top="0"
+                                       Width="{Binding ScaledResolutionWidth}"
+                                       Height="{Binding ScaledResolutionHeight}"
+                                       Style="{StaticResource ResolutionFrame}" />
+                        </Canvas>
+
+                        <!-- DCS UI view -->
+                        <Canvas Panel.ZIndex="-1">
+                            <Rectangle IsHitTestVisible="False" Canvas.Left="{Binding Path=ScaledUserInterface.Left}"
+                                       Canvas.Top="{Binding Path=ScaledUserInterface.Top}"
+                                       Width="{Binding Path=ScaledUserInterface.Width}"
+                                       Height="{Binding Path=ScaledUserInterface.Height}" Stroke="LightGray">
+                                <Rectangle.Fill>
+                                    <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute"
+                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Grid Background="Transparent">
+                                                <Path Data="M 0 0 L 10 10" Stroke="LightGray" />
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+                    </Grid>
+                </ScrollViewer>
+                <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}" Content="Resolution" />
+                <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Rectangle Margin="0,6,3,0" Height="14" Width="40" VerticalAlignment="Center"
+                               Style="{StaticResource ResolutionFrame}" />
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="3" Content="=" />
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3"
+                           Content="{Binding Path=Data.Resolution.X}" />
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3" Content="x" />
+                    <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,3,3"
+                           Content="{Binding Path=Data.Resolution.Y}" />
+                </StackPanel>
+                <WrapPanel Grid.Row="6" Grid.Column="1" Orientation="Vertical">
+                    <TextBlock Style="{StaticResource Documentation}">Minimum resolution that must be selected in DCS Options.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
+                </WrapPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="DCS Monitor Setup File Output" Style="{StaticResource BasicGroup}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <WrapPanel Grid.Row="1" Style="{StaticResource HideIfNotSavedStyle}">
+                    <!-- wrapped only to use proper data context for "Status" in style -->
+                    <dcs:CombinedMonitorSetupControl DataContext="{Binding CombinedMonitorSetup}" />
+                </WrapPanel>
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <!-- primary labels -->
-                        <ColumnDefinition Width="Auto" MinWidth="120"/>
+                        <ColumnDefinition Width="Auto" MinWidth="120" />
                         <!-- primary controls and long messages-->
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Padding="5,0" Margin="0,10,0,0" Content="Resolution" MinHeight="24"/>
-                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=Data.Resolution.X}"/>
-                        <TextBlock VerticalAlignment="Center" Text="x"/>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Path=Data.Resolution.Y}"/>
-                    </StackPanel>
-                    <WrapPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
-                        <TextBlock Style="{StaticResource Documentation}">Minimum resolution that must be selected in DCS Options.</TextBlock>
-                        <!-- Style="{StaticResource MonitorSetupAllowedStyle}"-->
-                        <WrapPanel Orientation="Horizontal" Visibility="Collapsed">
-                            <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}" Text="This resolution is shown in the diagrams above as this rectangle: "/>
-                            <Rectangle Margin="0,6,0,0" Width="40" Height="12" VerticalAlignment="Center" Style="{StaticResource ResolutionFrame}"/>
-                        </WrapPanel>
-                        <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If this resolution is not available in DCS, you can choose any larger resolution.</TextBlock>
-                        <TextBlock Margin="0,6,0,0" Style="{StaticResource Documentation}">If you are technical or very brave, you can hack DCS options.lua to add this as a custom resolution.</TextBlock>
-                    </WrapPanel>
-
-                    <Label Grid.Row="4" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}"/>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
+                    <Label Grid.Row="1" Grid.Column="0" Content="Status" Style="{StaticResource InterfaceEditorLabel}" />
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource UpToDateStyle}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Monitor setup files are up to date.</TextBlock>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource OutOfDateStyle}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">Monitor setup files need to be reconfigured.</TextBlock>
-                        <Button Grid.Row="0" Grid.Column="1" Click="Configure_Click" Style="{StaticResource InterfaceEditorButton}">Configure</Button>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                                   Foreground="Red">
+                            Monitor setup files need to be reconfigured.
+                        </TextBlock>
+                        <Button Grid.Row="0" Grid.Column="1" Command="{Binding ConfigureCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                                Style="{StaticResource InterfaceEditorButton}">
+                            Configure
+                        </Button>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource ResetMonitorsRequiredStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource ResetMonitorsRequiredStyle}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must complete 'Reset Monitors' before configuring monitor setup.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                                   Foreground="Red">
+                            You must complete 'Reset Monitors' before configuring monitor setup.
+                        </TextBlock>
+                        <Button Grid.Row="0" Grid.Column="1" Command="windows:SharedCommands.ResetMonitors"
+                                Style="{StaticResource InterfaceEditorButton}">
+                            Reset Monitors
+                        </Button>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource ProfileSaveRequiredStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource ProfileSaveRequiredStyle}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must save the profile at least once before configuring monitor setup.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                                   Foreground="Red">
+                            You must save the profile at least once before configuring monitor setup.
+                        </TextBlock>
+                        <Button Grid.Row="0" Grid.Column="1" Command="Save"
+                                Style="{StaticResource InterfaceEditorButton}">
+                            Save Profile
+                        </Button>
                     </Grid>
-                    <Grid Grid.Row="4" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
+                    <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}" Foreground="Red">You must configure DCS installation locations before configuring monitor setup.</TextBlock>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}"
+                                   Foreground="Red">
+                            You must configure DCS installation locations before configuring monitor setup.
+                        </TextBlock>
                     </Grid>
                 </Grid>
             </Grid>

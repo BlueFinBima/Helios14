@@ -29,8 +29,6 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         public HeliosVisualView()
         {
             _children = new List<HeliosVisualView>();
-            // XXX make this a configuration option, at least in XML
-            // RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.HighQuality);
         }
 
         #region Properties
@@ -79,6 +77,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
         {
             get { return _children; }
         }
+
+
+        /// <summary>
+        /// if true, this visual and all its descendants will use slower "Fant" scaling for bitmaps to increase visual quality
+        /// </summary>
+        public bool HighQualityBitmapScaling
+        {
+            get => (bool)GetValue(HighQualityBitmapScalingProperty);
+            set => SetValue(HighQualityBitmapScalingProperty, value);
+        }
+        public static readonly DependencyProperty HighQualityBitmapScalingProperty =
+            DependencyProperty.Register("HighQualityBitmapScaling", typeof(bool), typeof(HeliosVisualView), new PropertyMetadata(false, OnHighQualityBitmapScalingChanged));
 
         #endregion
 
@@ -199,6 +209,15 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             }
         }
 
+        private static void OnHighQualityBitmapScalingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // change the bitmap scaling mode
+            RenderOptions.SetBitmapScalingMode(d, ((bool)e.NewValue) ? BitmapScalingMode.HighQuality : BitmapScalingMode.Linear);
+
+            // cascade change to all descendants
+            ((HeliosVisualView)d)._children.ForEach(child => child.HighQualityBitmapScaling = (bool)e.NewValue);
+        }
+
         private void SetHidden()
         {
             if (Visual != null && !IgnoreHidden)
@@ -298,8 +317,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                     HeliosVisualView view;
                     if (viewIndex == -1)
                     {
-                        view = new HeliosVisualView();
-                        view.Visual = Visual.Children[i];
+                        view = new HeliosVisualView
+                        {
+                            HighQualityBitmapScaling = HighQualityBitmapScaling, 
+                            Visual = Visual.Children[i]
+                        };
                         Children.Add(view);
                         AddVisualChild(view);
                     }

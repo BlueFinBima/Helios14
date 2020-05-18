@@ -51,7 +51,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xaml"/>
+    <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -133,6 +133,7 @@
     <Compile Include="ResetMonitors.xaml.cs">
       <DependentUpon>ResetMonitors.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ResetMonitorsWork.cs" />
     <Compile Include="SaveTemplateDialog.xaml.cs">
       <DependentUpon>SaveTemplateDialog.xaml</DependentUpon>
     </Compile>
@@ -156,6 +157,7 @@
     <Compile Include="UndoEvents\DisplayOrderUndoItem.cs" />
     <Compile Include="UndoEvents\InterfaceAddUndoEvent.cs" />
     <Compile Include="UndoEvents\InterfaceDeleteUndoEvent.cs" />
+    <Compile Include="ViewModel\AvailableInterfaces.cs" />
     <Compile Include="ViewModel\DescriptorToolboxItem.cs" />
     <Compile Include="ViewModel\MonitorResetItem.cs" />
     <Compile Include="ViewModel\ProfileExplorerTreeItem.cs" />
@@ -301,27 +303,18 @@
     <Resource Include="ToolbarGraphics\AlignTop.png" />
     <Resource Include="ToolbarGraphics\AlignVCenter.png" />
     <Resource Include="ToolbarGraphics\BringForwardIcon.png" />
-    <Resource Include="ToolbarGraphics\CopyIcon.png" />
-    <Resource Include="ToolbarGraphics\CutIcon.png" />
-    <Resource Include="ToolbarGraphics\DeleteIcon.png" />
     <Resource Include="ToolbarGraphics\DistributeHorizontal.png" />
     <Resource Include="ToolbarGraphics\DistributeVertical.png" />
     <Resource Include="ToolbarGraphics\HiddenIcon.png" />
     <Resource Include="ToolbarGraphics\InterfacesIcon.png" />
     <Resource Include="ToolbarGraphics\LockedIcon.png" />
-    <Resource Include="ToolbarGraphics\NewIcon.png" />
     <Resource Include="ToolbarGraphics\NoSnapIcon.png" />
-    <Resource Include="ToolbarGraphics\OpenIcon.png" />
-    <Resource Include="ToolbarGraphics\PasteIcon.png" />
     <Resource Include="ToolbarGraphics\PreviewIcon.png" />
     <Resource Include="ToolbarGraphics\PreviewStopIcon.png" />
-    <Resource Include="ToolbarGraphics\RedoIcon.png" />
-    <Resource Include="ToolbarGraphics\SaveIcon.png" />
     <Resource Include="ToolbarGraphics\SendBackIcon.png" />
     <Resource Include="ToolbarGraphics\SnapIcon.png" />
     <Resource Include="ToolbarGraphics\SpaceHorizontal.png" />
     <Resource Include="ToolbarGraphics\SpaceVertical.png" />
-    <Resource Include="ToolbarGraphics\UndoIcon.png" />
     <Resource Include="ToolbarGraphics\UnLockedIcon.png" />
     <Resource Include="ToolbarGraphics\VisibleIcon.png" />
   </ItemGroup>
@@ -346,13 +339,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ControlCenterIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="about.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="CCIcon.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\Helios.targets" />

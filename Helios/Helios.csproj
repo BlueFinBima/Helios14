@@ -87,6 +87,13 @@
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
     <Compile Include="Interfaces\Capabilities\IReadyCheck.cs" />
     <Compile Include="Interfaces\Capabilities\IViewportProvider.cs" />
+    <Page Include="Styles\Editor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Interfaces\Capabilities\IHeliosInterfaceFactoryAsync.cs" />
+    <Compile Include="Interfaces\Common\StatusReportNotifyAsyncOnce.cs" />
+    <Compile Include="Util\DesignTimeEditorResources.cs" />
     <Compile Include="Util\OnceLogger.cs" />
     <Compile Include="HeliosApplication.cs" />
     <Compile Include="IInstallation.cs" />
@@ -488,6 +495,8 @@
     <Compile Include="Util\DCS\MockInstallationLocations.cs" />
     <Compile Include="Util\EnumBooleanConverter.cs" />
     <Compile Include="Util\XamlFirewall.cs" />
+    <Compile Include="Windows\BindingProxy.cs" />
+    <Compile Include="Windows\Controls\DialogWindow.cs" />
     <Compile Include="Windows\ExceptionViewer.cs" />
     <Compile Include="Util\HeliosUndoBatch.cs" />
     <Compile Include="Interfaces\Common\InterfaceStatus.cs" />
@@ -495,8 +504,8 @@
     <Compile Include="Windows\Controls\FilePicker.xaml.cs">
       <DependentUpon>FilePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Controls\DialogWindow.xaml.cs">
-      <DependentUpon>DialogWindow.xaml</DependentUpon>
+    <Compile Include="Windows\Controls\DefaultDialogWindow.xaml.cs">
+      <DependentUpon>DefaultDialogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Controls\ImagePicker.xaml.cs">
       <DependentUpon>ImagePicker.xaml</DependentUpon>
@@ -508,7 +517,10 @@
     <Compile Include="Windows\HeliosViewModel.cs" />
     <Compile Include="Windows\InstallationDialogs.cs" />
     <Compile Include="Windows\RelayCommand.cs" />
+    <Compile Include="Windows\ScrollViewerHelper.cs" />
+    <Compile Include="Windows\SharedCommands.cs" />
     <Compile Include="Windows\ShowModalParameter.cs" />
+    <Compile Include="Windows\ViewModelCollection.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewItem.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewSection.cs" />
     <Compile Include="Windows\ViewModel\InterfaceStatusViewModel.cs" />
@@ -516,7 +528,6 @@
     <Compile Include="Windows\ViewModel\MockInterfaceStatusView.cs" />
     <Compile Include="Windows\ViewModel\Share.cs" />
     <Compile Include="Windows\ViewModel\ShareInterfaceStatus.cs" />
-    <Compile Include="Windows\ViewModel\ViewModelCollection.cs" />
     <None Include="Images\A-10\readme.md" />
     <None Include="Interfaces\Falcon\readme.md" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\ded.png" />
@@ -2663,7 +2674,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Controls\DialogWindow.xaml">
+    <Page Include="Windows\Controls\DefaultDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

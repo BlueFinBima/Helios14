@@ -1,12 +1,28 @@
-﻿using GadrocsWorkshop.Helios;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using GadrocsWorkshop.Helios;
 
 namespace net.derammo.Helios.SampleProgram.Sample
 {
     /// <summary>
     /// Helios notification object supports IPropertyNotification and automatically creates undo
-    /// items for any property changes
+    /// items for any property changes if it is in the tree of Helios objects that are part of
+    /// the profile.
     /// </summary>
-    public class SampleModel : NotificationObject
+    public partial class SampleModel : NotificationObject
     {
         #region Private
 
@@ -29,6 +45,11 @@ namespace net.derammo.Helios.SampleProgram.Sample
         private object _someOtherThing = new object();
 
         #endregion
+
+        public SampleModel()
+        {
+            // no code
+        }
 
         #region Properties
 

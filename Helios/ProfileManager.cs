@@ -102,7 +102,8 @@ namespace GadrocsWorkshop.Helios
 
         public HeliosProfile LoadProfile(string path, Dispatcher dispatcher)
         {
-            throw new NotImplementedException();
+            // this signature is illegal now but we keep it since it is in an interface
+            throw new InvalidOperationException("LoadProfile with a dispatcher is no longer supported.");
         }
 
         public HeliosProfile LoadProfile(string path, out IEnumerable<string> loadingWork)

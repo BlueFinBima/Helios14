@@ -1,19 +1,18 @@
-﻿//  Copyright 2014 Craig Courtney
-//    
-//  Helios is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,22 +25,22 @@ using NLog;
 namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
 {
     // model and view model for the status viewer
-    public class StatusViewer: DependencyObject
+    public class StatusViewer : DependencyObject
     {
         // about two lines of status message are allowed, the rest will be cut if from log
         private const int STATUS_LIMIT = 120;
 
-        private Queue<StatusViewerItem> _items = new Queue<StatusViewerItem>();
-        private LinkedList<StatusViewerItem> _shown = new LinkedList<StatusViewerItem>();
-        private HashSet<string> _uniqueLogMessages = new HashSet<string>();
+        private readonly Queue<StatusViewerItem> _items = new Queue<StatusViewerItem>();
+        private readonly LinkedList<StatusViewerItem> _shown = new LinkedList<StatusViewerItem>();
+        private readonly HashSet<string> _uniqueLogMessages = new HashSet<string>();
 
         // maximum
-        private int _capacity = 200;
+        private readonly int _capacity = 200;
 
         // these currently do nothing, but would support internal scrolling, i.e. having more items stored than we give to WPF
         // REVISIT remove or actually use
-        private int _windowBase = 0;
-        private int _windowSize;
+        private int _windowBase;
+        private readonly int _windowSize;
 
         public class StatusTemplateSelector : DataTemplateSelector
         {
@@ -53,15 +52,18 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                 {
                     return null;
                 }
+
                 StatusReportItem.SeverityCode severity = listItem.Data.Severity;
                 switch (severity)
                 {
                     case StatusReportItem.SeverityCode.None:
                         // these are incorrectly initialized
-                        ConfigManager.LogManager.LogError($"received status report item with invalid severity: {listItem.Data.Severity} '{listItem.Data.Status}'; implementation error");
+                        ConfigManager.LogManager.LogError(
+                            $"received status report item with invalid severity: {listItem.Data.Severity} '{listItem.Data.Status}'; implementation error");
                         severity = StatusReportItem.SeverityCode.Error;
                         break;
                 }
+
                 return element.FindResource(severity.ToString()) as DataTemplate;
             }
         }
@@ -140,6 +142,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                         // too numerous for this console
                         return;
                     }
+
                     break;
                 case StatusReportItem.SeverityCode.Warning:
                 // fall through
@@ -177,6 +180,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                     Items.Remove(discard);
                     _shown.RemoveFirst();
                 }
+
                 _windowBase--;
             }
         }
@@ -212,11 +216,13 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                 // don't include info messages
                 return;
             }
+
             if (_uniqueLogMessages.Contains(message))
             {
                 // don't include a message more than once
                 return;
             }
+
             _uniqueLogMessages.Add(message);
             // shorten multiline messages, taking at most one line
             string trimmedMessage = message;
@@ -224,6 +230,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
             {
                 trimmedMessage = message.Substring(0, STATUS_LIMIT);
             }
+
             int newline = trimmedMessage.IndexOf('\n');
             while (newline >= 0)
             {
@@ -240,21 +247,27 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
                     break;
                 }
             }
+
             string recommendation = null;
+            string fullText = null;
             if (trimmedMessage.Length < message.Length)
             {
                 recommendation = "Log message was shortened.  See application log for details.";
+                fullText = message;
             }
+
             if (eventInfo.Exception != null)
             {
                 recommendation = $"An exception was thrown: '{eventInfo.Exception.Message}'.  You should file a bug.";
             }
-            StatusReportItem item = new StatusReportItem()
+
+            StatusReportItem item = new StatusReportItem
             {
                 TimeStamp = eventInfo.TimeStamp.ToString("MM/dd/yyyy hh:mm:ss.fff tt"),
                 Severity = code,
                 Status = trimmedMessage,
-                Recommendation = recommendation
+                Recommendation = recommendation,
+                FullText = fullText
             };
             AddItem(item);
         }
@@ -266,18 +279,22 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
         /// </summary>
         public Visibility CautionLightVisibility
         {
-            get { return (Visibility)GetValue(CautionLightVisibilityProperty); }
-            set { SetValue(CautionLightVisibilityProperty, value); }
+            get => (Visibility) GetValue(CautionLightVisibilityProperty);
+            set => SetValue(CautionLightVisibilityProperty, value);
         }
+
         public static readonly DependencyProperty CautionLightVisibilityProperty =
-            DependencyProperty.Register("CautionLightVisibility", typeof(Visibility), typeof(StatusViewer), new PropertyMetadata(Visibility.Hidden));
+            DependencyProperty.Register("CautionLightVisibility", typeof(Visibility), typeof(StatusViewer),
+                new PropertyMetadata(Visibility.Hidden));
 
         public ObservableCollection<StatusViewerItem> Items
         {
-            get { return (ObservableCollection<StatusViewerItem>)GetValue(ItemsProperty); }
-            set { SetValue(ItemsProperty, value); }
+            get => (ObservableCollection<StatusViewerItem>) GetValue(ItemsProperty);
+            set => SetValue(ItemsProperty, value);
         }
+
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("observableCollection", typeof(ObservableCollection<StatusViewerItem>), typeof(StatusViewer), new PropertyMetadata(null));
+            DependencyProperty.Register("observableCollection", typeof(ObservableCollection<StatusViewerItem>),
+                typeof(StatusViewer), new PropertyMetadata(null));
     }
 }

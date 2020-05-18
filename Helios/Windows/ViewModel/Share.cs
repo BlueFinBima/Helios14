@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using GadrocsWorkshop.Helios.Util;
+using System.Reflection;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
@@ -49,6 +50,23 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             }
         }
 
+        internal class ReportWrapper<TStatusItem>
+        {
+            [JsonProperty("Product")]
+            public string Product { get; } = Assembly.GetExecutingAssembly().GetName().Name;
+
+            [JsonProperty("Version")]
+            public string Version { get; } = VersionChecker.RunningVersion.ToString();
+
+            [JsonProperty("Items")]
+            public IList<TStatusItem> Items { get; internal set; }
+
+            public ReportWrapper(IList<TStatusItem> items)
+            {
+                Items = items;
+            }
+        }
+
         private static readonly IList<EmptyStatus> EmptyReport = new List<EmptyStatus>
         {
             new EmptyStatus()
@@ -74,11 +92,11 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             // XXX flags converter
             if (report.Count == 0)
             {
-                Text = JsonConvert.SerializeObject(EmptyReport, Formatting.Indented);
+                Text = JsonConvert.SerializeObject(new ReportWrapper<EmptyStatus>(EmptyReport), Formatting.Indented);
             }
             else
             {
-                Text = JsonConvert.SerializeObject(report, new JsonSerializerSettings
+                Text = JsonConvert.SerializeObject(new ReportWrapper<T>(report), new JsonSerializerSettings
                 {
                     Formatting = Formatting.Indented,
                     Converters = new List<JsonConverter>

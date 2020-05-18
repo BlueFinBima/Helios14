@@ -1,17 +1,17 @@
-﻿//  Copyright 2014 Craig Courtney
-//    
-//  Helios is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
 using System.Windows;
@@ -45,7 +45,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 destinations[location.Path] = new PatchDestinationViewModel(location, AdditionalViewports.PATCH_SET);
             }
 
-            Patching = new PatchingConfiguration(destinations, AdditionalViewports.PATCH_SET, "Helios viewport patches");
+            Patching = new PatchingConfiguration(destinations, AdditionalViewports.PATCH_SET,
+                "Helios viewport patches");
 
             // register for changes in selected destinations so we can scan again
             locations.Added += OnAdded;
@@ -106,8 +107,8 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
-            // XXX revert patches where applicable
-            MessageBox.Show("Unimplemented");
+            Patching?.Uninstall(_installationDialogs);
+            _parent.InvalidateStatusReport();
         }
 
         #endregion

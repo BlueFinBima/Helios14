@@ -17,14 +17,18 @@ namespace GadrocsWorkshop.Helios.Util.DCS
 
         internal static IEnumerable<InstallationLocation> ReadSettings()
         {
-            // crash if this system  has a settings manager that does not support this interface
-            ISettingsManager2 settings = (ISettingsManager2) ConfigManager.SettingsManager;
+            // this is called in design mode, so we gracefully deal with lack of settings manager
+            if (!(ConfigManager.SettingsManager is ISettingsManager2 settings))
+            {
+                yield break;
+            }
             foreach (string path in settings.EnumerateSettingNames(SETTINGS_GROUP))
             {
                 InstallationLocation location =
                     new InstallationLocation(System.IO.Path.Combine(path, AUTO_UPDATE_CONFIG))
                     {
-                        IsEnabled = settings.LoadSetting(SETTINGS_GROUP, path, false)
+                        IsEnabled = settings.LoadSetting(SETTINGS_GROUP, path, false),
+                        Loaded = true
                     };
                 yield return location;
             }
@@ -99,11 +103,20 @@ namespace GadrocsWorkshop.Helios.Util.DCS
         private static void OnChangeEnabled(DependencyObject target, DependencyPropertyChangedEventArgs e)
         {
             InstallationLocation location = (InstallationLocation) target;
+            if (!location.Loaded)
+            {
+                return;
+            }
             location.UpdateSettings();
             location.NotifyChangeEnabled();
         }
 
         #region Properties
+
+        /// <summary>
+        /// true if we are done initializing and should process events
+        /// </summary>
+        private bool Loaded { get; set; }
 
         /// <summary>
         /// installation location absolute path

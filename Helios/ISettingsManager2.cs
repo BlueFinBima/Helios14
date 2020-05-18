@@ -1,17 +1,17 @@
-﻿//  Copyright 2014 Craig Courtney
-//    
-//  Helios is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios
     /// <summary>
     /// version 2 of ISettingsManager interface to add enumeration and removal
     /// </summary>
-    public interface ISettingsManager2: ISettingsManager
+    public interface ISettingsManager2 : ISettingsManager
     {
         /// <summary>
         /// enumerates all the keys in a specified group
@@ -43,7 +43,7 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         /// <param name="since">the time we last synchronized or null</param>
         /// <returns>true if changes were loaded</returns>
-        bool SynchronizeSettings(System.DateTime? since);
+        bool SynchronizeSettings(DateTime? since);
 
         /// <summary>
         /// fired when SynchronizeSettings results in a change to the settings

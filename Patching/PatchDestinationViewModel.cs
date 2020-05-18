@@ -1,17 +1,17 @@
-﻿//  Copyright 2014 Craig Courtney
-//    
-//  Helios is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using GadrocsWorkshop.Helios.Patching.DCS;
 using GadrocsWorkshop.Helios.Util;
@@ -39,17 +39,35 @@ namespace GadrocsWorkshop.Helios.Patching
 
         internal void CheckApplied()
         {
+            bool notInstalled = false;
+            bool installed = false;
             foreach (StatusReportItem result in Patches.Verify(Destination))
             {
                 // don't log these results, because Verify considers being out of date to be an error
                 if (result.Severity > StatusReportItem.SeverityCode.Warning)
                 {
-                    Status = StatusCodes.OutOfDate;
-                    return;
+                    // errors indicate patch needs work
+                    notInstalled = true;
+                }
+                else
+                {
+                    // any indication other than error means patch is installed
+                    installed = true;
                 }
             }
-            // if we survive verifying all patches, it is up to date
-            Status = StatusCodes.UpToDate;
+
+            if (installed && notInstalled)
+            {
+                Status = StatusCodes.ResetRequired;
+            }
+            else if (installed)
+            {
+                Status = StatusCodes.UpToDate;
+            }
+            else
+            {
+                Status = StatusCodes.OutOfDate;
+            }
         }
     }
 }

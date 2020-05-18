@@ -1,0 +1,129 @@
+﻿<Grid x:Class="GadrocsWorkshop.Helios.Patching.DCS.CombinedMonitorSetupControl"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Patching.DCS"
+      xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
+      mc:Ignorable="d"
+      Name="CombinedMonitorSetup"
+      d:DesignHeight="450" d:DesignWidth="800"
+      d:DataContext="{d:DesignInstance Type=local:CombinedMonitorSetupViewModel, IsDesignTimeCreatable=True}">
+    <Grid.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="ItemBorderStyle" TargetType="Border">
+                <Setter Property="Margin" Value="9,9,9,0" />
+                <Setter Property="Padding" Value="3" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="White" />
+            </Style>
+            <Style x:Key="DisplayNameStyle" TargetType="Label">
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsCurrentProfile}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="ToolTip" Value="This is the entry for the profile currently being edited" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <DataTemplate x:Key="CombinedItem" DataType="local:ViewportSetupFileViewModel">
+                <Border Style="{StaticResource ItemBorderStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="{Binding DisplayName}" Style="{StaticResource DisplayNameStyle}" />
+                        <Label Grid.Column="1" Content="{Binding ProblemShortDescription}"
+                               ToolTip="{Binding ProblemNarrative}" Foreground="Red" />
+                        <Button Grid.Column="3" Content="&#xE738;"
+                                Command="{Binding ElementName=CombinedMonitorSetup, Path=DataContext.ExcludeCommand}"
+                                CommandParameter="{Binding}" Template="{StaticResource FontIconButton}"
+                                ToolTip="Exlude the viewports for this profile from the Combined Monitor Setup" />
+                    </Grid>
+                </Border>
+            </DataTemplate>
+            <DataTemplate x:Key="ExcludedItem" DataType="local:ViewportSetupFileViewModel">
+                <Border Style="{StaticResource ItemBorderStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="{Binding MonitorSetupDisplayName}" Style="{StaticResource DisplayNameStyle}" />
+                        <Label Grid.Column="1" Content="{Binding ProblemShortDescription}"
+                               ToolTip="{Binding ProblemNarrative}" Foreground="Red" />
+                        <Button Grid.Column="2" Content="&#xE710;"
+                                Command="{Binding ElementName=CombinedMonitorSetup, Path=DataContext.CombineCommand}"
+                                CommandParameter="{Binding}" Template="{StaticResource FontIconButton}"
+                                ToolTip="Add the viewports for this profile to the Combined Monitor Setup" />
+                        <Button Grid.Column="3" Content="&#xE74D;"
+                                Command="{Binding ElementName=CombinedMonitorSetup, Path=DataContext.DeleteCommand}"
+                                CommandParameter="{Binding}" Template="{StaticResource FontIconButton}"
+                                ToolTip="Delete the generated monitor setup associated with this Profile" />
+                    </Grid>
+                </Border>
+            </DataTemplate>
+            <Style x:Key="ScrollViewerStyle" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">
+                <Setter Property="Padding" Value="0,0,0,9" />
+                <Setter Property="Margin" Value="0,6,0,0" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="Background" Value="{StaticResource EmptySpaceBetweenWhiteItems}" />
+            </Style>
+        </ResourceDictionary>
+    </Grid.Resources>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="12" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition MinWidth="120" Width="Auto" />
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}">Combined</Label>
+    <WrapPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0" VerticalAlignment="Center">
+        <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,0,3">Monitor Setup '</Label>
+        <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3"
+               Content="{Binding Path=Data.CombinedMonitorSetupName}" />
+        <Label Style="{StaticResource InterfaceEditorLabel}" Padding="0,3,3,3">'</Label>
+    </WrapPanel>
+    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Documentation}">
+        Viewports for these profiles will be included in the Combined Monitor Setup.
+        You can set the DCS 'Monitors' option to the name of the Combined Monitor Setup shown above
+        and use any of these profiles without having to restart DCS to change the monitor setup.
+    </TextBlock>
+    <ScrollViewer Grid.Row="2" Grid.Column="1" Style="{StaticResource ScrollViewerStyle}">
+        <ItemsControl MinHeight="34" ItemsSource="{Binding Combined}" ItemTemplate="{StaticResource CombinedItem}" />
+    </ScrollViewer>
+    <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}">Separate</Label>
+    <Label Grid.Row="4" Grid.Column="1" Style="{StaticResource InterfaceEditorLabel}" Padding="0,3">Individual Monitor Setup files for other Profiles</Label>
+    <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource Documentation}">
+        Viewports for these profiles will not be included in the Combined Monitor Setup.
+        You will have to switch the DCS 'Monitors' option to a different monitor setup
+        when switching to one of these profiles.   You can try to add these to the Combined Monitor Setup
+        above, if there are no conflicts in the defined viewports.
+    </TextBlock>
+    <ScrollViewer Grid.Row="6" Grid.Column="1" Style="{StaticResource ScrollViewerStyle}">
+        <ItemsControl MinHeight="34" ItemsSource="{Binding Excluded}" ItemTemplate="{StaticResource ExcludedItem}" />
+    </ScrollViewer>
+</Grid>

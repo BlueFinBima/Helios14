@@ -1,13 +1,30 @@
-﻿using System.Collections.Generic;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using DiffMatchPatch;
 
 namespace TestApplyPatches
 {
-    class TestApplyPatches
+    internal class TestApplyPatches
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             TestBrokenImperfectMatch();
             TestDcsPatches();
@@ -26,7 +43,7 @@ namespace TestApplyPatches
             googleDiff.diff_cleanupSemantic(diffs);
             List<Patch> patches = googleDiff.patch_make(diffs);
             Debug.WriteLine(googleDiff.patch_toText(patches));
-            string patched = (string)googleDiff.patch_apply(patches, imperfectInput)[0];
+            string patched = (string) googleDiff.patch_apply(patches, imperfectInput)[0];
             Debug.WriteLine(patched);
             Debug.Assert(patched == "diff match pth");
         }
@@ -34,7 +51,7 @@ namespace TestApplyPatches
         private static void TestDcsPatches()
         {
             // XXX create a Helios utility to locate and remember DCS root folders
-            string[] dcsRoots = new string[] { "c:\\dcs", "e:\\dcs" };
+            string[] dcsRoots = {"c:\\dcs", "e:\\dcs"};
             string dcsRoot = "NOTFOUND";
             foreach (string candidate in dcsRoots)
             {
@@ -49,7 +66,8 @@ namespace TestApplyPatches
             const string testsRoot = "..\\..\\..\\..\\Patches\\DCS\\002_005_005_41371\\";
 
             diff_match_patch googleDiff = new diff_match_patch();
-            foreach (string testFilePath in Directory.EnumerateFiles(testsRoot, "*.gpatch", SearchOption.AllDirectories))
+            foreach (string testFilePath in Directory.EnumerateFiles(testsRoot, "*.gpatch", SearchOption.AllDirectories)
+            )
             {
                 Debug.Assert(testFilePath.Contains(testsRoot));
                 string testFileRelative = testFilePath.Replace(testsRoot, "").Replace(".gpatch", "");
@@ -59,9 +77,11 @@ namespace TestApplyPatches
                 List<Patch> patches = googleDiff.patch_fromText(ReadFile(testFilePath));
                 string patched = ApplyPatches(googleDiff, source, patches);
 
-                Debug.WriteLine("=====================================================================================");
+                Debug.WriteLine(
+                    "=====================================================================================");
                 Debug.WriteLine(testFilePath);
-                Debug.WriteLine("=====================================================================================");
+                Debug.WriteLine(
+                    "=====================================================================================");
                 Debug.WriteLine(patched);
 
                 CheckApplied(googleDiff, testFilePath, patches, patched);
@@ -73,7 +93,8 @@ namespace TestApplyPatches
             }
         }
 
-        private static void CheckApplied(diff_match_patch googleDiff, string testFilePath, List<Patch> patches, string patched)
+        private static void CheckApplied(diff_match_patch googleDiff, string testFilePath, List<Patch> patches,
+            string patched)
         {
             // check if applied by just seeing if all the inserts are present (we don't generate patches that insert and then delete the same thing)
             foreach (Patch patch in patches)
@@ -84,12 +105,14 @@ namespace TestApplyPatches
                     {
                         if (!patched.Contains(chunk.text))
                         {
-                            Debug.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                            Debug.WriteLine(
+                                "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                             Debug.WriteLine(googleDiff.patch_toText(patches));
-                            Debug.WriteLine("--------------------------------------------------------------------------------------");
+                            Debug.WriteLine(
+                                "--------------------------------------------------------------------------------------");
                             Debug.WriteLine("missing text expected in patch result:");
                             Debug.WriteLine(chunk.text);
-                            throw new System.Exception($"failed test case {testFilePath}");
+                            throw new Exception($"failed test case {testFilePath}");
                         }
                     }
                 }
@@ -98,7 +121,7 @@ namespace TestApplyPatches
 
         private static string ReadFile(string filePath)
         {
-            using (StreamReader streamReader = new StreamReader(filePath, System.Text.Encoding.UTF8))
+            using (StreamReader streamReader = new StreamReader(filePath, Encoding.UTF8))
             {
                 return streamReader.ReadToEnd();
             }
@@ -115,9 +138,11 @@ namespace TestApplyPatches
             {
                 string testSourcePath = Path.Combine(testRootPath, "a");
                 Debug.WriteLine(testSourcePath);
-                foreach (string testFilePath in Directory.EnumerateFiles(testSourcePath, "*.lua", SearchOption.AllDirectories))
+                foreach (string testFilePath in Directory.EnumerateFiles(testSourcePath, "*.lua",
+                    SearchOption.AllDirectories))
                 {
-                    Debug.WriteLine("=====================================================================================");
+                    Debug.WriteLine(
+                        "=====================================================================================");
                     Debug.WriteLine(testFilePath);
                     string source = File.ReadAllText(testFilePath.Replace(testSourcePath, sourcesPath));
                     string target = File.ReadAllText(testFilePath.Replace(testSourcePath, patchedPath));
@@ -128,20 +153,19 @@ namespace TestApplyPatches
                     List<Diff> diffs = googleDiff.diff_main(source, target);
                     googleDiff.diff_cleanupSemantic(diffs);
                     List<Patch> patches = googleDiff.patch_make(diffs);
-                    Debug.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    Debug.WriteLine(
+                        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                     Debug.WriteLine(googleDiff.patch_toText(patches));
                     string patched = ApplyPatches(googleDiff, testInput, patches);
-                    Debug.WriteLine("=====================================================================================");
+                    Debug.WriteLine(
+                        "=====================================================================================");
                     Debug.WriteLine(patched);
                     CompareEquals(googleDiff, testFilePath, testExpected, patched);
                 }
             }
         }
 
-        private static string NoWhiteSpace(string text)
-        {
-            return text.Replace("\n", "").Replace("\r", "");
-        }
+        private static string NoWhiteSpace(string text) => text.Replace("\n", "").Replace("\r", "");
 
         private static void CompareEquals(diff_match_patch googleDiff, string testName, string expected, string actual)
         {
@@ -150,38 +174,42 @@ namespace TestApplyPatches
             {
                 List<Diff> errors = googleDiff.diff_main(expected, actual);
                 List<Patch> errorPatches = googleDiff.patch_make(errors);
-                Debug.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                Debug.WriteLine(
+                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 Debug.WriteLine("differences from expected value to actual result:");
                 Debug.WriteLine(googleDiff.patch_toText(errorPatches));
-                throw new System.Exception($"failed test case {testName}");
+                throw new Exception($"failed test case {testName}");
             }
         }
 
         private static string ApplyPatches(diff_match_patch googleDiff, string testInput, List<Patch> patches)
         {
             object[] results = googleDiff.patch_apply(patches, testInput);
-            string patched = (string)results[0];
-            bool[] applied = (bool[])results[1];
-            diff_match_patch.PatchResult[] resultCodes = (diff_match_patch.PatchResult[])results[2];
+            string patched = (string) results[0];
+            bool[] applied = (bool[]) results[1];
+            diff_match_patch.PatchResult[] resultCodes = (diff_match_patch.PatchResult[]) results[2];
             for (int i = 0; i < applied.Length; i++)
             {
                 if (!applied[i])
                 {
-                    throw new System.Exception($"failed to apply {patches[i].ToString()}: {resultCodes[i].ToString()}");
+                    throw new Exception($"failed to apply {patches[i]}: {resultCodes[i].ToString()}");
                 }
+
                 switch (resultCodes[i])
                 {
                     case diff_match_patch.PatchResult.UNKNOWN:
-                        throw new System.Exception($"invalid result code from application of {patches[i].ToString()}");
+                        throw new Exception($"invalid result code from application of {patches[i]}");
                     case diff_match_patch.PatchResult.APPLIED_PERFECT:
                         break;
                     case diff_match_patch.PatchResult.APPLIED_IMPERFECT:
                         Debug.WriteLine("WARNING: patch imperfectly matched input, but was applied");
                         break;
                     default:
-                        throw new System.Exception($"patch should not have returned success with result code {resultCodes[i].ToString()}");
+                        throw new Exception(
+                            $"patch should not have returned success with result code {resultCodes[i].ToString()}");
                 }
             }
+
             return patched;
         }
     }

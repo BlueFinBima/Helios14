@@ -432,7 +432,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             UpdateDirectories();
             UpdateExportStub();
             UpdateExportScript();
-            UpdateDriver();
+            UpdateModule();
         }
 
         protected override void Update()
@@ -652,7 +652,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 UpdateExportScript();
                 yield return CheckExportScript(location);
 
-                if (!string.IsNullOrEmpty(_parent.ExportModuleBaseName))
+                if (string.IsNullOrEmpty(_parent.ExportModuleBaseName))
                 {
                     yield return new StatusReportItem
                     {
@@ -673,7 +673,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 }
                 else
                 {
-                    UpdateDriver();
+                    UpdateModule();
                     yield return CheckModule(location);
                 }
             }
@@ -702,7 +702,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                 .Replace("HELIOS_REPLACE_ExportInterval", Math.Round(1d / Math.Max(4, ExportFrequency), 3).ToString());
         }
 
-        private void UpdateDriver()
+        private void UpdateModule()
         {
             switch (_parent.ExportModuleFormat)
             {

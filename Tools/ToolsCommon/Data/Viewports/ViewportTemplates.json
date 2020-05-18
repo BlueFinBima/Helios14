@@ -256,53 +256,76 @@
     "templateName": "F-16C (Helios 16/9)",
     "moduleId": "F-16C",
     "isHeliosTemplate": true,
-    "viewports": [{
-        "viewportName" : "LEFT_MFCD",
-        "relativeInitFilePath" : "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/MFD/device/MFD_left.lua",
-        "originalDisplayWidth" : 1920,
-        "originalDisplayHeight" : 1080,
-        "seatIndex" : 1,
-        "x" : 275,
-        "y" : 384,
-        "width" : 375,
-        "height" : 375
+    "viewports": [
+      {
+        "viewportName": "LEFT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/MFD/indicator/MFD_left_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 275,
+        "y": 384,
+        "width": 375,
+        "height": 375
       },
       {
-        "viewportName" : "RIGHT_MFCD",
-        "relativeInitFilePath" : "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/MFD/device/MFD_right.lua",
-        "originalDisplayWidth" : 1920,
-        "originalDisplayHeight" : 1080,
-        "seatIndex" : 1,
-        "x" : 1280,
-        "y" : 384,
-        "width" : 375,
-        "height" : 375
+        "viewportName": "RIGHT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/MFD/indicator/MFD_right_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1280,
+        "y": 384,
+        "width": 375,
+        "height": 375
       },
       {
-        "viewportName" : "RWR",
-        "relativeInitFilePath" : "Mods/aircraft/F-16C/Cockpit/Scripts/EWS/RWR/device/RWR_ALR56.lua",
-        "originalDisplayWidth" : 1920,
-        "originalDisplayHeight" : 1080,
-        "seatIndex" : 1,
-        "x" : 463,
-        "y" : 74,
-        "width" : 225,
-        "height" : 225
+        "viewportName": "LEFT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/MFD/indicator/LCD/MFD_LCD.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 275,
+        "y": 384,
+        "width": 375,
+        "height": 375
       },
       {
-        "viewportName" : "DED",
-        "relativeInitFilePath" : "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/DED/device/DED.lua",
-        "originalDisplayWidth" : 1920,
-        "originalDisplayHeight" : 1080,
-        "seatIndex" : 1,
-        "x" : 1211,
-        "y" : 0,
-        "width" : 317,
-        "height" : 108
+        "viewportName": "RIGHT_MFCD",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/MFD/indicator/LCD/MFD_LCD.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1280,
+        "y": 384,
+        "width": 375,
+        "height": 375
+      },
+      {
+        "viewportName": "RWR",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/EWS/RWR/indicator/RWR_ALR56_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 463,
+        "y": 74,
+        "width": 225,
+        "height": 225
+      },
+      {
+        "viewportName": "DED",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/DED/indicator/DED_init.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 1211,
+        "y": 0,
+        "width": 317,
+        "height": 108
       },
       {
         "viewportName": "EHSI",
-        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/EHSI/device/EHSI.lua",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/EHSI/indicator/EHSI_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -311,6 +334,17 @@
         "width": 218,
         "height": 218
       },
+      {
+        "viewportName": "EHSI",
+        "relativeInitFilePath": "Mods/aircraft/F-16C/Cockpit/Scripts/Displays/EHSI/indicator/LCD/EHSI_LCD.lua",
+        "originalDisplayWidth": 1920,
+        "originalDisplayHeight": 1080,
+        "seatIndex": 1,
+        "x": 852,
+        "y": 836,
+        "width": 218,
+        "height": 218
+      }
     ]
   },
   {

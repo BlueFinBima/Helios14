@@ -23,6 +23,7 @@ namespace GadrocsWorkshop.Helios.Util
         Incompatible,
         NoLocations,
         ResetMonitorsRequired,
-        ProfileSaveRequired
+        ProfileSaveRequired,
+        ResetRequired
     }
 }

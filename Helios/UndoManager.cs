@@ -23,10 +23,8 @@ namespace GadrocsWorkshop.Helios
 
     public class UndoManager
     {
-        private static int MAX_UNDO_ITEMS = 2000; 
-
-        private bool _working = false;
-        private UndoManagerBatch _batch = null;
+        private static int MAX_UNDO_ITEMS = 2000;
+        private UndoManagerBatch _batch;
 
         private Stack<IUndoItem> _undoEvents;
         private Stack<IUndoItem> _redoEvents;
@@ -38,28 +36,36 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
+        /// true if the undo manager is currently applying undos, can be used
+        /// in property change handlers to ignore related changes that will be undone also
+        /// </summary>
+        public bool Working { get; private set; }
+
+        /// <summary>
         ///  Gets a value indicating whether there is anything that can be undone.
         /// </summary>
-        public bool CanUndo { get { return _undoEvents.Count > 0 && !_working && _batch == null; } }
+        public bool CanUndo => _undoEvents.Count > 0 && !Working && _batch == null;
 
         /// <summary>
         /// Gets a value indicating whether there is anything that can be rolled forward.
         /// </summary>
-        public bool CanRedo { get { return _redoEvents.Count > 0 && !_working && _batch == null; } }
+        public bool CanRedo => _redoEvents.Count > 0 && !Working && _batch == null;
 
         /// <summary>
         /// Rollback the last command.
         /// </summary>
         public void Undo()
         {
-            if (CanUndo)
+            if (!CanUndo)
             {
-                _working = true;
-                IUndoItem undo = _undoEvents.Pop();
-                undo.Undo();
-                _redoEvents.Push(undo);
-                _working = false;
+                return;
             }
+
+            Working = true;
+            IUndoItem undo = _undoEvents.Pop();
+            undo.Undo();
+            _redoEvents.Push(undo);
+            Working = false;
         }
 
         /// <summary>
@@ -67,14 +73,16 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public void Redo()
         {
-            if (CanRedo)
+            if (!CanRedo)
             {
-                _working = true;
-                IUndoItem redo = _redoEvents.Pop();
-                redo.Do();
-                _undoEvents.Push(redo);
-                _working = false;
+                return;
             }
+
+            Working = true;
+            IUndoItem redo = _redoEvents.Pop();
+            redo.Do();
+            _undoEvents.Push(redo);
+            Working = false;
         }
 
         /// <summary>
@@ -104,68 +112,78 @@ namespace GadrocsWorkshop.Helios
 
         public void AddUndoItem(IUndoItem undoEvent)
         {
-            if (!_working)
+            if (Working)
             {
-                if (_batch != null)
+                return;
+            }
+
+            if (_batch != null)
+            {
+                _batch.Add(undoEvent);
+            }
+            else
+            {
+                ClearRedoHistory();
+                _undoEvents.Push(undoEvent);
+                if (_undoEvents.Count > MAX_UNDO_ITEMS)
                 {
-                    _batch.Add(undoEvent);
-                }
-                else
-                {
-                    ClearRedoHistory();
-                    _undoEvents.Push(undoEvent);
-                    if (_undoEvents.Count > MAX_UNDO_ITEMS)
-                    {
-                        _undoEvents.Pop();
-                    }
+                    _undoEvents.Pop();
                 }
             }
         }
 
         public void AddPropertyChange(object source, string propertyName, object oldValue, object newValue)
         {
-            if (!_working)
+            if (Working)
             {
-                Type type = source.GetType();
-                PropertyInfo property = type.GetProperty(propertyName);
-                if (property.CanWrite)
-                {
-                    AddUndoItem(new PropertyChangedUndoItem(source, property, oldValue, newValue));
-                }
+                return;
+            }
+
+            Type type = source.GetType();
+            PropertyInfo property = type.GetProperty(propertyName);
+            if (property?.CanWrite ?? false)
+            {
+                AddUndoItem(new PropertyChangedUndoItem(source, property, oldValue, newValue));
             }
         }
 
         public void AddPropertyChange(object sender, PropertyNotificationEventArgs notification)
         {
-            if (notification != null && notification.IsUndoable)
+            if (notification == null || !notification.IsUndoable)
             {
-                while (notification.HasChildNotification)
-                {
-                    notification = notification.ChildNotification;
-                }
-                AddPropertyChange(notification.EventSource, notification.PropertyName, notification.OldValue, notification.NewValue);
+                return;
             }
+
+            while (notification.HasChildNotification)
+            {
+                notification = notification.ChildNotification;
+            }
+            AddPropertyChange(notification.EventSource, notification.PropertyName, notification.OldValue, notification.NewValue);
         }
 
         public void StartBatch()
         {
-            if (_batch == null)
+            if (_batch != null)
             {
-                ClearRedoHistory();
-                _batch = new UndoManagerBatch();
+                return;
             }
+
+            ClearRedoHistory();
+            _batch = new UndoManagerBatch();
         }
 
         public void CloseBatch()
         {
-            if (_batch != null)
+            if (_batch == null)
             {
-                if (_batch.Count > 0)
-                {
-                    _undoEvents.Push(_batch);
-                }
-                _batch = null;
+                return;
             }
+
+            if (_batch.Count > 0)
+            {
+                _undoEvents.Push(_batch);
+            }
+            _batch = null;
         }
 
         /// <summary>
@@ -173,14 +191,14 @@ namespace GadrocsWorkshop.Helios
         /// </summary>
         public void UndoBatch()
         {
-            _working = true;
+            Working = true;
             try
             {
                 _batch?.Undo();
             }
             finally
             {
-                _working = false;
+                Working = false;
                 _batch = null;
             }
         }

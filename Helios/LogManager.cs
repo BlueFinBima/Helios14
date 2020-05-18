@@ -96,53 +96,5 @@ namespace GadrocsWorkshop.Helios
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
         }
-
-        // XXX remove these after reviewing our logging of exceptions via NLog 
-        private static string CreateTimeStamp()
-        {
-            return DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
-        }
-
-        // XXX remove these after reviewing our logging of exceptions via NLog 
-        private void WriteException(StreamWriter writer, Exception exception)
-        {
-            if (!string.IsNullOrEmpty(exception.Source))
-            {
-                writer.WriteLine("Exception Source:" + exception.Source);
-            }
-            writer.WriteLine("Exception Message:" + exception.Message);
-            writer.WriteLine("Stack Trace:");
-            WriteStackTrace(writer, exception);
-
-            if (exception is ReflectionTypeLoadException le)
-            {
-                foreach (Exception e2 in le.LoaderExceptions)
-                {
-                    WriteException(writer, e2);
-                }
-            }
-
-            if (exception.InnerException != null)
-            {
-                writer.WriteLine();
-                WriteException(writer, exception.InnerException);
-            }
-        }
-
-        // XXX remove these after reviewing our logging of exceptions via NLog 
-        private static void WriteStackTrace(StreamWriter writer, Exception exception)
-        {
-            Regex buildPathExpression = new Regex("[A-Z]:\\\\.*\\\\Helios\\\\");
-            string trace = exception.StackTrace;
-            Match buildPathMatch = buildPathExpression.Match(trace);
-            if (buildPathMatch.Success)
-            {
-                writer.WriteLine(trace.Replace(buildPathMatch.Groups[0].Value, ""));
-            }
-            else
-            {
-                writer.WriteLine(trace);
-            }
-        }
     }
 }

@@ -35,7 +35,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private static RoutedUICommand OpenProfileItemCommand = new RoutedUICommand("Opens a document window to the given item.", "OpenProfileItem", typeof(ProfileEditorCommands));
         private static RoutedUICommand CloseProfileItemCommand = new RoutedUICommand("Closes a document window to the given item.", "CloseProfileItem", typeof(ProfileEditorCommands));
         private static RoutedUICommand AddInterfaceCommand = new RoutedUICommand("Add an interface to this profile.", "AddInterface", typeof(ProfileEditorCommands));
-        private static RoutedUICommand ResetMonitorsCommand = new RoutedUICommand("Resets the monitors in this profile to those of the current system.", "ResetMonitors", typeof(ProfileEditorCommands));
         private static RoutedUICommand SaveLayoutCommand = new RoutedUICommand("Saves current layout as the user default.", "SaveLayout", typeof(ProfileEditorCommands));
         private static RoutedUICommand LoadLayoutCommand = new RoutedUICommand("Loads the user default layout.", "LoadLayout", typeof(ProfileEditorCommands));
         private static RoutedUICommand RestoreDefaultLayoutCommand = new RoutedUICommand("Restores user default layout to system default.", "SaveLayout", typeof(ProfileEditorCommands));
@@ -56,7 +55,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public static RoutedUICommand OpenProfileItem { get { return OpenProfileItemCommand; } }
         public static RoutedUICommand CloseProfileItem { get { return CloseProfileItemCommand; } }
         public static RoutedUICommand AddInterface { get { return AddInterfaceCommand; } }
-        public static RoutedUICommand ResetMonitors { get { return ResetMonitorsCommand; } }
         public static RoutedUICommand SaveLayout { get { return SaveLayoutCommand; } }
         public static RoutedUICommand LoadLayout { get { return LoadLayoutCommand; } }
         public static RoutedUICommand RestoreDefaultLayout { get { return RestoreDefaultLayoutCommand; } }

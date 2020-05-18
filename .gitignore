@@ -41,9 +41,7 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /Patching/Templates/Patching/Additional Simulator Viewports
 /prebuild.binlog
 /Tools/TestApplyPatches/test
-attribution_*.txt
 /Helios/Templates/Base/Simulator Viewports
-/Helios/TimeStamp.g.cs
 /Lua/DCS/Scripts/Helios/HeliosExport16.lua
 /Lua/runExportLua.ps1
-/publish.cmd
+/*.code-workspace

@@ -25,6 +25,11 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             DataContext = InstallationLocations.Singleton;
             InitializeComponent();
             UpdateStatus();
+            if (Status == StatusCodes.NoLocations)
+            {
+                // this is not done via a style, because we don't want it to automatically collapse when the status changes
+                GroupIsExpanded = true;
+            }
             InstallationLocations.Singleton.Enabled += Locations_Changed;
             InstallationLocations.Singleton.Disabled += Locations_Changed;
         }
@@ -100,8 +105,19 @@ namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
             get => (StatusCodes)GetValue(StatusProperty);
             set => SetValue(StatusProperty, value);
         }
+
+        public bool GroupIsExpanded
+        {
+            get { return (bool) GetValue(GroupIsExpandedProperty); }
+            set { SetValue(GroupIsExpandedProperty, value); }
+        }
+
         public static readonly DependencyProperty StatusProperty =
             DependencyProperty.Register("Status", typeof(StatusCodes), typeof(InstallationLocationsControl), new PropertyMetadata(StatusCodes.Unknown));
+
+        public static readonly DependencyProperty GroupIsExpandedProperty = 
+            DependencyProperty.Register("GroupIsExpanded", typeof(bool), typeof(InstallationLocationsControl), new PropertyMetadata(false));
+
         #endregion
     }
 }

@@ -1,4 +1,19 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -6,12 +21,13 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xaml;
 using System.Xml;
+using NLog;
 
 namespace GadrocsWorkshop.Helios.Util
 {
     public class XamlFirewall
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public class DisallowedElementException : Exception
         {
@@ -66,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Util
             using (XmlReader xmlReader = new XmlTextReader(xaml))
             {
                 XamlReader reader = new XamlXmlReader(xmlReader, _schemaContext);
-                return (T)System.Windows.Markup.XamlReader.Load(reader);
+                return (T) System.Windows.Markup.XamlReader.Load(reader);
             }
         }
 

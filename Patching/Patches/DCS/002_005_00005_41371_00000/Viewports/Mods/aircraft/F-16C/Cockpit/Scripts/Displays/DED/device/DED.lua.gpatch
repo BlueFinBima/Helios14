@@ -1,2 +1,0 @@
-﻿@@ -0,0 +1,117 @@
-+%0D%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22F_16C_DED%22%2C %22DED%22)%0D%0A

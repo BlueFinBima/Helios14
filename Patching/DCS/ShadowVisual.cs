@@ -1,5 +1,21 @@
-﻿using System;
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows;
 
 namespace GadrocsWorkshop.Helios.Patching.DCS
@@ -131,7 +147,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
         }
 
         private void Visual_Children_CollectionChanged(object sender,
-            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+            NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
@@ -157,6 +173,13 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         protected virtual void OnRemoved(HeliosVisual oldChild)
         {
+            if (!_children.ContainsKey(oldChild))
+            {
+                // this has happened before and it is unclear why
+                ConfigManager.LogManager.LogInfo(
+                    $"the Visual object {oldChild.Name} of type {oldChild.TypeIdentifier} was not found in the data used for tracking viewports and monitors; probable program error");
+                return;
+            }
             ShadowVisual shadow = _children[oldChild];
             shadow.Dispose();
             _children.Remove(oldChild);

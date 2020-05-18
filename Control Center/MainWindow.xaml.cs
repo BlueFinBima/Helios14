@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Linq;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 using GadrocsWorkshop.Helios.Util;
 
@@ -91,10 +91,15 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             }
             else
             {
-                // add the list of contributors to the console instead
+                // add the list of authors and contributors to the console instead
                 StatusViewer.AddItem(new StatusReportItem {
-                    Status = $"Contributors: {string.Join(", ", About.Authors.Union(About.Contributors))}",
+                    Status = $"Authors: {string.Join(", ", About.Authors)}",
                     Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate });
+                StatusViewer.AddItem(new StatusReportItem
+                {
+                    Status = $"Contributors: {string.Join(", ", About.Contributors)}",
+                    Flags = StatusReportItem.StatusFlags.ConfigurationUpToDate
+                });
             }
 
             if (Preferences.StartMinimized)
@@ -324,6 +329,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         // no need for dependency property, this is constant
         public StatusViewer.StatusViewer StatusViewer { get; } = new StatusViewer.StatusViewer();
+
         #endregion
 
         private void Minimize()
@@ -533,12 +539,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             DataTemplate template = parameter.DataTemplate ?? (DataTemplate)host.TryFindResource(new DataTemplateKey(parameter.Content.GetType()));
 
             // display the dialog appropriate to the content
-            Window generic = new DialogWindow
+            Window generic = new DefaultDialogWindow
             {
                 ContentTemplate = template,
                 Content = parameter.Content
             };
-            
+
             generic.ShowDialog();
         }
 
@@ -591,7 +597,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
                     {
                         monitor.SuppressMouseAfterTouchDuration = Preferences.SuppressMouseAfterTouchDuration;
                         ConfigManager.LogManager.LogDebug("Creating window (Monitor=\"" + monitor.Name + "\")" + " with touchscreen mouse event suppression delay set to " + Convert.ToString(monitor.SuppressMouseAfterTouchDuration) + " msec.");
-                        MonitorWindow window = new MonitorWindow(monitor, true);
+                        MonitorWindow window = new MonitorWindow(monitor, Preferences.HighQualityBitmapScaling, true);
                         window.Show();
                         _windows.Add(window);
                     }

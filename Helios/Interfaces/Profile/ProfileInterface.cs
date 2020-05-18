@@ -13,7 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows.Threading;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+using GadrocsWorkshop.Helios.Interfaces.Common;
 
 namespace GadrocsWorkshop.Helios.Interfaces.Profile
 {
@@ -28,11 +30,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        // observers of our status report that need to be told when we change status
-        private readonly HashSet<IStatusReportObserver> _observers = new HashSet<IStatusReportObserver>();
-
         // failed image load paths we know about, so that we can recognize when a load success changes the status
         private HashSet<string> _failedImagePaths;
+
+        // our implementation of IStatusReportNotify
+        private readonly StatusReportNotifyAsyncOnce _statusReportNotify;
 
         public ProfileInterface()
             : base("Profile")
@@ -56,6 +58,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             HeliosAction launchApplication = new HeliosAction(this, "", "", "launch application", "Launches an external application", "Full path to appliation or document you want to launch or URL to a web page.", BindingValueUnits.Text);
             launchApplication.Execute += LaunchApplication_Execute;
             Actions.Add(launchApplication);
+
+            _statusReportNotify = new StatusReportNotifyAsyncOnce(CreateStatusReport, () => "Profile Interface", () => "Interface to Helios Control Center itself.");
         }
 
         protected override void AttachToProfileOnMainThread()
@@ -160,20 +164,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         public void Subscribe(IStatusReportObserver observer)
         {
-            _observers.Add(observer);
+            _statusReportNotify.Subscribe(observer);
         }
 
         public void Unsubscribe(IStatusReportObserver observer)
         {
-            _observers.Remove(observer);
+            _statusReportNotify.Unsubscribe(observer);
         }
 
         public void InvalidateStatusReport()
         {
-            if (_observers.Count < 1)
-            {
-                return;
-            }
+            _statusReportNotify.InvalidateStatusReport();
+        }
+
+        private void CreateStatusReport()
+        {
             IList<StatusReportItem> newReport = new List<StatusReportItem>();
             CheckResetMonitors(newReport);
             CheckMissingimages(newReport);
@@ -221,10 +226,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
 
         public void PublishStatusReport(IList<StatusReportItem> statusReport)
         {
-            foreach (IStatusReportObserver observer in _observers)
-            {
-                observer.ReceiveStatusReport("Profile Interface", "Interface to Helios Control Center itself.", statusReport);
-            }
+            _statusReportNotify.PublishStatusReport(statusReport);
         }
 
         public void NotifyResetMonitorsComplete()

@@ -47,8 +47,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Helios.targets = Helios.targets
 		Helios Installer\HeliosInstallAdjustments.vbs = Helios Installer\HeliosInstallAdjustments.vbs
 		HeliosPlugin.targets = HeliosPlugin.targets
+		install.cmd = install.cmd
 		Platforms.properties = Platforms.properties
 		PlatformsForPlugin.properties = PlatformsForPlugin.properties
+		publish.cmd = publish.cmd
+		uninstall.cmd = uninstall.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{4BAD86A3-88DE-4AD6-B1E3-982D118CCB8D}"

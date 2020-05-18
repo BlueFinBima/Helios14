@@ -1,4 +1,5 @@
 //  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -300,7 +301,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             }
 
             // buffers for datagrams received on one context switch
-            // XXX tune size
+            // REVISIT: create an array of counters for sizes actually used, use to tune size under heavy load
             private Message[] _messages = new Message[10];
 
             // number of buffers filled
@@ -492,7 +493,7 @@ namespace GadrocsWorkshop.Helios.UDPInterface
 
             do
             {
-                Logger.Debug("UDP interface waiting for socket data on {Inteface}.", Name);
+                Logger.Debug("UDP interface waiting for socket data on {Interface}.", Name);
                 try
                 {
                     ReceiveContext.Message message = context.BeginWrite();
@@ -793,6 +794,10 @@ namespace GadrocsWorkshop.Helios.UDPInterface
         {
             Logger.Debug("UDP interface {Interface} starting.", Name);
             Socket serverSocket = null;
+
+            // hook for descendants to initialize for a profile start before we receive traffic
+            OnProfileStarted();
+
             try
             {
                 _main.Client = new IPEndPoint(IPAddress.Any, 0);
@@ -810,9 +815,6 @@ namespace GadrocsWorkshop.Helios.UDPInterface
             timer.AutoReset = false; // only once
             timer.Elapsed += OnStartupTimer;
             _main.StartupTimer = timer;
-
-            // hook for descendants
-            OnProfileStarted();
 
             // start delayed start timer
             Logger.Debug("Starting startup timer.");

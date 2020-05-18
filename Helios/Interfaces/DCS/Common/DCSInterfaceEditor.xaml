@@ -13,72 +13,75 @@
                                  d:DataContext="{d:DesignInstance Type=dcs:DCSInterfaceEditor}"
                                  Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
     <FrameworkElement.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.UpToDate}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="OutOfDateStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="AppliesIfGenerateExportLoader" TargetType="{x:Type Control}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=Configuration.GenerateExportLoader}" Value="False">
-                    <Setter Property="IsEnabled" Value="false"/>
-                    <Setter Property="Foreground" Value="Gray"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="BasicGroup" TargetType="{x:Type Control}">
-            <Setter Property="Margin" Value="0,0,0,12"/>
-        </Style>
-        <Style x:Key="HideIfNoPhantomFix" TargetType="{x:Type Control}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=PhantomFix.Enabled}" Value="False">
-                    <Setter Property="Visibility" Value="Hidden"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <DataTemplate x:Key="DoFileTemplate">
-            <StackPanel Orientation="Horizontal" Margin="6,3">
-                <Button Template="{StaticResource DeleteButton}" Command="dcs:DCSInterfaceEditor.RemoveDoFileCommand"
-                CommandParameter="{Binding}"/>
-                <TextBlock Margin="6,0,0,0" Text="{Binding}"/>
-            </StackPanel>
-        </DataTemplate>
-        <helios:EnumConverter Type="{x:Type dcs:DCSExportModuleFormat}" x:Key="ExportModuleFormatConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <Style x:Key="UpToDateStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.UpToDate}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="OutOfDateStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.OutOfDate}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="NoLocationsStyle" TargetType="{x:Type Panel}">
+                <Setter Property="UIElement.Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=Configuration.Status}" Value="{x:Static util:StatusCodes.NoLocations}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="AppliesIfGenerateExportLoader" TargetType="{x:Type Control}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=Configuration.GenerateExportLoader}" Value="False">
+                        <Setter Property="IsEnabled" Value="false"/>
+                        <Setter Property="Foreground" Value="Gray"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="HideIfNoPhantomFix" TargetType="{x:Type Control}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=PhantomFix.Enabled}" Value="False">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <DataTemplate x:Key="DoFileTemplate">
+                <StackPanel Orientation="Horizontal" Margin="6,3">
+                    <Button Template="{StaticResource DeleteButton}" Command="dcs:DCSInterfaceEditor.RemoveDoFileCommand"
+                    CommandParameter="{Binding}"/>
+                    <TextBlock Margin="6,0,0,0" Text="{Binding}"/>
+                </StackPanel>
+            </DataTemplate>
+            <helios:EnumConverter Type="{x:Type dcs:DCSExportModuleFormat}" x:Key="ExportModuleFormatConverter"/>
+        </ResourceDictionary>
     </FrameworkElement.Resources>
     <StackPanel>
         <heliosDcs:InstallationLocationsGroup/>
@@ -266,7 +269,6 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InterfaceEditorStatus}">Your DCS configuration is up to date.</TextBlock>
-                    <!-- let's not do this? <Button Grid.Row="0" Grid.Column="1" Click="Remove_Click" Margin="0,0,12,0" Width="120">Remove DCS Setup</Button> -->
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource NoLocationsStyle}">
                     <Grid.ColumnDefinitions>

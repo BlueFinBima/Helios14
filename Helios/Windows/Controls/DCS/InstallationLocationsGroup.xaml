@@ -1,4 +1,4 @@
-﻿<GroupBox 
+﻿<Grid 
     x:Class="GadrocsWorkshop.Helios.Windows.Controls.DCS.InstallationLocationsGroup"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,48 +7,57 @@
     xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
     xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
     mc:Ignorable="d" 
-    d:DesignHeight="450" d:DesignWidth="800"
-    Header="DCS Installations to Update"
-    Margin="0,0,0,12">
-    <GroupBox.Resources>
-        <Style x:Key="NoLocationsStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status, ElementName=InstallationLocations}" Value="{x:Static util:StatusCodes.NoLocations}"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-    </GroupBox.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="120"/>
-            <!-- primary labels -->
-            <ColumnDefinition Width="*"/>
-            <!-- primary controls and long messages-->
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Content="Locations"/>
-        <local:InstallationLocationsControl x:Name="InstallationLocations" Grid.Row="1" Grid.Column="1"/>
-        <Grid Grid.Row="2" Grid.Column="1">
+    d:DesignHeight="450" d:DesignWidth="800">
+    <Grid.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="InstallerGroupStyle" TargetType="{x:Type Expander}" BasedOn="{StaticResource GroupBoxWithExpanderStyle}">
+                <Setter Property="Margin" Value="0,0,0,12"/>
+            </Style>
+            <Style x:Key="NoLocationsStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="UIElement.Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status, ElementName=InstallationLocations}" Value="{x:Static util:StatusCodes.NoLocations}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Grid.Resources>
+    <Expander Style="{StaticResource InstallerGroupStyle}" IsExpanded="{Binding GroupIsExpanded, ElementName=InstallationLocations}"  Header="DCS Installations to Update">
+        <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="120"/>
+                <!-- primary labels -->
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <!-- primary controls and long messages-->
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one enabled DCS installation location.</TextBlock>
-            <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Margin="0,0,6,6" Width="120" Height="24">Add Location</Button>
+            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Content="Locations"/>
+            <local:InstallationLocationsControl x:Name="InstallationLocations" Grid.Row="1" Grid.Column="1" Background="{StaticResource EmptySpaceBetweenWhiteItems}"/>
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Center" TextWrapping="Wrap"  Foreground="Red" Style="{StaticResource NoLocationsStyle}">Add at least one enabled DCS installation location.</TextBlock>
+                <Button Grid.Row="0" Grid.Column="1" Command="local:InstallationLocationsControl.AddInstallationLocationCommand" CommandTarget="{Binding ElementName=InstallationLocations}" Style="{StaticResource InterfaceEditorButton}">Add Location</Button>
+            </Grid>
         </Grid>
-    </Grid>
-</GroupBox>
+    </Expander>
+</Grid>

@@ -1,17 +1,21 @@
-﻿//  Helios is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  Helios is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+﻿// Copyright 2020 Helios Contributors
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using Newtonsoft.Json;
+using NLog;
 
 namespace GadrocsWorkshop.Helios
 {
@@ -22,11 +26,10 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public class StatusReportItem
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// This severity code mirrors the log levels where names are the same.
-        ///
         /// Note: It should be a nested class of StatusReportItem, but WPF bindings require it to be
         /// a top-level type.
         /// </summary>
@@ -63,13 +66,15 @@ namespace GadrocsWorkshop.Helios
         /// Additional information related to this status, expressed as a set of
         /// flags that may be set to communicate different facts.
         /// </summary>
-        [System.Flags]
+        [Flags]
         public enum StatusFlags
         {
             // no flags
             None = 0,
+
             // this status may be numerous or verbose and should be filtered in small status displays
             Verbose = 1,
+
             // this status indicates that some checked configuration item was up to date and does not need to regenerated
             ConfigurationUpToDate = 2
         }
@@ -88,22 +93,29 @@ namespace GadrocsWorkshop.Helios
         public string Recommendation { get; set; }
 
         /// <summary>
+        /// in the event that the status message was shortened or cleaned up, this
+        /// property will have the original full text, which is not safe for UI display
+        /// and should only be used for logging or sharing purposes
+        /// </summary>
+        [JsonProperty("FullText", NullValueHandling = NullValueHandling.Ignore)]
+        public string FullText { get; set; }
+
+        /// <summary>
         /// If this is not null and a consumer of this data has the capability of generating
         /// references or links, this value should be parsed and presented as a link to the
-        /// specified entities. 
+        /// specified entities.
         /// </summary>
-        [JsonIgnore]
-        public System.Uri Link;
+        [JsonIgnore] public Uri Link;
 
         /// <summary>
         /// utility to create a link to the profile editor without referring to any specific UI component
         /// </summary>
-        public static System.Uri ProfileEditor => new System.Uri($"{HELIOS_SCHEME}://{PROFILE_EDITOR_HOST}/");
+        public static Uri ProfileEditor => new Uri($"{HELIOS_SCHEME}://{PROFILE_EDITOR_HOST}/");
 
         /// <summary>
         /// utility to create a link to the control center without referring to any specific UI component
         /// </summary>
-        public static System.Uri ControlCenter => new System.Uri($"{HELIOS_SCHEME}://{CONTROL_CENTER_HOST}/");
+        public static Uri ControlCenter => new Uri($"{HELIOS_SCHEME}://{CONTROL_CENTER_HOST}/");
 
         /// <summary>
         /// log this result
@@ -114,13 +126,15 @@ namespace GadrocsWorkshop.Helios
             switch (Severity)
             {
                 case SeverityCode.None:
-                    throw new System.Exception($"Severity 'None' must not be used for any status report instances; implementation error");
+                    throw new Exception(
+                        "Severity 'None' must not be used for any status report instances; implementation error");
                 case SeverityCode.Info:
                     logManager.LogInfo(Status);
                     if (Recommendation != null)
                     {
                         logManager.LogInfo(Recommendation);
                     }
+
                     break;
                 case SeverityCode.Warning:
                     logManager.LogWarning(Status);
@@ -128,6 +142,7 @@ namespace GadrocsWorkshop.Helios
                     {
                         logManager.LogWarning(Recommendation);
                     }
+
                     break;
                 case SeverityCode.Error:
                     logManager.LogError(Status);
@@ -135,6 +150,7 @@ namespace GadrocsWorkshop.Helios
                     {
                         logManager.LogError(Recommendation);
                     }
+
                     break;
             }
         }

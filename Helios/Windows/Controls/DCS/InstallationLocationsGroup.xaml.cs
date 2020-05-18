@@ -2,7 +2,7 @@
 
 namespace GadrocsWorkshop.Helios.Windows.Controls.DCS
 {
-    public partial class InstallationLocationsGroup : GroupBox
+    public partial class InstallationLocationsGroup : Grid
     {
         public InstallationLocationsGroup()
         {

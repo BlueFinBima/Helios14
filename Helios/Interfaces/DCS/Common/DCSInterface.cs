@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -94,6 +95,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             activeDriver.ValueReceived += ActiveDriver_ValueReceived;
             AddFunction(new NetworkTrigger(this, "ALIVE", "Heartbeat",
                 "Received periodically if there is no other data received"));
+            NetworkTriggerValue alertMessage = new NetworkTriggerValue(this, "ALERT_MESSAGE", "AlertMessage",
+                "Export driver running on DCS.", "Most recent alert message");
+            AddFunction(alertMessage);
+            alertMessage.ValueReceived += AlertMessage_ValueReceived; ;
         }
 
         #region Events
@@ -292,6 +297,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             ProfileHintReceived?.Invoke(this, new ProfileHint {Tag = e.Text});
         }
 
+        private void AlertMessage_ValueReceived(object sender, NetworkTriggerValue.Value e)
+        {
+            string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(e.Text));
+            Logger.Error("Error received from Export.lua: {AlertMessage}", decoded);
+        }
+
         public override void Reset()
         {
             base.Reset();
@@ -307,7 +318,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
 
         protected override void OnProfileStopped()
         {
-            _protocol.Stop();
+            // our base classes aren't very logical, so sometimes we get called OnProfileStopped when the profile is not running
+            // so the _protocol may not be created
+            _protocol?.Stop();
             _protocol = null;
         }
 

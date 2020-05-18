@@ -6,6 +6,7 @@
              xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"                      
              xmlns:heliosViewModel="clr-namespace:GadrocsWorkshop.Helios.Windows.ViewModel;assembly=Helios"                      
              xmlns:heliosControls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util;assembly=Helios"
              xmlns:profileEditor="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
              mc:Ignorable="d"
              d:DesignHeight="490" 
@@ -14,170 +15,164 @@
              d:DataContext="{d:DesignInstance Type=heliosViewModel:MockInterfaceStatusViewModel, IsDesignTimeCreatable=true}"
              Name="InterfaceStatusWindow">
     <Grid.Resources>
-        <DataTemplate DataType="{x:Type heliosViewModel:ShareInterfaceStatus}">
-            <heliosControls:ShareDialog/>
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-            <Style.Triggers>
-                <Trigger Property="Text" Value="">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+            <DataTemplate DataType="{x:Type heliosViewModel:ShareInterfaceStatus}">
+                <heliosControls:ShareDialog/>
+            </DataTemplate>
 
-        <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Style.Triggers>
-                <Trigger Property="Content" Value="">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        
-        <!-- modified copy from Profile Editor App.xaml to add more margin to textblock and remove lines -->
-        <Style x:Key="SettingsExpander" TargetType="Expander">
-            <Setter Property="Margin" Value="6,6,0,6"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Expander}">
-                        <StackPanel Margin="0,0,0,0">
-                            <Border
-                                    Name="Border"
-                                    BorderBrush="#FFA0A0A0" 
-                                    BorderThickness="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=BorderThickness, TargetNullValue='0,0,0,1'}">
-                                <ToggleButton 
-                                        IsChecked="{Binding Path=IsExpanded,Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                        OverridesDefaultStyle="True" 
-                                        Template="{StaticResource ExpanderToggleButton}"
-                                        HorizontalAlignment="Stretch">
-                                    <TextBlock Text="{TemplateBinding Header}" Style="{StaticResource Heading1}" Margin="4,2,64,2"/>
-                                </ToggleButton>
-                            </Border>
-                            <ContentPresenter Name="ExpandSite" Visibility="Collapsed" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" Content="{TemplateBinding Content}" />
-                        </StackPanel>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsExpanded" Value="True">
-                                <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="SettingsButton" TargetType="Button">
-            <Setter Property="Margin" Value="12,6"/>
-            <Setter Property="MaxWidth" Value="120"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
+            <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Style.Triggers>
+                    <Trigger Property="Content" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            
+            <!-- modified copy from Profile Editor App.xaml to add more margin to textblock and remove lines -->
+            <Style x:Key="SettingsExpander" TargetType="Expander">
+                <Setter Property="Margin" Value="6,6,0,6"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Expander}">
+                            <StackPanel Margin="0,0,0,0">
+                                <Border
+                                        Name="Border"
+                                        BorderBrush="#FFA0A0A0" 
+                                        BorderThickness="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=BorderThickness, TargetNullValue='0,0,0,1'}">
+                                    <ToggleButton 
+                                            IsChecked="{Binding Path=IsExpanded,Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                            OverridesDefaultStyle="True" 
+                                            Template="{StaticResource ExpanderToggleButton}"
+                                            HorizontalAlignment="Stretch">
+                                        <TextBlock Text="{TemplateBinding Header}" Style="{StaticResource Heading1}" Margin="4,2,64,2"/>
+                                    </ToggleButton>
+                                </Border>
+                                <ContentPresenter Name="ExpandSite" Visibility="Collapsed" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" Content="{TemplateBinding Content}" />
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsExpanded" Value="True">
+                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <ControlTemplate x:Key="FontIconButton" TargetType="Button">
-            <Grid Margin="7,0">
-                <Border Height="Auto" Margin="0,0,0,0" x:Name="MouseOverBackground" VerticalAlignment="Stretch" Opacity="0" Background="#FFBDBDBD" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" />
-                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="Black" Content="{TemplateBinding Content}"/>
-            </Grid>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="MouseOverBackground" Property="Opacity" Value="0.2" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        
-        <Style x:Key="FailureVisible" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="Error"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="SettingsButton" TargetType="Button">
+                <Setter Property="Margin" Value="12,6"/>
+                <Setter Property="MaxWidth" Value="120"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
 
-        <Style x:Key="WarningVisible" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="Warning"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="FailureVisible" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="UIElement.Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="Error"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="CautionVisible" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="Info"/>
-                        <Condition Binding="{Binding HasRecommendation}" Value="True"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        
-        <!-- starts out expanded, and keeps expanding every time a failure state is reached -->
-        <Style x:Key="FailureExpanded" TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
-            <Setter Property="IsExpanded" Value="True"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="Error"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="IsExpanded" Value="True"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="Warning"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="IsExpanded" Value="True"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        
-        <Style x:Key="SuccessVisible" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="UIElement.Visibility" Value="Hidden"/>
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="Info"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding Status}" Value="None"/>
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="UIElement.Visibility" Value="Visible"/>
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="WarningVisible" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="Warning"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
 
-        <CollectionViewSource Source="{Binding Items}" x:Key="sortByInterfaceName">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Data.Name" Direction="Ascending"/>
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+            <Style x:Key="CautionVisible" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="UIElement.Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="Info"/>
+                            <Condition Binding="{Binding HasRecommendation}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            
+            <!-- starts out expanded, and keeps expanding every time a failure state is reached -->
+            <Style x:Key="FailureExpanded" TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+                <Setter Property="IsExpanded" Value="True"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="Error"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="IsExpanded" Value="True"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="Warning"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="IsExpanded" Value="True"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            
+            <Style x:Key="SuccessVisible" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="UIElement.Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="Info"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Status}" Value="None"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="UIElement.Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <CollectionViewSource Source="{Binding Items}" x:Key="sortByInterfaceName">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="Data.Name" Direction="Ascending"/>
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+        </ResourceDictionary>
     </Grid.Resources>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
@@ -187,22 +182,22 @@
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <Border Grid.Row="0" Grid.Column="0" Background="White" BorderThickness="0,0,0,2">
+    <Border Grid.Row="0" Grid.Column="0" Background="White" BorderThickness="0">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Margin="12" Text="Interfaces installed in the current Profile:" FontSize="16"/>
-            <Button Grid.Column="1" Margin="6" Content="&#xE710;" Command="profileEditor:ProfileEditorCommands.AddInterface" Template="{StaticResource FontIconButton}" ToolTip="Add another interface to the Profile"/>
+            <Button Grid.Column="1" Margin="6,6,10,6" Content="&#xE710;" Command="profileEditor:ProfileEditorCommands.AddInterface" Template="{StaticResource FontIconButton}" ToolTip="Add another interface to the Profile"/>
         </Grid>
     </Border>
-    <ScrollViewer Grid.Row="1" Grid.Column="0">
+    <ScrollViewer Grid.Row="1" Grid.Column="0" Background="{StaticResource EmptySpaceBetweenWhiteItems}">
         <StackPanel>
-            <ItemsControl Background="#e8e8e8" ItemsSource="{Binding Source={StaticResource sortByInterfaceName}}">
+            <ItemsControl Background="{StaticResource EmptySpaceBetweenWhiteItems}"  ItemsSource="{Binding Source={StaticResource sortByInterfaceName}}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="6,6,6,0" Padding="3" CornerRadius="6" BorderThickness="0" Background="White">
+                        <Border Margin="9,9,9,0" Padding="3,3,3,12" CornerRadius="6" BorderThickness="0" Background="White">
                             <Grid Background="White">
                                 <Grid.ColumnDefinitions>
                                     <!-- left controls -->
@@ -219,7 +214,6 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="12"/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="Green" Content="&#xE930;" Style="{StaticResource SuccessVisible}" ToolTip="{Binding StatusNarrative}"/>
                                 <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="30" Foreground="#FFBF00" Content="&#xE7BA;" Style="{StaticResource WarningVisible}" ToolTip="{Binding StatusNarrative}"/>
@@ -228,7 +222,7 @@
                                     <TextBlock Style="{StaticResource Heading1}" VerticalAlignment="Center" Text="{Binding Path=Data.Name}" ToolTip="{Binding Path=Data.Description}"/>
                                 </WrapPanel>
                                 <Button Grid.Row="1" Grid.Column="2" Content="&#xE713;" Command="heliosViewModel:InterfaceStatusViewModel.GoThereCommand" CommandParameter="{Binding}" Template="{StaticResource FontIconButton}" Visibility="{Binding GoThereVisibility}" ToolTip="Configure this interface"/>
-                                <Expander Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">
+                                <Expander Grid.Row="3" Grid.Column="1" Header="Details" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" IsExpanded="{Binding DetailsExpanded}" Visibility="{Binding DetailsVisibility}">
                                     <!-- Expander appears very broken if used with a custom Header, so let's not use it -->
                                     <Expander.Content>
                                         <ItemsControl ItemsSource="{Binding Items}" Margin="10,0,0,0">
@@ -249,7 +243,7 @@
                                         </ItemsControl>
                                     </Expander.Content>
                                 </Expander>
-                                <Expander Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Header="Recommendations" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" Style="{StaticResource FailureExpanded}" Visibility="{Binding RecommendationsVisibility}">
+                                <Expander Grid.Row="4" Grid.Column="1" Header="Recommendations" HorizontalAlignment="Stretch" Margin="0,3" ExpandDirection="Down" Style="{StaticResource FailureExpanded}" Visibility="{Binding RecommendationsVisibility}">
                                     <!-- Expander is very broken if used with a custom Header because a global style in App.xaml assumes Header is text, so let's not use it -->
                                     <Expander.Content>
                                         <ItemsControl ItemsSource="{Binding Recommendations}" Margin="22,0,0,0">
@@ -261,7 +255,7 @@
                                         </ItemsControl>
                                     </Expander.Content>
                                 </Expander>
-                                <Button Grid.Row="5" Grid.Column="2" Content="&#xE74D;" Command="heliosViewModel:InterfaceStatusViewModel.DeleteInterfaceCommand" CommandParameter="{Binding Path=Data.Interface}" Template="{StaticResource FontIconButton}" ToolTip="{Binding Path=RemovalNarrative}"/>
+                                <Button Grid.Row="4" Grid.Column="2" VerticalAlignment="Bottom" Content="&#xE74D;" Command="heliosViewModel:InterfaceStatusViewModel.DeleteInterfaceCommand" CommandParameter="{Binding Path=Data.Interface}" Template="{StaticResource FontIconButton}" ToolTip="{Binding Path=RemovalNarrative}"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

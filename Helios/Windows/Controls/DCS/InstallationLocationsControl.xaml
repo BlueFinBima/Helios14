@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
     xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Util.DCS"
+    xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
     mc:Ignorable="d" 
     d:DesignHeight="250" 
     d:DesignWidth="400"
@@ -13,21 +14,26 @@
     Padding="0"
     HorizontalAlignment="Stretch"
     HorizontalContentAlignment="Stretch"
-    Background="{StaticResource EmptySpaceBetweenWhiteItems}"
     BorderBrush="Transparent"
     ItemsSource= "{Binding Items}"
     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
     d:DataContext="{d:DesignInstance Type=dcs:MockInstallationLocations, IsDesignTimeCreatable=true}">
     <ItemsControl.Resources>
-        <Style TargetType="Label">
-            <Setter Property="Margin" Value="0,0,3,0"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-        <Style x:Key="ValueBlock" TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,0,24,0"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="TextWrapping" Value="Wrap" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="Label">
+                <Setter Property="Margin" Value="0,0,3,0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            <Style x:Key="ValueBlock" TargetType="TextBlock">
+                <Setter Property="Margin" Value="0,0,24,0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
+        </ResourceDictionary>
     </ItemsControl.Resources>
     <ItemsControl.Template>
         <ControlTemplate TargetType="ItemsControl">

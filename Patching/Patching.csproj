@@ -33,6 +33,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DCS\AdditionalViewports.cs" />
+    <Compile Include="DCS\CombinedMonitorSetup.cs" />
+    <Compile Include="DCS\CombinedMonitorSetupControl.xaml.cs">
+      <DependentUpon>CombinedMonitorSetupControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DCS\CombinedMonitorSetupViewModel.cs" />
+    <Compile Include="DCS\CombinedMonitorSetupViewModel_DesignInstance.cs" />
+    <Compile Include="DCS\MonitorSetupTemplate.cs" />
+    <Compile Include="DCS\ViewportSetupFile.cs" />
+    <Compile Include="DCS\ViewportSetupFileStatus.cs" />
+    <Compile Include="DCS\ViewportSetupFileViewModel.cs" />
     <Compile Include="DCS\MonitorSetupGenerator.cs" />
     <Compile Include="DCS\MonitorSetupViewModel.cs" />
     <Compile Include="DCS\MonitorSetupEditor.xaml.cs">
@@ -67,6 +77,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DCS\CombinedMonitorSetupControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DCS\MonitorSetupEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

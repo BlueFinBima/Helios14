@@ -42,7 +42,6 @@
         <EllipseGeometry RadiusX="4" RadiusY="4"  />
     </GeometryGroup>
 
-
     <!-- Spectrum Slider Styles -->
     <Style x:Key="SliderRepeatButtonStyle"
          TargetType="{x:Type RepeatButton}">
@@ -123,7 +122,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <Style x:Key="VerticalSliderLeftThumbStyle"
          TargetType="{x:Type Thumb}">
@@ -240,8 +238,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
 
     <Style x:Key="{x:Type controls:SpectrumSlider}"
              TargetType="{x:Type controls:SpectrumSlider}">

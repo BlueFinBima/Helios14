@@ -1,3 +1,0 @@
-﻿@@ -193,135 +193,4 @@
- tion
--%0D%0Adofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22F_16C_RIGHT_MFCD%22%2C %22RIGHT_MFCD%22)%0D%0A
