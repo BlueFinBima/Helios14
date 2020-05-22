@@ -23,7 +23,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         OpenFalcon,
         [Description("Allied Forces")]
         AlliedForces,
-        [Description("BMS 4.3.2")]
+        [Description("BMS 4.34")]
         BMS
     }
 }
