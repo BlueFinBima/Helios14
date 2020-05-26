@@ -1,4 +1,19 @@
-﻿using System;
+﻿// Copyright 2020 Ammo Goettsch
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -201,7 +216,8 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                 new PropertyMetadata(Visibility.Visible));
 
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(ObservableCollection<InterfaceStatusViewItem>), typeof(InterfaceStatusViewSection),
+            DependencyProperty.Register("Items", typeof(ObservableCollection<InterfaceStatusViewItem>),
+                typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(null));
 
         public static readonly DependencyProperty RecommendationsProperty =
@@ -209,7 +225,8 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
                 typeof(InterfaceStatusViewSection), new PropertyMetadata(null));
 
         public static readonly DependencyProperty RecommendationsVisibilityProperty =
-            DependencyProperty.Register("RecommendationsVisibility", typeof(Visibility), typeof(InterfaceStatusViewSection),
+            DependencyProperty.Register("RecommendationsVisibility", typeof(Visibility),
+                typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(Visibility.Visible));
 
         public static readonly DependencyProperty StatusProperty =
@@ -223,7 +240,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
         public static readonly DependencyProperty RemovalNarrativeProperty =
             DependencyProperty.Register("RemovalNarrative", typeof(string), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata("Delete this interface and remove all of its bindings from the Profile."));
-        
+
         public static readonly DependencyProperty DetailsExpandedProperty =
             DependencyProperty.Register("DetailsExpanded", typeof(bool), typeof(InterfaceStatusViewSection),
                 new PropertyMetadata(false));

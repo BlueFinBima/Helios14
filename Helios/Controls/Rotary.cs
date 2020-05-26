@@ -13,49 +13,59 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.ComponentModel;
+using System.Globalization;
+using System.Xml;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
     using System;
     using System.Windows;
 
-    public abstract class Rotary : HeliosVisual
+    public abstract class Rotary : HeliosVisual, IRotaryBase
     {
-        private string _knobImage;
-        private double _rotation;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private double _repeatDelay = 750d;
-        private double _repeatRate = 200d;
-        private int _lastRepeat = int.MinValue;
-        private int _lastPulse = int.MinValue;
-        private bool _repeating = false;
-        private bool _increment = false;
-
-        private const double SWIPE_SENSITIVY_BASE = 45d;
-
-        private bool _mouseDown = false;
-        private Point _mouseDownLocation;
+        private bool _mouseDown;
 
         private ClickType _clickType = ClickType.Swipe;
+
         private bool _mouseWheelAction = true;
-        private CalibrationPointCollectionDouble _swipeCalibration;
-        private double _swipeThreshold = 45d;
-        private double _swipeSensitivity = 0d;
+
+        /// <summary>
+        /// current mouse/touch interaction, or null
+        /// </summary>
+        private IRotaryInteraction _interaction;
+
+        /// <summary>
+        /// relative sensitivity from -1 to 1, with 0 being default
+        /// </summary>
+        private double _sensitivity;
+
+        /// <summary>
+        /// backing field for property VisualizeInteraction, contains
+        /// true if interaction style is allowed to draw additional visual
+        /// representations of interaction
+        /// </summary>
+        private bool _visualizeInteraction;
+
+        /// <summary>
+        /// backing field for property Routable, contains
+        /// true if this control can be attached to a Control Router by selecting it and then
+        /// providing input into the Control Router
+        /// </summary>
+        private bool _routable = true;
 
         protected Rotary(string name, Size defaultSize)
             : base(name, defaultSize)
         {
-            _swipeCalibration = new CalibrationPointCollectionDouble(-1d, 2d, 1d, 0.5d);
-            _swipeCalibration.Add(new CalibrationPointDouble(0.0d, 1d));
         }
 
         #region Properties
 
         public ClickType ClickType
         {
-            get
-            {
-                return _clickType;
-            }
+            get { return _clickType; }
             set
             {
                 if (!_clickType.Equals(value))
@@ -63,16 +73,35 @@ namespace GadrocsWorkshop.Helios.Controls
                     ClickType oldValue = _clickType;
                     _clickType = value;
                     OnPropertyChanged("ClickType", oldValue, value, true);
+                    if (value == ClickType.Radial)
+                    {
+                        VisualizeInteraction = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// this is the relative sensitivity for multiple interaction styles, but it is called
+        /// "Sensitivity" to remain compatible with config, legacy classes, and the UI
+        /// </summary>
+        public double Sensitivity
+        {
+            get { return _sensitivity; }
+            set
+            {
+                if (!_sensitivity.Equals(value))
+                {
+                    double oldValue = _sensitivity;
+                    _sensitivity = value;
+                    OnPropertyChanged("Sensitivity", oldValue, value, true);
                 }
             }
         }
 
         public bool MouseWheelAction
         {
-            get
-            {
-                return _mouseWheelAction;
-            }
+            get { return _mouseWheelAction; }
             set
             {
                 if (!_clickType.Equals(value))
@@ -84,128 +113,81 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public double SwipeSensitivity
+        /// <summary>
+        /// true if interaction style is allowed to draw additional visual
+        /// representations of interaction
+        /// </summary>
+        public bool VisualizeInteraction
         {
-            get
-            {
-                return _swipeSensitivity;
-            }
+            get => _visualizeInteraction;
             set
             {
-                if (!_swipeSensitivity.Equals(value))
-                {
-                    double oldValue = _swipeSensitivity;
-                    _swipeSensitivity = value;
-                    _swipeThreshold = SWIPE_SENSITIVY_BASE * _swipeCalibration.Interpolate(_swipeSensitivity);
-                    OnPropertyChanged("SwipeSensitivity", oldValue, value, true);
-                }
+                if (_visualizeInteraction == value) return;
+                bool oldValue = _visualizeInteraction;
+                _visualizeInteraction = value;
+                OnPropertyChanged("VisualizeInteraction", oldValue, value, true);
             }
         }
 
-        public string KnobImage
+        /// <summary>
+        /// true if this control can be attached to a Control Router by selecting it and then
+        /// providing input into the Control Router
+        /// </summary>
+        public bool Routable
         {
-            get
-            {
-                return _knobImage;
-            }
+            get => _routable;
             set
             {
-                if ((_knobImage == null && value != null)
-                    || (_knobImage != null && !_knobImage.Equals(value)))
-                {
-                    string oldValue = _knobImage;
-                    _knobImage = value;
-                    OnPropertyChanged("KnobImage", oldValue, value, true);
-                    Refresh();
-                }
+                if (_routable == value) return;
+                bool oldValue = _routable;
+                _routable = value;
+                OnPropertyChanged("Routable", oldValue, value, true);
             }
         }
 
-        public double KnobRotation
-        {
-            get
-            {
-                return _rotation;
-            }
-            protected set
-            {
-                if (!_rotation.Equals(value))
-                {
-                    double oldValue = _rotation;
-                    _rotation = value % 360d;
-                    OnPropertyChanged("KnobRotation", oldValue, value, false);
-                    OnDisplayUpdate();
-                }
-            }
-        }
+        internal bool VisualizeDragging => VisualizeInteraction && (_interaction?.VisualizeDragging ?? false);
 
-        public double RepeatDelay
-        {
-            get
-            {
-                return _repeatDelay;
-            }
-            set
-            {
-                if (!_repeatDelay.Equals(value))
-                {
-                    double oldValue = _repeatDelay;
-                    _repeatDelay = value;
-                    OnPropertyChanged("RepeatDelay", oldValue, value, true);
-                }
-            }
-        }
+        // REVISIT: we don't currently advertise this visualization through IRotaryInteraction, because only one type supports it
+        internal Point DragPoint => (_interaction as RadialRotaryInteraction)?.DragPoint ?? GenerateCenterPoint();
 
-        public double RepeatRate
-        {
-            get
-            {
-                return _repeatRate;
-            }
-            set
-            {
-                if (!_repeatRate.Equals(value))
-                {
-                    double oldValue = _repeatRate;
-                    _repeatRate = value;
-                    OnPropertyChanged("RepeatRate", oldValue, value, true);
-                }
-            }
-        }
+        public override bool CanConsumeMouseWheel => _mouseWheelAction;
 
         #endregion
 
-        protected abstract void Pulse(bool increment);
-
-        private Vector VectorFromCenter(Point devicePosition)
-        {
-            return devicePosition - new Point(DisplayRectangle.Width / 2, DisplayRectangle.Height / 2);
-        }
-
-        private double GetAngle(Point startPoint, Point endPoint)
-        {
-            return Vector.AngleBetween(VectorFromCenter(startPoint), VectorFromCenter(endPoint));
-        }
+        private Point GenerateCenterPoint() => new Point(DisplayRectangle.Width / 2, DisplayRectangle.Height / 2);
 
         public override void MouseDown(Point location)
         {
-            if (_clickType == ClickType.Touch)
+            _mouseDown = true;
+            switch (_clickType)
             {
-                _increment = (location.X > Width / 2d);
-                Pulse(_increment);
-                _repeating = false;
-                _repeatRate = 200d;
-                _lastRepeat = Environment.TickCount & Int32.MaxValue;
-
-                if (Parent != null && Parent.Profile != null)
+                case ClickType.Touch:
                 {
-                    Parent.Profile.ProfileTick += new EventHandler(Profile_ProfileTick);
+                    TouchRotaryInteraction touchInteraction = 
+                        new TouchRotaryInteraction(ControlAngle, GenerateCenterPoint(), location, Sensitivity);
+                    Pulse(touchInteraction.Pulses);
+                    _interaction = touchInteraction;
+                    if (Parent?.Profile != null)
+                    {
+                        Parent.Profile.ProfileTick += Profile_ProfileTick;
+                    }
+                    break;
                 }
+                case ClickType.Swipe:
+                    _interaction =
+                        new SwipeRotaryInteraction(ControlAngle, GenerateCenterPoint(), location, Sensitivity);
+                    break;
+                case ClickType.Radial:
+                    _interaction =
+                        new RadialRotaryInteraction(ControlAngle, GenerateCenterPoint(), location, Sensitivity);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            else if (_clickType == ClickType.Swipe)
+
+            if (Routable)
             {
-                _mouseDown = true;
-                _mouseDownLocation = location;
+                Profile?.OnRoutableControlSelected(this);
             }
         }
 
@@ -213,56 +195,132 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             if (_mouseWheelAction)
             {
-                Pulse(delta > 0);
+                // NOTE: ignoring mouse wheel speed because unit is unclear
+                Pulse(delta < 1 ? -1 : 1);
             }
         }
 
-        void Profile_ProfileTick(object sender, EventArgs e)
+        private void Profile_ProfileTick(object sender, EventArgs e)
         {
-            int currentTick = Environment.TickCount & Int32.MaxValue;
-
-            if (_repeating && (currentTick < _lastPulse || (currentTick - _lastPulse > _repeatRate)))
-            {
-                Pulse(_increment);
-                _lastPulse = currentTick;
-            }
-
-            if (currentTick < _lastRepeat || (currentTick - _lastRepeat > _repeatDelay))
-            {
-                if (_repeating && _repeatRate > 33)
-                {
-                    _repeatRate = _repeatRate / 2;
-                    if (_repeatRate < 33) _repeatRate = 33;
-                }
-                Pulse(_increment);
-                _lastPulse = currentTick;
-                _lastRepeat = currentTick;
-                _repeating = true;
-            }
+            _interaction?.Update(this, GenerateCenterPoint());
         }
 
         public override void MouseDrag(Point location)
         {
-            if (_mouseDown && _clickType == ClickType.Swipe)
+            if (!_mouseDown)
             {
-                double newAngle = GetAngle(_mouseDownLocation, location);
+                return;
+            }
 
-                if (Math.Abs(newAngle) > _swipeThreshold)
-                {
-                    bool increment = (newAngle > 0);
-                    Pulse(increment);
-                    _mouseDownLocation = location;
-                }
+            if (_interaction?.Update(this, location) ?? false)
+            {
+                // control already updated
+                return;
+            }
+
+            if (VisualizeDragging)
+            {
+                // update the visualization
+                OnDisplayUpdate();
             }
         }
 
         public override void MouseUp(Point location)
         {
+            bool dirty = VisualizeDragging;
+
             _mouseDown = false;
-            if (Parent != null && Parent.Profile != null)
+
+            if (_clickType == ClickType.Touch)
             {
-                Parent.Profile.ProfileTick -= new EventHandler(Profile_ProfileTick);
+                if (Parent != null && Parent.Profile != null)
+                {
+                    Parent.Profile.ProfileTick -= Profile_ProfileTick;
+                }
+            }
+
+            _interaction = null;
+
+            // clean up drag visualization
+            if (dirty)
+            {
+                Refresh();
             }
         }
+
+        // helper to read XML for optional configuration that is shared across descendants
+        protected virtual void ReadOptionalXml(XmlReader reader)
+        {
+            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+            while (reader.NodeType == XmlNodeType.Element && reader.Name != "Children")
+            {
+                switch (reader.Name)
+                {
+                    case "ClickType":
+                        reader.ReadStartElement("ClickType");
+                        ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("Type"));
+                        if (reader.Name == "Sensitivity")
+                        {
+                            Sensitivity = double.Parse(reader.ReadElementString("Sensitivity"), CultureInfo.InvariantCulture);
+                        }
+                        reader.ReadEndElement();
+                        break;
+                    case "MouseWheelAction":
+                    case "MouseWheel":
+                        MouseWheelAction = (bool)bc.ConvertFromInvariantString(reader.ReadElementString());
+                        break;
+                    case "Routable":
+                        Routable = (bool)bc.ConvertFromInvariantString(reader.ReadElementString());
+                        break;
+                    case "VisualizeInteraction":
+                        VisualizeInteraction = (bool)bc.ConvertFromInvariantString(reader.ReadElementString());
+                        break;
+                    default:
+                        // ignore unsupported settings
+                        string discard = reader.ReadElementString(reader.Name);
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        break;
+                }
+            }
+        }
+
+        // helper to writer XML for optional configuration that is shared across descendants
+        protected virtual void WriteOptionalXml(XmlWriter writer)
+        {
+            if (ClickType != ClickType.Swipe || Sensitivity != 0.0)
+            {
+                writer.WriteStartElement("ClickType");
+                writer.WriteElementString("Type", ClickType.ToString());
+                if (ClickType != ClickType.Touch)
+                {
+                    writer.WriteElementString("Sensitivity", Sensitivity.ToString(CultureInfo.InvariantCulture));
+                }
+                writer.WriteEndElement();
+            }
+            if (!MouseWheelAction)
+            {
+                writer.WriteElementString("MouseWheel", MouseWheelAction.ToString(CultureInfo.InvariantCulture));
+            }
+            if (VisualizeInteraction || ClickType == ClickType.Radial)
+            {
+                writer.WriteElementString("VisualizeInteraction", VisualizeInteraction.ToString(CultureInfo.InvariantCulture));
+            }
+            if (!Routable)
+            {
+                writer.WriteElementString("Routable", Routable.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+
+        #region IPulsedControl
+
+        public abstract void Pulse(int pulses);
+
+        #endregion
+
+        #region IRotaryControl
+
+        public abstract double ControlAngle { get; set; }
+
+        #endregion
     }
 }

@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Linq;
+using GadrocsWorkshop.Helios.Controls;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities.ProfileAwareInterface;
 
@@ -28,6 +30,8 @@ namespace GadrocsWorkshop.Helios
 
     public class HeliosProfile : NotificationObject, IReadyCheck
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private bool _invalidVersion = false;
         private bool _dirty = false;
         private bool _layoutChecked = false;
@@ -42,7 +46,6 @@ namespace GadrocsWorkshop.Helios
         private MonitorCollection _monitors = new MonitorCollection();
         private HeliosInterfaceCollection _interfaces = new HeliosInterfaceCollection();
         private HashSet<string> _tags = new HashSet<string>();
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public HeliosProfile() : this(true)
         {
@@ -78,8 +81,8 @@ namespace GadrocsWorkshop.Helios
         public event EventHandler ControlCenterShown;
         public event EventHandler ControlCenterHidden;
         public event EventHandler ProfileStarted;
-        public event EventHandler ProfileStopped;
         public event EventHandler ProfileTick;
+        public event EventHandler ProfileStopped;
 
         // this event indicates that some interface received an indication that a profile that 
         // matches the specified hint should be loaded
@@ -92,6 +95,10 @@ namespace GadrocsWorkshop.Helios
         // this event indicates that some interface may have connected to a different endpoint
         // than before
         public event EventHandler<ClientChange> ClientChanged;
+
+        // this event is fired when a control that allows being connected to control routers
+        // has been selected for input in some way
+        public event EventHandler<ControlEventArgs> RoutableControlSelected;
 
         #region Properties
 
@@ -167,6 +174,16 @@ namespace GadrocsWorkshop.Helios
             {
                 _loadTime = value;
             }
+        }
+
+        /// <summary>
+        /// called when a control that allows being connected to control routers
+        ///  has been selected for input in some way
+        /// </summary>
+        /// <param name="visual"></param>
+        public void OnRoutableControlSelected(HeliosVisual visual)
+        {
+            RoutableControlSelected?.Invoke(this, new ControlEventArgs(visual));
         }
 
         public bool IsInvalidVersion
@@ -323,12 +340,21 @@ namespace GadrocsWorkshop.Helios
         {
             // any interfaces that care should now provide information for the newly loaded profile
             string shortName = System.IO.Path.GetFileNameWithoutExtension(Path);
-            foreach (HeliosInterface heliosInterface in _interfaces)
+            foreach (IProfileAwareInterface profileAware in _interfaces.OfType<IProfileAwareInterface>())
             {
-                if (heliosInterface is IProfileAwareInterface profileAware)
-                {
-                    profileAware.RequestDriver(shortName);
-                }
+                profileAware.RequestDriver(shortName);
+            }
+        }
+
+        /// <summary>
+        /// called when this profile is unloaded, for example because a different profile is loaded or on exit
+        /// </summary>
+        public void Unload()
+        {
+            foreach (HeliosInterface heliosInterface in Interfaces)
+            {
+                // detach interfaces, so they can shut down
+                heliosInterface.Profile = null;
             }
         }
 

@@ -142,7 +142,7 @@
     <Style x:Key="InterfaceEditorLabel" TargetType="{x:Type Label}">
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Margin" Value="0,6,0,0" />
-        <Setter Property="Padding" Value="3" />
+        <Setter Property="Padding" Value="5,3" />
         <Setter Property="MinHeight" Value="24" />
     </Style>
 

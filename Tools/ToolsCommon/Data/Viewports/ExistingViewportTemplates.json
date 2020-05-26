@@ -63,7 +63,8 @@
       },
       {
         "viewportName": "F14_ECMD",
-        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\ElectronicCounterMeasureDisplay\\Indicator\\init.lua",
+        "relativeInitFilePath":
+          "Mods\\aircraft\\F14\\Cockpit\\Scripts\\ElectronicCounterMeasureDisplay\\Indicator\\init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 0,
@@ -73,7 +74,8 @@
       },
       {
         "viewportName": "F14_HSD",
-        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\HorizontalSituationDisplay\\Indicator\\init.lua",
+        "relativeInitFilePath":
+          "Mods\\aircraft\\F14\\Cockpit\\Scripts\\HorizontalSituationDisplay\\Indicator\\init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 0,
@@ -83,7 +85,8 @@
       },
       {
         "viewportName": "F14_TID",
-        "relativeInitFilePath": "Mods\\aircraft\\F14\\Cockpit\\Scripts\\TacticalInformationDisplay\\Indicator\\init.lua",
+        "relativeInitFilePath":
+          "Mods\\aircraft\\F14\\Cockpit\\Scripts\\TacticalInformationDisplay\\Indicator\\init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 0,

@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,6 +12,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 using System;
 using System.Collections.Generic;
@@ -458,22 +459,45 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         public override void ReadXml(XmlReader reader)
         {
-            switch (reader.Name)
+            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+            while (reader.NodeType == XmlNodeType.Element && reader.Name != "Children")
             {
-                case "GenerateCombined":
-                    TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
-                    string text = reader.ReadElementString("GenerateCombined");
-                    _generateCombined = bc.ConvertFromInvariantString(text) as bool? ?? false;
-                    break;
+                switch (reader.Name)
+                {
+                    case "GenerateCombined":
+                    {
+                        string text = reader.ReadElementString("GenerateCombined");
+                        _generateCombined = bc.ConvertFromInvariantString(text) as bool? ?? true;
+                        break;
+                    }
+                    case "UsingViewportProvider":
+                    {
+                        string text = reader.ReadElementString("UsingViewportProvider");
+                        _usingViewportProvider = bc.ConvertFromInvariantString(text) as bool? ?? true;
+                        break;
+                    }
+                    default:
+                    {
+                        // ignore unsupported settings
+                        string discard = reader.ReadElementString(reader.Name);
+                        ConfigManager.LogManager.LogWarning(
+                            $"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        break;
+                    }
+                }
             }
         }
 
         public override void WriteXml(XmlWriter writer)
         {
+            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
             if (!_generateCombined)
             {
-                TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
                 writer.WriteElementString("GenerateCombined", bc.ConvertToInvariantString(false));
+            }
+            if (!_usingViewportProvider)
+            {
+                writer.WriteElementString("UsingViewportProvider", bc.ConvertToInvariantString(false));
             }
         }
 
@@ -550,6 +574,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
             }
 
             IEnumerable<string> keys = Monitors
+                .Where(m => m.Included)
                 .OrderBy(m => m.Monitor.Left)
                 .ThenBy(m => m.Monitor.Top)
                 .Select(CalculateMonitorKey);
@@ -664,6 +689,28 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
 
         internal string MonitorLayoutKey { get; private set; }
 
+        /// <summary>
+        /// backing field for property UsingViewportProvider, contains
+        /// true if Helios IViewportProvider is the source of
+        /// additional viewports, and false if external solution is used
+        /// </summary>
+        private bool _usingViewportProvider = true;
+
+        /// <summary>
+        /// true if Helios IViewportProvider is the source of
+        /// additional viewports, and false if external solution is used
+        /// </summary>
+        public bool UsingViewportProvider
+        {
+            get => _usingViewportProvider;
+            set
+            {
+                if (_usingViewportProvider == value) return;
+                bool oldValue = _usingViewportProvider;
+                _usingViewportProvider = value;
+                OnPropertyChanged("UsingViewportProvider", oldValue, value, true);
+            }
+        }
         #endregion
 
         #region IExtendedDescription

@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,6 +12,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 using System;
 using System.Collections.Generic;
@@ -180,6 +181,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                     $"the Visual object {oldChild.Name} of type {oldChild.TypeIdentifier} was not found in the data used for tracking viewports and monitors; probable program error");
                 return;
             }
+
             ShadowVisual shadow = _children[oldChild];
             shadow.Dispose();
             _children.Remove(oldChild);

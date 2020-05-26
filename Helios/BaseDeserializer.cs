@@ -13,6 +13,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Interfaces.Unsupported;
+
 namespace GadrocsWorkshop.Helios
 {
     using System.Windows;
@@ -21,9 +26,11 @@ namespace GadrocsWorkshop.Helios
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+        protected Dictionary<string, HeliosInterfaceDescriptor> DiscoveredAliases { get; set; }
+
         #region Object Creation Methods
 
-        protected object CreateNewObject(string type, string typeId)
+        protected object CreateNewObject(string type, string typeId, ComponentUnsupportedSeverity ifUnsupported = ComponentUnsupportedSeverity.Error)
         {
             switch (type)
             {
@@ -44,10 +51,34 @@ namespace GadrocsWorkshop.Helios
                     HeliosInterfaceDescriptor descriptor = ConfigManager.ModuleManager.InterfaceDescriptors[typeId];
                     if (descriptor == null)
                     {
-                        Logger.Error("Ignoring interface not supported by this version of Helios: " + typeId);
-                        return null;
+                        switch (ifUnsupported)
+                        {
+                            case ComponentUnsupportedSeverity.Error:
+                                Logger.Error("Ignoring interface not supported by this version of Helios: {TypeId}; bindings to this interface will fail", typeId);
+                                return null;
+                            case ComponentUnsupportedSeverity.Warning:
+                                Logger.Warn("Ignoring interface not supported by this version of Helios: {TypeId}; bindings to this interface will fail", typeId);
+                                return null;
+                            case ComponentUnsupportedSeverity.Ignore:
+                                Logger.Info("Ignoring interface not supported by this version of Helios: {TypeId}; bindings to this interface will be silently ignored", typeId);
+                                // create a dummy interface that preserves the XML and ignores but allows writing of all bindings
+                                UnsupportedInterface dummy = new UnsupportedInterface();
+                                dummy.RepresentedTypeIdentifier = typeId;
+                                dummy.Dispatcher = Application.Current.Dispatcher;
+
+                                // record interface type alias, but don't install it yet because we may read more instances of this interface
+                                // alias will allow resolution of the unsupported class to our dummy for use in places where we try to instantiate the editor
+                                HeliosInterfaceDescriptor dummyDescriptor = ConfigManager.ModuleManager.InterfaceDescriptors[UnsupportedInterface.TYPE_IDENTIFIER];
+                                if (DiscoveredAliases != null)
+                                {
+                                    DiscoveredAliases[typeId] = dummyDescriptor;
+                                }
+                                return dummy;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(ifUnsupported), ifUnsupported, null);
+                        }
                     }
-                    HeliosInterface heliosInterface = descriptor != null ? descriptor.CreateInstance() : null;
+                    HeliosInterface heliosInterface = descriptor.CreateInstance();
                     if (heliosInterface != null)
                     {
                         heliosInterface.Dispatcher = Application.Current.Dispatcher;

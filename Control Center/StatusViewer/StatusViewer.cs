@@ -263,11 +263,12 @@ namespace GadrocsWorkshop.Helios.ControlCenter.StatusViewer
 
             StatusReportItem item = new StatusReportItem
             {
-                TimeStamp = eventInfo.TimeStamp.ToString("MM/dd/yyyy hh:mm:ss.fff tt"),
+                TimeStamp = StatusReportItem.CreateTimeStamp(eventInfo.TimeStamp),
                 Severity = code,
                 Status = trimmedMessage,
                 Recommendation = recommendation,
-                FullText = fullText
+                FullText = fullText,
+                Flags = StatusReportItem.StatusFlags.TimeStampIsPrecise
             };
             AddItem(item);
         }

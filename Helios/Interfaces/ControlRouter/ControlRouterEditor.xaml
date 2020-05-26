@@ -1,0 +1,52 @@
+﻿<controls:HeliosInterfaceEditor x:Class="GadrocsWorkshop.Helios.Interfaces.ControlRouter.ControlRouterEditor"
+                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                xmlns:controls="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"
+                                xmlns:local="clr-namespace:GadrocsWorkshop.Helios.Interfaces.ControlRouter"
+                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
+                                mc:Ignorable="d"
+                                Background="{StaticResource EmptySpaceBetweenWhiteItems}"
+                                d:DataContext="{d:DesignInstance Type=local:ControlRouterViewModel, IsDesignTimeCreatable=False}"
+                                d:DesignHeight="450" d:DesignWidth="800">
+    <controls:HeliosInterfaceEditor.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <util:DesignTimeEditorResources />
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type local:ControlRouterPort}">
+                <Border Margin="9,9,9,0" Padding="3,3,3,12" CornerRadius="6" BorderThickness="0" Background="White">
+                    <Grid Margin="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="120" />
+                            <ColumnDefinition Width="Auto" MinWidth="80" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Heading1Label}"
+                               Content="{Binding Name}" />
+                        <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}"
+                               VerticalAlignment="Center" Content="Pulses per Revolution" />
+                        <controls:HeliosTextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"
+                                                Padding="3,0" Text="{Binding PulsesPerRevolution}" />
+                        <Label Grid.Row="2" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}"
+                               VerticalAlignment="Center" Content="Value at 0 Degrees" />
+                        <controls:HeliosTextBox Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center"
+                                                Padding="3,0" Text="{Binding ValueAtZeroDegrees}" />
+                        <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource InterfaceEditorLabel}"
+                               VerticalAlignment="Center" Content="Value Increase per Revolution" />
+                        <controls:HeliosTextBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"
+                                                Padding="3,0" Text="{Binding ValuePerRevolution}" />
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </controls:HeliosInterfaceEditor.Resources>
+    <ItemsControl Padding="0,0,0,12" Background="{StaticResource EmptySpaceBetweenWhiteItems}"
+                  ItemsSource="{Binding Data.Ports}" />
+</controls:HeliosInterfaceEditor>

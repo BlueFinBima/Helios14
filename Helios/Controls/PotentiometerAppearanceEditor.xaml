@@ -8,8 +8,18 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              Height="Auto" d:DesignWidth="180">
     <Grid Background="Transparent" Margin="6">
+        <Grid.Resources>
+            <Style x:Key="HideIfContinuous" TargetType="FrameworkElement">
+                <Setter Property="Visibility" Value="Visible"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Control.IsContinuous}" Value="true">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" MinWidth="50"/>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -27,12 +37,12 @@
 
         <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="4,10,2,2" Style="{StaticResource Heading2}">Rotation</TextBlock>
         <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right">
-            <Label.ToolTip>Position of knob at the pots minimum value.</Label.ToolTip> Min
+            <Label.ToolTip>Position of knob at the pots minimum value.</Label.ToolTip> Initial
         </Label>
-        <Slider Grid.Column="1" Grid.Row="3" Minimum="0" Maximum="360" Value="{Binding Control.InitialRotation}" Margin="2" GotFocus="MinPosition_GotFocus"/>
-        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right">
-            <Label.ToolTip>Position of knob at the pots maximum value.</Label.ToolTip> Max
+        <Slider Grid.Column="1" Grid.Row="3" Minimum="0" Maximum="360" Value="{Binding Control.InitialRotation}" Margin="2" GotFocus="InitialRotation_GotFocus"/>
+        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource HideIfContinuous}">
+            <Label.ToolTip>Relative rotation in degrees that is possible starting from the InitialRotation point.</Label.ToolTip> Travel
         </Label>
-        <Slider Grid.Column="1" Grid.Row="4" Minimum="0" Maximum="360" Value="{Binding Control.RotationTravel}" Margin="2" GotFocus="MaxPosition_GotFocus" />
+        <Slider Grid.Column="1" Grid.Row="4" Minimum="0" Maximum="360" Value="{Binding Control.RotationTravel}" Margin="2" GotFocus="RotationTravel_GotFocus" Style="{StaticResource HideIfContinuous}"/>
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

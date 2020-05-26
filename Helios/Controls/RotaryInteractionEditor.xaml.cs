@@ -1,4 +1,5 @@
 ﻿//  Copyright 2014 Craig Courtney
+//  Copyright 2020 Helios Contributors
 //    
 //  Helios is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -13,18 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+using System.Windows.Controls;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Windows.Controls;
-
     /// <summary>
-    /// Interaction logic for PotentiometerEndlessBehaviorEditor.xaml
+    /// UI for base behaviors common to all Rotary descendants
     /// </summary>
-    [HeliosPropertyEditor("Helios.Base.PotentiometerEndless", "Behavior")]
-    public partial class PotentiometerEndlessBehaviorEditor : HeliosPropertyEditor
+    public partial class RotaryInteractionEditor : Grid
     {
-        public PotentiometerEndlessBehaviorEditor()
+        public RotaryInteractionEditor()
         {
             InitializeComponent();
         }

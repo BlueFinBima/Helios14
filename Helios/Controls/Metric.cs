@@ -28,12 +28,12 @@
         protected ClickType _clickType = ClickType.Swipe;
         private CalibrationPointCollectionDouble _swipeCalibration;
         private double _swipeThreshold = 10;
-        private double _swipeSensitivity = 0d;
+        private double _sensitivity = 0d;
 
         private bool _clickableVertical = false;
         private bool _clickableHorizontal = false;
 
-        private bool _dragOneOnOne = false;
+        private bool _dragOneForOne = false;
 
         protected Metric ( string name, Size defaultSize )
             : base( name, defaultSize )
@@ -61,20 +61,20 @@
             }
         }
 
-        public double SwipeSensitivity
+        public double Sensitivity
         {
             get
             {
-                return _swipeSensitivity;
+                return _sensitivity;
             }
             set
             {
-                if ( !_swipeSensitivity.Equals( value ) )
+                if ( !_sensitivity.Equals( value ) )
                 {
-                    double oldValue = _swipeSensitivity;
-                    _swipeSensitivity = value;
-                    _swipeThreshold = SWIPE_SENSITIVY_BASE + (_swipeSensitivity * SWIPE_SENSITIVY_MODIFIER * -1);
-                    OnPropertyChanged( "SwipeSensitivity", oldValue, value, true );
+                    double oldValue = _sensitivity;
+                    _sensitivity = value;
+                    _swipeThreshold = SWIPE_SENSITIVY_BASE + (_sensitivity * SWIPE_SENSITIVY_MODIFIER * -1);
+                    OnPropertyChanged( "Sensitivity", oldValue, value, true );
                 }
             }
         }
@@ -212,15 +212,15 @@
             }
         }
 
-        public bool DragOneOnOne
+        public bool DragOneForOne
         {
             get
             {
-                return _dragOneOnOne;
+                return _dragOneForOne;
             }
             set
             {
-                this._dragOneOnOne = value;
+                this._dragOneForOne = value;
             }
         }
 
@@ -303,7 +303,7 @@
         {
             if ( _mouseDown && _clickType == ClickType.Swipe )
             {
-                if ( DragOneOnOne )
+                if ( DragOneForOne )
                 {
                     double increment = 0;
                     PulseType type = PulseType.None;

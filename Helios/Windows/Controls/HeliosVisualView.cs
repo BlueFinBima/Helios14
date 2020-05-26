@@ -13,6 +13,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.ComponentModel;
+using System.Diagnostics;
+using NLog;
+
 namespace GadrocsWorkshop.Helios.Windows.Controls
 {
     using System;
@@ -21,6 +25,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
     using System.Windows.Input;
     using System.Windows.Media;
 
+    [DebuggerDisplay("View for {Visual?.Name}")]
     public class HeliosVisualView : FrameworkElement
     {
         private List<HeliosVisualView> _children;
@@ -547,9 +552,68 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             }
         }
 
+        /// <summary>
+        /// previewing mouse wheel events to avoid consuming mouse wheel event
+        /// if ancestor or descendant control should be scrolling or otherwise processing it
+        /// instead
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
+        {
+            if (IsEnabled && (Visual?.CanConsumeMouseWheel ?? false))
+            {
+                // we want to process this mouse wheel interaction, but we have no default
+                // handler for preview mouse wheel, so we raise the event instead
+                e.Handled = true;
+                RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                {
+                    RoutedEvent = MouseWheelEvent,
+                    Source = this
+                });
+            }
+
+            // remainder of this code is based on https://serialseb.com/blog/2007/09/03/wpf-tips-6-preventing-scrollviewer-from/
+            if (e.Handled || ScrollViewerHelper.MouseWheelEventsOnStack.Contains(e))
+            {
+                // infinite loop prevented
+                return;
+            }
+
+            MouseWheelEventArgs previewEventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+            {
+                RoutedEvent = UIElement.PreviewMouseWheelEvent,
+                Source = this
+            };
+            UIElement originalSource = e.OriginalSource as UIElement;
+            ScrollViewerHelper.MouseWheelEventsOnStack.Add(previewEventArg);
+            originalSource?.RaiseEvent(previewEventArg);
+            ScrollViewerHelper.MouseWheelEventsOnStack.Remove(previewEventArg);
+
+            // at this point if no one else handled the event in our children, we do our job
+
+            if (previewEventArg.Handled)
+            {
+                // already handled
+                return;
+            }
+
+            // punt mouse wheel event upwards because we can't use it
+            e.Handled = true;
+            MouseWheelEventArgs eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+            {
+                RoutedEvent = MouseWheelEvent,
+                Source = this
+            };
+
+            // HeliosVisualView is not in the logical tree, so we navigate up the visual tree
+            (VisualParent as UIElement)?.RaiseEvent(eventArg);
+        }
+
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            if (this.IsEnabled)
+            // we won't normally receive this event if these are not both true, but check anyway in
+            // case of synthetic event
+            if (IsEnabled && Visual.CanConsumeMouseWheel)
             {
                 int delta = e.Delta;
                 Visual.MouseWheel(delta);

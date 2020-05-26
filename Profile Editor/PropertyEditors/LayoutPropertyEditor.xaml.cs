@@ -13,15 +13,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Windows;
+using GadrocsWorkshop.Helios.ComponentModel;
+using GadrocsWorkshop.Helios.Windows.Controls;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor.PropertyEditors
 {
-    using GadrocsWorkshop.Helios.ComponentModel;
-    using GadrocsWorkshop.Helios.Windows.Controls;
-    using System.ComponentModel;
-    using System.Windows;
-
     /// <summary>
-    /// Interaction logic for HeliosPanelNodePropertyEditor.xaml
+    /// base Layout editor, which is the top-most editor shown for all visual controls
     /// </summary>
     [HeliosPropertyEditor("*", "hply")]
     public partial class LayoutPropertyEditor : HeliosPropertyEditor, IDataErrorInfo
@@ -33,23 +35,31 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.PropertyEditors
 
         #region Properties
 
-        public override string Category
-        {
-            get
-            {
-                return "Layout";
-            }
-        }
+        public override string Category => "Layout";
 
         public string VisualName
         {
-            get { return (string)GetValue(VisualNameProperty); }
-            set { SetValue(VisualNameProperty, value); }
+            get => (string) GetValue(VisualNameProperty);
+            set => SetValue(VisualNameProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VisualName.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VisualNameProperty =
-            DependencyProperty.Register("VisualName", typeof(string), typeof(LayoutPropertyEditor), new PropertyMetadata(""));
+            DependencyProperty.Register("VisualName", typeof(string), typeof(LayoutPropertyEditor),
+                new PropertyMetadata(""));
+
+        /// <summary>
+        /// the friendly name of the HeliosControl type or null
+        /// </summary>
+        public string ControlTypeName
+        {
+            get => (string) GetValue(ControlTypeNameProperty);
+            set => SetValue(ControlTypeNameProperty, value);
+        }
+
+        public static readonly DependencyProperty ControlTypeNameProperty =
+            DependencyProperty.Register("ControlTypeName", typeof(string), typeof(LayoutPropertyEditor),
+                new PropertyMetadata(null));
 
         #endregion
 
@@ -58,7 +68,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.PropertyEditors
             if (e.Property == ControlProperty)
             {
                 VisualName = Control.Name;
+                LoadControlTypeName();
             }
+
             if (e.Property == VisualNameProperty)
             {
                 if ((this as IDataErrorInfo)["VisualName"] == null)
@@ -70,30 +82,50 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.PropertyEditors
             base.OnPropertyChanged(e);
         }
 
-        string IDataErrorInfo.Error
+        private void LoadControlTypeName()
         {
-            get { return null; }
+            Type controlType = Control.GetType();
+            foreach (object attribute in controlType.GetCustomAttributes(false))
+            {
+                if (!(attribute is HeliosControlAttribute controlAttribute))
+                {
+                    continue;
+                }
+
+                ControlTypeName = controlAttribute.Name;
+                return;
+            }
+
+            ControlTypeName = null;
         }
+
+        string IDataErrorInfo.Error => null;
 
         string IDataErrorInfo.this[string columnName]
         {
             get
             {
-                if (columnName.Equals("VisualName"))
+                if (!columnName.Equals("VisualName"))
                 {
-                    if (string.IsNullOrWhiteSpace(VisualName))
-                    {
-                        return "Name cannot be blank.";
-                    }
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(VisualName, "^[a-zA-Z0-9_ ]*$"))
-                    {
-                        return "Name must not contain special characters.";
-                    }
-                    if (Control != null && Control.Parent != null && !VisualName.Equals(Control.Name) && Control.Parent.Children.ContainsKey(VisualName))
-                    {
-                        return "Name must be unique.";
-                    }
+                    return null;
                 }
+
+                if (string.IsNullOrWhiteSpace(VisualName))
+                {
+                    return "Name cannot be blank.";
+                }
+
+                if (!Regex.IsMatch(VisualName, "^[a-zA-Z0-9_ ]*$"))
+                {
+                    return "Name must not contain special characters.";
+                }
+
+                if (Control != null && Control.Parent != null && !VisualName.Equals(Control.Name) &&
+                    Control.Parent.Children.ContainsKey(VisualName))
+                {
+                    return "Name must be unique.";
+                }
+
                 return null;
             }
         }

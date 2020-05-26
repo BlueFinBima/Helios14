@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Threading;
@@ -6,7 +7,7 @@ using GadrocsWorkshop.Helios.Interfaces.Capabilities;
 
 namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
 {
-    internal class AvailableInterfaces : DependencyObject, IAvailableInterfaces
+    internal class AvailableInterfaces : DependencyObject, IAvailableInterfaces, IDisposable
     {
         /// <summary>
         /// items to choose in the list of available interfaces
@@ -73,6 +74,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
                         // don't wait for all instances now, let the factory tell them to us as it discovers,
                         // potentially on another thread
                         async.StartDiscoveringInterfaces(this, profile);
+                        _asyncFactories.Add(async);
                         continue;
                     }
 
@@ -131,6 +133,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             DependencyProperty.Register("CanAdd", typeof(bool), typeof(AvailableInterfaces),
                 new PropertyMetadata(false));
 
+        /// <summary>
+        /// factories that may be working on our behalf to find new interface instances, so we shut them down when
+        /// we are done
+        /// </summary>
+        private HashSet<IHeliosInterfaceFactoryAsync> _asyncFactories = new HashSet<IHeliosInterfaceFactoryAsync>();
 
         private static void SelectedInterfaceChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
         {
@@ -149,6 +156,15 @@ namespace GadrocsWorkshop.Helios.ProfileEditor.ViewModel
             object context)
         {
             Items.Add(new DeferredItem(displayName, factory, context));
+        }
+
+        public void Dispose()
+        {
+            foreach (IHeliosInterfaceFactoryAsync asyncFactory in _asyncFactories)
+            {
+                asyncFactory.StopDiscoveringInterfaces();
+            }
+            _asyncFactories.Clear();
         }
     }
 }

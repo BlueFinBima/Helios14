@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows.Media;
 	using System.Xml;
 
-	[HeliosControl("Helios.Base.CustomTape", "Custom Tape", "Miscellaneous", typeof(Gauges.GaugeRenderer))]
+	[HeliosControl("Helios.Base.CustomTape", "Custom Tape", "Custom Controls", typeof(Gauges.GaugeRenderer))]
 
     public class CustomTape : Gauges.BaseGauge
 	{

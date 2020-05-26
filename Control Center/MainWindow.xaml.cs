@@ -270,7 +270,15 @@ namespace GadrocsWorkshop.Helios.ControlCenter
         public HeliosProfile ActiveProfile
         {
             get { return (HeliosProfile)GetValue(ActiveProfileProperty); }
-            set { SetValue(ActiveProfileProperty, value); }
+            set
+            {
+                if (ActiveProfile == value)
+                {
+                    return;
+                }
+                ActiveProfile?.Unload();
+                SetValue(ActiveProfileProperty, value);
+            }
         }
 
         // Using a DependencyProperty as the backing store for ActiveProfile.  This enables animation, styling, binding, etc...
@@ -518,6 +526,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         private void Close_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            // close
             Close();
         }
 
@@ -786,7 +795,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             StatusMessage = StatusValue.Loading;
 
             // pump UI events to update UI (NOTE: we are the main thread)
-            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Loaded, (Action)delegate { });
+            Dispatcher.Invoke(DispatcherPriority.Loaded, (Action)delegate { });
 
             // now do the load that might take a while
             ActiveProfile = ConfigManager.ProfileManager.LoadProfile(path);
@@ -894,9 +903,15 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (ActiveProfile != null && ActiveProfile.IsStarted)
+            if (ActiveProfile != null)
             {
-                ActiveProfile.Stop();
+                if (ActiveProfile.IsStarted)
+                {
+                    ConfigManager.LogManager.LogInfo("Stopping profile on exit.");
+                    ActiveProfile.Stop();
+                }
+                ConfigManager.LogManager.LogInfo("Unloading profile on exit.");
+                ActiveProfile = null;
             }
 
             ConfigManager.LogManager.LogInfo("Saving control center window position.");

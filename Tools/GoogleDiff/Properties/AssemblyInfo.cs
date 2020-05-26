@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GoogleDiff")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright 2020 Ammo Goettsch")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

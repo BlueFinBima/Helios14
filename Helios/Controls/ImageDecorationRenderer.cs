@@ -29,7 +29,7 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             if (_image != null)
             {
-                ImageDecoration profileImage = Visual as ImageDecoration;
+                ImageDecorationBase profileImage = Visual as ImageDecorationBase;
                 drawingContext.DrawRoundedRectangle(_imageBrush, _borderPen, _imageRect, profileImage.CornerRadius, profileImage.CornerRadius);
             }
         }
@@ -38,7 +38,7 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             if (_image != null)
             {
-                ImageDecoration profileImage = Visual as ImageDecoration;
+                ImageDecorationBase profileImage = Visual as ImageDecorationBase;
                 Rect scaledRect = new Rect(_imageRect.X, _imageRect.Y, _imageRect.Width * scaleX, _imageRect.Height * scaleY);
                 drawingContext.DrawRoundedRectangle(_imageBrush, _borderPen, scaledRect, profileImage.CornerRadius, profileImage.CornerRadius);
             }            
@@ -46,62 +46,61 @@ namespace GadrocsWorkshop.Helios.Controls
 
         protected override void OnRefresh()
         {
-            ImageDecoration profileImage = Visual as ImageDecoration;
-            if (profileImage != null)
+            ImageDecorationBase profileImage = Visual as ImageDecorationBase;
+            if (profileImage == null || (profileImage.DesignTimeOnly && !ConfigManager.Application.ShowDesignTimeControls))
             {
-                _image = ConfigManager.ImageManager.LoadImage(profileImage.Image);
-                _imageRect.Width = profileImage.Width;
-                _imageRect.Height = profileImage.Height;
+                _image = null;
+                return;
+            }
 
-                if (profileImage.BorderThickness > 0d)
-                {
-                    _borderPen = new Pen(new SolidColorBrush(profileImage.BorderColor), profileImage.BorderThickness);
-                }
-                else
-                {
-                    _borderPen = null;
-                }
+            _image = ConfigManager.ImageManager.LoadImage(profileImage.Image);
+            _imageRect.Width = profileImage.Width;
+            _imageRect.Height = profileImage.Height;
 
-                if (_image == null)
-                {
-                    _image = ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
-                    _imageBrush = new ImageBrush(_image);
-                    _imageBrush.Stretch = Stretch.Fill;
-                    _imageBrush.TileMode = TileMode.None;
-                    _imageBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
-                    _imageBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
-                }
-                else
-                {
-                    _imageBrush = new ImageBrush(_image);
-                    switch (profileImage.Alignment)
-                    {
-                        case ImageAlignment.Centered:
-                            _imageBrush.Stretch = Stretch.None;
-                            _imageBrush.TileMode = TileMode.None;
-                            _imageBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
-                            _imageBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
-                            break;
-
-                        case ImageAlignment.Stretched:
-                            _imageBrush.Stretch = Stretch.Fill;
-                            _imageBrush.TileMode = TileMode.None;
-                            _imageBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
-                            _imageBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
-                            break;
-
-                        case ImageAlignment.Tiled:
-                            _imageBrush.Stretch = Stretch.None;
-                            _imageBrush.TileMode = TileMode.Tile;
-                            _imageBrush.Viewport = new Rect(0d, 0d, _image.Width, _image.Height);
-                            _imageBrush.ViewportUnits = BrushMappingMode.Absolute;
-                            break;
-                    }
-                }
+            if (profileImage.BorderThickness > 0d)
+            {
+                _borderPen = new Pen(new SolidColorBrush(profileImage.BorderColor), profileImage.BorderThickness);
             }
             else
             {
-                _image = null;
+                _borderPen = null;
+            }
+
+            if (_image == null)
+            {
+                _image = ConfigManager.ImageManager.LoadImage("{Helios}/Images/General/missing_image.png");
+                _imageBrush = new ImageBrush(_image);
+                _imageBrush.Stretch = Stretch.Fill;
+                _imageBrush.TileMode = TileMode.None;
+                _imageBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
+                _imageBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+            }
+            else
+            {
+                _imageBrush = new ImageBrush(_image);
+                switch (profileImage.Alignment)
+                {
+                    case ImageAlignment.Centered:
+                        _imageBrush.Stretch = Stretch.None;
+                        _imageBrush.TileMode = TileMode.None;
+                        _imageBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
+                        _imageBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                        break;
+
+                    case ImageAlignment.Stretched:
+                        _imageBrush.Stretch = Stretch.Fill;
+                        _imageBrush.TileMode = TileMode.None;
+                        _imageBrush.Viewport = new Rect(0d, 0d, 1d, 1d);
+                        _imageBrush.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+                        break;
+
+                    case ImageAlignment.Tiled:
+                        _imageBrush.Stretch = Stretch.None;
+                        _imageBrush.TileMode = TileMode.Tile;
+                        _imageBrush.Viewport = new Rect(0d, 0d, _image.Width, _image.Height);
+                        _imageBrush.ViewportUnits = BrushMappingMode.Absolute;
+                        break;
+                }
             }
         }
     }

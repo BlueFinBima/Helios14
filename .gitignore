@@ -45,3 +45,4 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /Lua/DCS/Scripts/Helios/HeliosExport16.lua
 /Lua/runExportLua.ps1
 /*.code-workspace
+/Helios_with*.sln

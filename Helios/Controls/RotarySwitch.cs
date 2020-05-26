@@ -14,6 +14,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+using System.Collections.Generic;
+using System.Linq;
+using NLog;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
     using GadrocsWorkshop.Helios.ComponentModel;
@@ -27,24 +31,13 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Xml;
 
     [HeliosControl("Helios.Base.RotarySwitch", "Rotary - Knob 2", "Rotary Switches", typeof(RotarySwitchRenderer))]
-    public class RotarySwitch : HeliosVisual
+    public class RotarySwitch : RotaryKnob
     {
-        private const double SWIPE_SENSITIVY_BASE = 45d;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private bool _mouseDown = false;
-        private Point _mouseDownLocation;
-
-        private ClickType _clickType = ClickType.Swipe;
-        private bool _mouseWheelAction = true;
-        private CalibrationPointCollectionDouble _swipeCalibration;
-        private double _swipeThreshold = 45d;
-        private double _swipeSensitivity = 0d;
-
-        private RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
-        private string _knobImage = "{Helios}/Images/Knobs/knob2.png";
+        private readonly RotarySwitchPositionCollection _positions = new RotarySwitchPositionCollection();
         private int _currentPosition;
         private int _defaultPosition;
-        private double _rotation;
 
         private bool _drawLines = true;
         private double _lineThickness = 2d;
@@ -56,19 +49,23 @@ namespace GadrocsWorkshop.Helios.Controls
         private double _maxLabelWidth = 40d;
         private double _maxLabelHeight = 0d;
         private Color _labelColor = Colors.White;
-        private TextFormat _labelFormat = new TextFormat();
+        private readonly TextFormat _labelFormat = new TextFormat();
 
         private HeliosValue _positionValue;
         private HeliosValue _positionNameValue;
 
         private bool _isContinuous = false;
 
+        // array ordered by position angles in degrees, so we can dereference to their position index
+        private PositionIndexEntry[] _positionIndex;
+
+        // comparison function to binary search in sorted array
+        private static readonly PositionSortComparer PositionIndexComparer = new PositionSortComparer();
+
         public RotarySwitch()
             : base("Rotary Switch", new Size(100, 100))
         {
-            _swipeCalibration = new CalibrationPointCollectionDouble(-1d, 2d, 1d, 0.5d);
-            _swipeCalibration.Add(new CalibrationPointDouble(0.0d, 1d));
-
+            KnobImage = "{Helios}/Images/Knobs/knob2.png";
             _labelFormat.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(LabelFormat_PropertyChanged);
 
             _positionValue = new HeliosValue(this, new BindingValue(1), "", "position", "Current position of the switch.", "", BindingValueUnits.Numeric);
@@ -90,58 +87,6 @@ namespace GadrocsWorkshop.Helios.Controls
         }
 
         #region Properties
-
-        public ClickType ClickType
-        {
-            get
-            {
-                return _clickType;
-            }
-            set
-            {
-                if (!_clickType.Equals(value))
-                {
-                    ClickType oldValue = _clickType;
-                    _clickType = value;
-                    OnPropertyChanged("ClickType", oldValue, value, true);
-                }
-            }
-        }
-
-        public bool MouseWheelAction
-        {
-            get
-            {
-                return _mouseWheelAction;
-            }
-            set
-            {
-                if (!_clickType.Equals(value))
-                {
-                    bool oldValue = _mouseWheelAction;
-                    _mouseWheelAction = value;
-                    OnPropertyChanged("MouseWheelAction", oldValue, value, true);
-                }
-            }
-        }
-
-        public double SwipeSensitivity
-        {
-            get
-            {
-                return _swipeSensitivity;
-            }
-            set
-            {
-                if (!_swipeSensitivity.Equals(value))
-                {
-                    double oldValue = _swipeSensitivity;
-                    _swipeSensitivity = value;
-                    _swipeThreshold = SWIPE_SENSITIVY_BASE * _swipeCalibration.Interpolate(_swipeSensitivity);
-                    OnPropertyChanged("SwipeSensitivity", oldValue, value, true);
-                }
-            }
-        }
 
         public bool DrawLabels
         {
@@ -215,7 +160,6 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-
         public bool DrawLines
         {
             get
@@ -270,13 +214,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public TextFormat LabelFormat
-        {
-            get
-            {
-                return _labelFormat;
-            }
-        }
+        public TextFormat LabelFormat => _labelFormat;
 
         public double LineThickness
         {
@@ -338,57 +276,37 @@ namespace GadrocsWorkshop.Helios.Controls
             get { return _positions; }
         }
 
-        public string KnobImage
-        {
-            get
-            {
-                return _knobImage;
-            }
-            set
-            {
-                if ((_knobImage == null && value != null)
-                    || (_knobImage != null && !_knobImage.Equals(value)))
-                {
-                    string oldValue = _knobImage;
-                    _knobImage = value;
-                    OnPropertyChanged("KnobImage", oldValue, value, true);
-                    Refresh();
-                }
-            }
-        }
-
         public int CurrentPosition
         {
-            get
-            {
-                return _currentPosition;
-            }
+            get => _currentPosition;
             set
             {
-                if (!_currentPosition.Equals(value) && value > 0 && value <= Positions.Count)
+                if (_currentPosition.Equals(value) || value <= 0 || value > Positions.Count)
                 {
-                    int oldValue = _currentPosition;
-                    double oldRotatoin = _rotation;
-
-                    _currentPosition = value;
-                    _rotation = Positions[value-1].Rotation;
-
-                    _positionValue.SetValue(new BindingValue((double)_currentPosition), BypassTriggers);
-                    _positionNameValue.SetValue(new BindingValue(Positions[_currentPosition-1].Name), BypassTriggers);
-
-                    if (!BypassTriggers)
-                    {
-                        if (oldValue > 0 && oldValue < Positions.Count)
-                        {
-                            Positions[oldValue-1].ExitTrigger.FireTrigger(BindingValue.Empty);
-                        }
-                        Positions[_currentPosition-1].EnterTriggger.FireTrigger(BindingValue.Empty);
-                    }
-
-                    OnPropertyChanged("CurrentPosition", oldValue, value, false);
-                    OnPropertyChanged("Rotation", oldRotatoin, _rotation, false);
-                    OnDisplayUpdate();
+                    return;
                 }
+
+                int oldValue = _currentPosition;
+                double oldRotation = KnobRotation;
+
+                _currentPosition = value;
+                KnobRotation = Positions[value-1].Rotation;
+
+                _positionValue.SetValue(new BindingValue((double)_currentPosition), BypassTriggers);
+                _positionNameValue.SetValue(new BindingValue(Positions[_currentPosition-1].Name), BypassTriggers);
+
+                if (!BypassTriggers)
+                {
+                    if (oldValue > 0 && oldValue < Positions.Count)
+                    {
+                        Positions[oldValue-1].ExitTrigger.FireTrigger(BindingValue.Empty);
+                    }
+                    Positions[_currentPosition-1].EnterTriggger.FireTrigger(BindingValue.Empty);
+                }
+
+                OnPropertyChanged("CurrentPosition", oldValue, value, false);
+                OnPropertyChanged("Rotation", oldRotation, KnobRotation, false);
+                OnDisplayUpdate();
             }
         }
 
@@ -409,11 +327,6 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public double KnobRotation
-        {
-            get { return _rotation; }
-        }
-        
         #endregion
 
         void LabelFormat_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -457,7 +370,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
             // Need to do it twice to prevent duplicates...  this is
             // just an easy way to do it instead of reordering everything in the loops above.
-            int i = 1000;
+            int i = 1000000;
             foreach (RotarySwitchPosition position in Positions)
             {
                 position.Index = i++;
@@ -469,14 +382,16 @@ namespace GadrocsWorkshop.Helios.Controls
                 position.Index = i++;
             }
             UpdateValueHelp();
+            UpdatePositionIndex();
         }
 
-        void PositionChanged(object sender, RotarySwitchPositionChangeArgs e)
+        private void PositionChanged(object sender, RotarySwitchPositionChangeArgs e)
         {
             PropertyNotificationEventArgs args = new PropertyNotificationEventArgs(e.Position, e.PropertyName, e.OldValue, e.NewValue, true);
             if (e.PropertyName.Equals("Rotation"))
             {
-                _rotation = Positions[CurrentPosition - 1].Rotation;
+                KnobRotation = Positions[CurrentPosition - 1].Rotation;
+                UpdatePositionIndex();
             }
             OnPropertyChanged("Positions", args);
             UpdateValueHelp();
@@ -505,110 +420,38 @@ namespace GadrocsWorkshop.Helios.Controls
             _positionValue.ValueDescription = sb.ToString();
         }
 
-        private Vector VectorFromCenter(Point devicePosition)
+        private class PositionIndexEntry
         {
-            return devicePosition - new Point(DisplayRectangle.Width / 2, DisplayRectangle.Height / 2);
+            public double Rotation { get; set; }
+            public int Index { get; set; }
         }
 
-        private double GetAngle(Point startPoint, Point endPoint)
+        private class PositionSortComparer : IComparer<PositionIndexEntry>
         {
-            return Vector.AngleBetween(VectorFromCenter(startPoint), VectorFromCenter(endPoint));
+            public int Compare(PositionIndexEntry left, PositionIndexEntry right) => (int)(left.Rotation - right.Rotation);
         }
 
-        public override void MouseWheel(int delta)
+        private void UpdatePositionIndex()
         {
-            if (_mouseWheelAction)
-            {
-                if(delta > 0)
-                {
-                    if (_currentPosition <= Positions.Count)
-                    {
-                        CurrentPosition = _currentPosition + 1;
-                    }
-                }
-                else
-                {
-                    if (_currentPosition > 1)
-                    {
-                        CurrentPosition = _currentPosition - 1;
-                    }
-                }
-            }
+            _positionIndex = Positions.OrderBy(p => p.Rotation).Select(p => new PositionIndexEntry { Rotation = p.Rotation, Index = p.Index }).ToArray();
         }
 
         public override void MouseDown(Point location)
         {
-            if(NonClickableZones != null)
+            if (NonClickableZones != null)
             {
                 foreach (NonClickableZone zone in NonClickableZones)
                 {
                     if (zone.AllPositions && zone.isClickInZone(location))
                     {
-                        zone.ChildVisual.MouseDown(new System.Windows.Point(location.X - (zone.ChildVisual.Left - this.Left), location.Y - (zone.ChildVisual.Top - this.Top)));
+                        zone.ChildVisual.MouseDown(new System.Windows.Point(
+                            location.X - (zone.ChildVisual.Left - this.Left),
+                            location.Y - (zone.ChildVisual.Top - this.Top)));
                         return; //we get out to let the ChildVisual using the click
                     }
                 }
             }
-            if (_clickType == ClickType.Touch)
-            {
-                bool increment = (location.X > Width / 2d);
-
-                if (increment)
-                {
-                    if (_currentPosition < Positions.Count)
-                    {
-                        CurrentPosition = _currentPosition + 1;
-                    }
-                    else if (_isContinuous == true)
-                    {
-                        CurrentPosition = 1;
-                    }
-                }
-                else
-                {
-                    if (_currentPosition > 1)
-                    {
-                        CurrentPosition = _currentPosition - 1;
-                    }
-                    else if (_isContinuous == true)
-                    {
-                        CurrentPosition = Positions.Count;
-                    }
-                }
-            }
-            else if (_clickType == ClickType.Swipe)
-            {
-                _mouseDown = true;
-                _mouseDownLocation = location;
-            }
-        }
-
-        public override void MouseDrag(Point location)
-        {
-            if (_mouseDown && _clickType == ClickType.Swipe)
-            {
-                double newAngle = GetAngle(_mouseDownLocation, location);
-
-                if (Math.Abs(newAngle) > _swipeThreshold)
-                {
-                    bool increment = (newAngle > 0);
-                    if (increment)
-                    {
-                        if (_currentPosition <= Positions.Count)
-                        {
-                            CurrentPosition = _currentPosition + 1;
-                        }
-                    }
-                    else
-                    {
-                        if (_currentPosition > 1)
-                        {
-                            CurrentPosition = _currentPosition - 1;
-                        }
-                    }
-                    _mouseDownLocation = location;
-                }
-            }
+            base.MouseDown(location);
         }
 
         public override void MouseUp(Point location)
@@ -624,11 +467,137 @@ namespace GadrocsWorkshop.Helios.Controls
                     }
                 }
             }
-            if (_mouseDown)
+            base.MouseUp(location);
+        }
+
+        #region IPulsedControl
+
+        public override void Pulse(int pulses)
+        {
+            if (Positions.Count == 0)
             {
-                _mouseDown = false;
+                // there are no positions so we cannot move
+                return;
+            }
+
+            // WARNING: Positions is a zero-based array, but _currentPosition is 1-based
+            int newPosition = _currentPosition + pulses;
+
+            if (IsContinuous)
+            {
+                // wrap around if we have to
+                newPosition = 1 + ((newPosition - 1) % Positions.Count);
+                if (newPosition < 1)
+                {
+                    // don't use negative remainder
+                    newPosition += Positions.Count;
+                }
+                CurrentPosition = newPosition;
+                return;
+            }
+
+            // explicitly check boundaries
+            if (newPosition > Positions.Count)
+            {
+                CurrentPosition = Positions.Count;
+            } 
+            else if (newPosition < 1)
+            {
+                CurrentPosition = 1;
+            }
+            else
+            {
+                CurrentPosition = newPosition;
+            }
+
+            // move the virtual control to this snap location also
+            _controlAngle = KnobRotation;
+        }
+
+        #endregion
+        
+        #region IRotaryControl
+
+        // the angle that our control would be at if we were allowed to stop everywhere, required so that IRotaryControl will operate correctly
+        // with incremental changes
+        private double _controlAngle;
+
+        public override double ControlAngle
+        {
+            get => _controlAngle;
+            set
+            {
+                if (_positionIndex.Length < 1)
+                {
+                    // no positions, nothing will work
+                    return;
+                }
+
+                if (IsContinuous)
+                {
+                    _controlAngle = value % 360d;
+                    if (_controlAngle < 0d)
+                    {
+                        // don't use negative remainder
+                        _controlAngle += 360d;
+                    }
+                }
+                else
+                {
+                    // clamp
+                    _controlAngle = Math.Min(Math.Max(value, _positionIndex[0].Rotation), _positionIndex[_positionIndex.Length - 1].Rotation);
+                }
+
+                // see where requested position falls in the sorted sequence of knob positions
+                Logger.Debug("setting rotary switch based on input angle {Angle}", _controlAngle);
+                int searchResult = Array.BinarySearch(_positionIndex, new PositionIndexEntry { Rotation = _controlAngle }, PositionIndexComparer);
+                if (searchResult >= 0)
+                {
+                    // direct hit
+                    CurrentPosition = _positionIndex[searchResult].Index;
+                    return;
+                }
+
+                // find closest two positons
+                int nextLarger = ~searchResult;
+                int lowIndex;
+                int highIndex;
+                double lowOffset;
+                double highOffset;
+                if (nextLarger == _positionIndex.Length)
+                {
+                    // larger than all values
+                    lowIndex = _positionIndex.Length - 1;
+                    highIndex = 0;
+                    lowOffset = 0d;
+                    highOffset = 360d;
+                }
+                else if (nextLarger == 0)
+                {
+                    // smaller than all values
+                    lowIndex = _positionIndex.Length - 1;
+                    highIndex = 0;
+                    lowOffset = -360d;
+                    highOffset = 0d;
+                }
+                else
+                {
+                    // somewhere in middle
+                    lowIndex = nextLarger - 1;
+                    highIndex = nextLarger;
+                    lowOffset = 0d;
+                    highOffset = 0d;
+                }
+
+                // snap to closest position
+                double lowValue = _positionIndex[lowIndex].Rotation + lowOffset;
+                double highValue = _positionIndex[highIndex].Rotation + highOffset;
+                int closestIndex = Math.Abs(_controlAngle - lowValue) < Math.Abs(_controlAngle - highValue) ? lowIndex : highIndex;
+                CurrentPosition = _positionIndex[closestIndex].Index;
             }
         }
+
+        #endregion
 
         #region Actions
 
@@ -689,14 +658,12 @@ namespace GadrocsWorkshop.Helios.Controls
                 LabelFormat.WriteXml(writer);
                 writer.WriteEndElement();
             }
-            writer.WriteStartElement("ClickType");
-            writer.WriteElementString("Type", ClickType.ToString());
-            if (ClickType == Controls.ClickType.Swipe)
+
+            if (IsContinuous)
             {
-                writer.WriteElementString("Sensitivity", SwipeSensitivity.ToString(CultureInfo.InvariantCulture));
+                writer.WriteElementString("Continuous", true.ToString(CultureInfo.InvariantCulture));
             }
-            writer.WriteEndElement();
-            writer.WriteElementString("MouseWheel", MouseWheelAction.ToString(CultureInfo.InvariantCulture));
+            WriteOptionalXml(writer);
         }
 
         public override void ReadXml(XmlReader reader)
@@ -753,36 +720,12 @@ namespace GadrocsWorkshop.Helios.Controls
                 DrawLabels = false;
             }
 
-            if (reader.Name.Equals("ClickType"))
+            TypeConverter bc = TypeDescriptor.GetConverter(typeof(bool));
+            if (reader.Name.Equals("Continuous"))
             {
-                reader.ReadStartElement("ClickType");
-                ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("Type"));
-                if (ClickType == Controls.ClickType.Swipe)
-                {
-                    SwipeSensitivity = double.Parse(reader.ReadElementString("Sensitivity"), CultureInfo.InvariantCulture);
-                }
-                reader.ReadEndElement();
+                IsContinuous = (bool)bc.ConvertFromInvariantString(reader.ReadElementString());
             }
-            else
-            {
-                ClickType = Controls.ClickType.Swipe;
-                SwipeSensitivity = 0d;
-            }
-
-            if (reader.Name == "MouseWheel")
-            {
-                try
-                {
-
-                    bool mw;
-                    bool.TryParse(reader.ReadElementString("MouseWheel"), out mw);
-                    MouseWheelAction = mw;
-                }
-                catch 
-                {
-                    MouseWheelAction = true;
-                }
-            }
+            ReadOptionalXml(reader);
 
             BeginTriggerBypass(true);
             CurrentPosition = DefaultPosition;

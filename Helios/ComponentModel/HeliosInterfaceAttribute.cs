@@ -19,6 +19,7 @@ namespace GadrocsWorkshop.Helios.ComponentModel
 
     using GadrocsWorkshop.Helios;
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class HeliosInterfaceAttribute : Attribute
     {
         private Type _interfaceEditorType;

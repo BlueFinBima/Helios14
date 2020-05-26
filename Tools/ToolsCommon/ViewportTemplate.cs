@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,6 +35,15 @@ namespace ToolsCommon
             {"MIG-21bis", "MiG-21"}
         };
 
+        // REVISIT these will go away when we get the new ViewportTemplates format with the prefix in the file
+        private static readonly Dictionary<string, string> _renamed = new Dictionary<string, string>
+        {
+            // make these fit in with template / control categories in Helios UI
+            {"HEATBLUR_F-14", "F-14"},
+            {"Mi-8MTV2", "Mi-8"},
+            {"MIG-21bis", "MiG-21"}
+        };
+
         [JsonProperty("templateName")] public string TemplateName { get; set; }
 
         [JsonProperty("isHeliosTemplate")] public bool IsHeliosTemplate { get; set; }
@@ -43,8 +52,19 @@ namespace ToolsCommon
 
         [JsonProperty("viewports")] public List<Viewport> Viewports { get; set; } = new List<Viewport>();
 
-        // XXX eliminate this in favor of viewport prefix from file
-        [JsonIgnore] public string ViewportPrefix => ModuleId.Replace(" ", "_").Replace("-", "_");
+        // REVISIT eliminate this in favor of viewport prefix from file when available
+        [JsonIgnore]
+        public string ViewportPrefix
+        {
+            get
+            {
+                if (!_renamed.TryGetValue(ModuleId, out string prefixRaw))
+                {
+                    prefixRaw = ModuleId;
+                }
+                return prefixRaw.Replace(" ", "_").Replace("-", "_");
+            }
+        } 
 
         [JsonIgnore]
         public object TemplateCategory

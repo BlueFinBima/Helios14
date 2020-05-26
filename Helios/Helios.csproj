@@ -81,18 +81,73 @@
     <Compile Include="CalibrationPointCollectionLong.cs" />
     <Compile Include="CalibrationPointDouble.cs" />
     <Compile Include="CalibrationPointLong.cs" />
+    <Compile Include="ComponentModel\ComponentUnsupportedSeverity.cs" />
+    <Compile Include="Controls\Capabilities\ILinearControl.cs" />
+    <Compile Include="Controls\Capabilities\IRotaryControl.cs" />
+    <Compile Include="Controls\Capabilities\IPulsedControl.cs" />
+    <Compile Include="Controls\PotentiometerEndless.cs" />
+    <Compile Include="Controls\PotentiometerKnob.cs" />
+    <Compile Include="Controls\PotentiometerWithTranslate.cs" />
+    <Compile Include="Controls\PotentiometerWithTranslateAppearanceEditor.xaml.cs">
+      <DependentUpon>PotentiometerWithTranslateAppearanceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PotentiometerWithTranslateBehaviorEditor.xaml.cs">
+      <DependentUpon>PotentiometerWithTranslateBehaviorEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RotaryInteractionEditor.xaml.cs">
+      <DependentUpon>RotaryInteractionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RotaryInteraction.cs" />
+    <Compile Include="Controls\RotaryKnob.cs" />
     <Compile Include="Controls\ViewportExtentBehaviorEditor.xaml.cs">
       <DependentUpon>ViewportExtentBehaviorEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ViewportExtentRenderer.cs" />
+    <Compile Include="Controls\ControlEventArgs.cs" />
+    <Compile Include="Controls\Wire.cs" />
+    <Compile Include="HeliosXmlModel.cs" />
+    <Compile Include="Interfaces\Capabilities\IDynamicBindings.cs" />
     <Compile Include="Interfaces\Capabilities\IReadyCheck.cs" />
     <Compile Include="Interfaces\Capabilities\IViewportProvider.cs" />
+    <Page Include="Controls\PotentiometerWithTranslateAppearanceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PotentiometerWithTranslateBehaviorEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\RotaryInteractionEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\ControlRouter\ControlRouterEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Interfaces\Unsupported\UnsupportedInterfaceEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\Editor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="Interfaces\Capabilities\IHeliosInterfaceFactoryAsync.cs" />
+    <Compile Include="Interfaces\Common\HeliosInterfaceWithXml.cs" />
     <Compile Include="Interfaces\Common\StatusReportNotifyAsyncOnce.cs" />
+    <Compile Include="Interfaces\ControlRouter\ControlRouter.cs" />
+    <Compile Include="Interfaces\ControlRouter\ControlRouterEditor.xaml.cs">
+      <DependentUpon>ControlRouterEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\ControlRouter\ControlRouterModel.cs" />
+    <Compile Include="Interfaces\ControlRouter\ControlRouterPort.cs" />
+    <Compile Include="Interfaces\ControlRouter\ControlRouterViewModel.cs" />
+    <Compile Include="Interfaces\Unsupported\UnsupportedInterface.cs" />
+    <Compile Include="Interfaces\Unsupported\UnsupportedInterfaceFactory.cs" />
+    <Compile Include="Interfaces\Unsupported\UnsupportedInterfaceEditor.xaml.cs">
+      <DependentUpon>UnsupportedInterfaceEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\DesignTimeEditorResources.cs" />
     <Compile Include="Util\OnceLogger.cs" />
     <Compile Include="HeliosApplication.cs" />
@@ -128,13 +183,6 @@
       <DependentUpon>ImageTranslucentAppearanceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ImageTranslucentRenderer.cs" />
-    <Compile Include="Controls\PotentiometerEndless.cs" />
-    <Compile Include="Controls\PotentiometerEndlessAppearanceEditor.xaml.cs">
-      <DependentUpon>PotentiometerEndlessAppearanceEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PotentiometerEndlessBehaviorEditor.xaml.cs">
-      <DependentUpon>PotentiometerEndlessBehaviorEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ViewportExtent.cs" />
     <Compile Include="Gauges\AV-8B\Small Panels\Slip Turn Panel.cs" />
     <Compile Include="Gauges\F-16\HydraulicPressure\HydraulicPressure.cs" />
@@ -164,7 +212,6 @@
     <Compile Include="Interfaces\DCS\Common\DCSPhantomMonitorFix.cs" />
     <Compile Include="Interfaces\DCS\Common\DCSVehicleImpersonation.cs" />
     <Compile Include="Interfaces\DCS\Common\EditableComboBoxModel.cs" />
-    <Compile Include="Interfaces\DCS\Common\EnumComboBoxConverter.cs" />
     <Compile Include="Interfaces\Capabilities\IProfileAwareInterface.cs" />
     <Compile Include="Interfaces\DCS\Common\SilentValueConsumer.cs" />
     <Compile Include="NonClickableZone.cs" />
@@ -219,13 +266,6 @@
     <Compile Include="Gauges\M2000C\LGPanel\LG_Panel.cs" />
     <Compile Include="Gauges\M2000C\EnginePanel\Engine_Start_Panel.cs" />
     <Compile Include="Gauges\M2000C\CautionPanel\Caution_Panel.cs" />
-    <Compile Include="Controls\PotentiometerWithTranslate.cs" />
-    <Compile Include="Controls\PotentiometerWithTranslateAppearanceEditor.xaml.cs">
-      <DependentUpon>PotentiometerWithTranslateAppearanceEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PotentiometerWithTranslateBehaviorEditor.xaml.cs">
-      <DependentUpon>PotentiometerWithTranslateBehaviorEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\GuardedThreeWayAppearancePropertyEditor.xaml.cs">
       <DependentUpon>GuardedThreeWayAppearancePropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -262,7 +302,7 @@
       <DependentUpon>HeliosPanelAppearanceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\HeliosPanelRenderer.cs" />
-    <Compile Include="Controls\ImageDecoration.cs" />
+    <Compile Include="Controls\ImageDecorationBase.cs" />
     <Compile Include="Controls\ImageDecorationAppearanceEditor.xaml.cs">
       <DependentUpon>ImageDecorationAppearanceEditor.xaml</DependentUpon>
     </Compile>
@@ -375,7 +415,6 @@
     </Compile>
     <Compile Include="Controls\RectangleDecorationRenderer.cs" />
     <Compile Include="Controls\Rotary.cs" />
-    <Compile Include="Controls\RotaryEncoderPushable.cs" />
     <Compile Include="Controls\RotaryEncoder.cs" />
     <Compile Include="Controls\RotaryEncoderAppearanceEditor.xaml.cs">
       <DependentUpon>RotaryEncoderAppearanceEditor.xaml</DependentUpon>
@@ -383,7 +422,7 @@
     <Compile Include="Controls\RotaryEncoderBehaviorEditor.xaml.cs">
       <DependentUpon>RotaryEncoderBehaviorEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\RotaryRenderer.cs" />
+    <Compile Include="Controls\RotaryKnobRenderer.cs" />
     <Compile Include="Controls\RotarySwitch.cs" />
     <Compile Include="Controls\RotarySwitchAddPositionUndoEvent.cs" />
     <Compile Include="Controls\RotarySwitchAppearanceEditor.xaml.cs">
@@ -537,6 +576,9 @@
     <Resource Include="Interfaces\Falcon\OpenFalcon\pfl.png" />
     <Resource Include="Interfaces\Falcon\OpenFalcon\rwr.png" />
     <Resource Include="Interfaces\Falcon\RWR\rwr_bezel.png" />
+    <Resource Include="Images\General\wire.png" />
+    <Resource Include="Images\Custom\translate_rotate.png" />
+    <Resource Include="Images\Custom\translate.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -627,7 +669,7 @@
     <Compile Include="HeliosInterface.cs" />
     <Compile Include="HeliosInterfaceCollection.cs" />
     <Compile Include="HeliosInterfaceDescriptor.cs" />
-    <Compile Include="HeliosInterfaceDescriptorColleciton.cs" />
+    <Compile Include="HeliosInterfaceDescriptorCollection.cs" />
     <Compile Include="HeliosInterfaceFactory.cs" />
     <Compile Include="HeliosObject.cs" />
     <Compile Include="HeliosProfile.cs" />
@@ -964,22 +1006,6 @@
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Controls\ImageTranslucentAppearanceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\PotentiometerEndlessAppearanceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\PotentiometerEndlessBehaviorEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\PotentiometerWithTranslateAppearanceEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\PotentiometerWithTranslateBehaviorEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

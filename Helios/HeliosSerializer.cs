@@ -13,8 +13,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.Interfaces.Capabilities;
+
 namespace GadrocsWorkshop.Helios
 {
+    using GadrocsWorkshop.Helios.ComponentModel;
     using GadrocsWorkshop.Helios.Util;
     using System;
     using System.Collections.Generic;
@@ -295,14 +298,18 @@ namespace GadrocsWorkshop.Helios
             TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
 
             HeliosBinding binding = (HeliosBinding)CreateNewObject("Binding", "");
-            binding.BypassCascadingTriggers = (bool)boolConverter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, xmlReader.GetAttribute("BypassCascadingTriggers"));
+            binding.BypassCascadingTriggers = (bool)boolConverter.ConvertFromString(null, CultureInfo.InvariantCulture, xmlReader.GetAttribute("BypassCascadingTriggers"));
             xmlReader.ReadStartElement("Binding");
 
             HeliosObject source = ResolveReferenceName(profile, root, copyRoot, localObjects, xmlReader.GetAttribute("Source"));
             if (source != null)
             {
                 string trigger = xmlReader.GetAttribute("Name");
-                if (source.Triggers.ContainsKey(trigger))
+                if (source is IDynamicBindings dynamic)
+                {
+                    binding.Trigger = dynamic.ResolveTrigger(trigger);
+                }
+                else if (source.Triggers.ContainsKey(trigger))
                 {
                     binding.Trigger = source.Triggers[trigger];
                 }
@@ -315,7 +322,8 @@ namespace GadrocsWorkshop.Helios
                         binding.Trigger = source.Triggers[trigger];
                     }
                 }
-            } else
+            } 
+            else
             {
                 Logger.Error("Binding Source Reference Unresolved: " + xmlReader.GetAttribute("Source"));
             }
@@ -325,7 +333,11 @@ namespace GadrocsWorkshop.Helios
             if (target != null)
             {
                 string action = xmlReader.GetAttribute("Name");
-                if (target.Actions.ContainsKey(action))
+                if (target is IDynamicBindings dynamic)
+                {
+                    binding.Action = dynamic.ResolveAction(action);
+                }
+                else if (target.Actions.ContainsKey(action))
                 {
                     binding.Action = target.Actions[action];
                 }
@@ -419,15 +431,7 @@ namespace GadrocsWorkshop.Helios
 
         private static HeliosObject ResolveReferenceName(HeliosProfile profile, HeliosVisual root, string copyRoot, List<HeliosVisual> localObjects, string reference)
         {
-            string[] components;
-            if (reference.StartsWith("{"))
-            {
-                components = Tokenizer.TokenizeAtLeast(reference.Substring(1, reference.Length - 2), 4, ';');
-            }
-            else
-            {
-                components = Tokenizer.TokenizeAtLeast(reference, 4, ';');
-            }
+            string[] components = Tokenizer.TokenizeAtLeast(reference.StartsWith("{") ? reference.Substring(1, reference.Length - 2) : reference, 4, ';');
             string refType = components[0];
             string path = components[1];
             string typeId = components[2];
@@ -592,6 +596,10 @@ namespace GadrocsWorkshop.Helios
             xmlWriter.WriteStartElement("Interface");
             xmlWriter.WriteAttributeString("TypeIdentifier", heliosInterface.TypeIdentifier);
             xmlWriter.WriteAttributeString("Name", heliosInterface.Name);
+            if (heliosInterface.UnsupportedSeverity != default)
+            {
+                xmlWriter.WriteAttributeString("UnsupportedSeverity", heliosInterface.UnsupportedSeverity.ToString());
+            }
             heliosInterface.WriteXml(xmlWriter);
             xmlWriter.WriteEndElement(); // Interface
         }
@@ -599,7 +607,9 @@ namespace GadrocsWorkshop.Helios
         public IEnumerable<string> DeserializeInterface(HeliosInterfaceCollection destination, XmlReader xmlReader)
         {
             string interfaceType = xmlReader.GetAttribute("TypeIdentifier");
-            HeliosInterface heliosInterface = (HeliosInterface)CreateNewObject("Interface", interfaceType);
+
+            ComponentUnsupportedSeverity unsupportedSeverity = ReadUnsupportedSeverity(xmlReader);
+            HeliosInterface heliosInterface = (HeliosInterface)CreateNewObject("Interface", interfaceType, unsupportedSeverity);
             if (heliosInterface != null)
             {
                 string name = xmlReader.GetAttribute("Name");
@@ -614,6 +624,7 @@ namespace GadrocsWorkshop.Helios
                     xmlReader.ReadEndElement();
                 }
                 heliosInterface.Name = name;
+                heliosInterface.UnsupportedSeverity = unsupportedSeverity;
                 destination.Add(heliosInterface);
                 yield return $"loaded {heliosInterface.TypeIdentifier} {heliosInterface.Name}";
             }
@@ -622,6 +633,11 @@ namespace GadrocsWorkshop.Helios
                 xmlReader.Skip();
                 yield return "failed to load interface";
             }
+        }
+
+        private ComponentUnsupportedSeverity ReadUnsupportedSeverity(XmlReader xmlReader)
+        {
+            return Enum.TryParse(xmlReader.GetAttribute("UnsupportedSeverity"), out ComponentUnsupportedSeverity severity) ? severity : default;
         }
 
         public void SerializeInterfaces(HeliosInterfaceCollection interfaces, XmlWriter xmlWriter)
@@ -638,6 +654,7 @@ namespace GadrocsWorkshop.Helios
         {
             if (!xmlReader.IsEmptyElement)
             {
+                DiscoveredAliases = new Dictionary<string, HeliosInterfaceDescriptor>();
                 xmlReader.ReadStartElement("Interfaces");
                 while (xmlReader.NodeType != XmlNodeType.EndElement)
                 {
@@ -647,6 +664,12 @@ namespace GadrocsWorkshop.Helios
                     }
                 }
                 xmlReader.ReadEndElement();
+
+                // now allow use of aliases to resolve types
+                foreach (KeyValuePair<string, HeliosInterfaceDescriptor> pair in DiscoveredAliases)
+                {
+                    ConfigManager.ModuleManager.InterfaceDescriptors.AddAlias(pair.Key, pair.Value);
+                }
             }
             else
             {

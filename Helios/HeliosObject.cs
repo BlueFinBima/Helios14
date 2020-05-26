@@ -138,7 +138,7 @@ namespace GadrocsWorkshop.Helios
         }
 
         /// <summary>
-        /// Colleciton of bindings which this object triggers.
+        /// Collection of bindings which this object triggers.
         /// </summary>
         public HeliosBindingCollection OutputBindings
         {

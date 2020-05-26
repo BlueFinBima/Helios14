@@ -21,15 +21,20 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Xml;
 
-    [HeliosControl("Helios.Base.RotaryEncoder", "Encoder - Knob 1", "Rotary Encoders", typeof(RotaryRenderer))]
-    public class RotaryEncoder : Rotary
+    [HeliosControl("Helios.Base.RotaryEncoder", "Encoder - Knob 1", "Rotary Encoders", typeof(RotaryKnobRenderer))]
+    public class RotaryEncoder : RotaryKnob
     {
         private double _stepValue = 0.1d;
-        private double _initialRotation = 0d;
+        private double _initialRotation;
         private double _rotationStep = 5d;
 
-        private HeliosTrigger _incrementTrigger;
-        private HeliosTrigger _decrementTrigger;
+        /// <summary>
+        /// the rotation value where we last generated a pulse
+        /// </summary>
+        private double _lastPulse;
+
+        private readonly HeliosTrigger _incrementTrigger;
+        private readonly HeliosTrigger _decrementTrigger;
 
         public RotaryEncoder()
             : base("Rotary Encoder", new Size(100, 100))
@@ -98,28 +103,82 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #endregion
 
-        protected override void Pulse(bool increment)
+        private void Increment()
         {
-            if (increment)
+            KnobRotation += _rotationStep;
+            _lastPulse += _rotationStep;
+            if (!BypassTriggers)
             {
-                KnobRotation += _rotationStep;
-                if (!BypassTriggers)
-                {
-                    _incrementTrigger.FireTrigger(new BindingValue(StepValue));
-                }
+                _incrementTrigger.FireTrigger(new BindingValue(StepValue));
             }
-            else
+        }
+
+        private void Decrement()
+        {
+            KnobRotation -= _rotationStep;
+            _lastPulse -= _rotationStep;
+            if (!BypassTriggers)
             {
-                KnobRotation -= _rotationStep;
-                if (!BypassTriggers)
-                {
-                    _decrementTrigger.FireTrigger(new BindingValue(-StepValue));
-                }
+                _decrementTrigger.FireTrigger(new BindingValue(-StepValue));
+            }
+        }
+
+        #region IPulsedControl
+
+        public override void Pulse(int pulses)
+        {
+            // NOTE: one of these loops will have a false condition already and won't run
+            for (int i = pulses; i < 0; i++)
+            {
+                Decrement();
+            }
+
+            // NOTE: one of these loops will have a false condition already and won't run
+            for (int i = 0; i < pulses; i++)
+            {
+                Increment();
             }
 
             OnDisplayUpdate();
         }
 
+        #endregion
+
+        #region IRotaryControl
+
+        public override double ControlAngle
+        {
+            get => KnobRotation;
+
+            // translate any rotation into the appropriate pulses, taking care to have "remainder" of rotation available
+            // for next pulse
+            set
+            {
+                // guard against infinite loops and degenerate cases
+                if (_rotationStep <= 0)
+                {
+                    return;
+                }
+
+                // NOTE: one of these loops will have a false condition already and won't run
+                while (_lastPulse >= value + _rotationStep)
+                {
+                    Decrement();
+                }
+
+                // NOTE: one of these loops will have a false condition already and won't run
+                while (_lastPulse <= value - _rotationStep)
+                {
+                    Increment();
+                }
+
+                // adjust to final location because of remainder
+                KnobRotation = value;
+                OnDisplayUpdate();
+            }
+        }
+
+        #endregion
 
         public override void Reset()
         {
@@ -128,7 +187,6 @@ namespace GadrocsWorkshop.Helios.Controls
             EndTriggerBypass(true);
         }
 
-
         public override void WriteXml(XmlWriter writer)
         {
             base.WriteXml(writer);
@@ -136,14 +194,7 @@ namespace GadrocsWorkshop.Helios.Controls
             writer.WriteElementString("RotationStep", RotationStep.ToString(CultureInfo.InvariantCulture));
             writer.WriteElementString("StepValue", StepValue.ToString(CultureInfo.InvariantCulture));
             writer.WriteElementString("InitialRotation", InitialRotation.ToString(CultureInfo.InvariantCulture));
-            writer.WriteStartElement("ClickType");
-            writer.WriteElementString("Type", ClickType.ToString());
-            if (ClickType == Controls.ClickType.Swipe)
-            {
-                writer.WriteElementString("Sensitivity", SwipeSensitivity.ToString(CultureInfo.InvariantCulture));
-            }
-            writer.WriteEndElement();
-            writer.WriteElementString("MouseWheel", MouseWheelAction.ToString(CultureInfo.InvariantCulture));
+            WriteOptionalXml(writer);
         }
 
         public override void ReadXml(XmlReader reader)
@@ -153,34 +204,7 @@ namespace GadrocsWorkshop.Helios.Controls
             RotationStep = double.Parse(reader.ReadElementString("RotationStep"), CultureInfo.InvariantCulture);
             StepValue = double.Parse(reader.ReadElementString("StepValue"), CultureInfo.InvariantCulture);
             InitialRotation = double.Parse(reader.ReadElementString("InitialRotation"), CultureInfo.InvariantCulture);
-
-            if (reader.Name.Equals("ClickType"))
-            {
-                reader.ReadStartElement("ClickType");
-                ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("Type"));
-                if (ClickType == Controls.ClickType.Swipe)
-                {
-                    SwipeSensitivity = double.Parse(reader.ReadElementString("Sensitivity"), CultureInfo.InvariantCulture);
-                }
-                reader.ReadEndElement();
-            }
-            else
-            {
-                ClickType = Controls.ClickType.Swipe;
-                SwipeSensitivity = 0d;
-            }
-
-            try
-            {
-                bool mw;
-                bool.TryParse(reader.ReadElementString("MouseWheel"), out mw);
-                MouseWheelAction = mw;
-            }
-            catch
-            {
-                MouseWheelAction = true;
-            }
-
+            ReadOptionalXml(reader);
             Reset();
         }
     }

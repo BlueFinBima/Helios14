@@ -106,6 +106,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 if (profileObject != null)
                 {
                     HeliosEditorDocument editor = CreateDocumentEditor(profileObject);
+                    if (editor == null)
+                    {
+                        // this component used to have an editor and now it does not, or more likely this is
+                        // an UnsupportedInterface and therefore has no editor
+                        Logger.Debug("Layout Serializer: Document {ContentId} does not have an editor; ignored", e.Model.ContentId);
+                        return;
+                    }
                     profileObject.PropertyChanged += DocumentObject_PropertyChanged;
                     e.Content = CreateDocumentContent(editor);
                     //DocumentPane.Children.Add((LayoutDocument)e.Model);
@@ -123,7 +130,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         public HeliosProfile Profile
         {
             get { return (HeliosProfile)GetValue(ProfileProperty); }
-            set { SetValue(ProfileProperty, value); }
+            set
+            {
+                Profile?.Unload();
+                if (Profile != null)
+                {
+                    // dont' show stale sources and bindings
+                    BindingsPanel.Clear();
+                }
+                SetValue(ProfileProperty, value);
+            }
         }
 
         // Using a DependencyProperty as the backing store for Profile.  This enables animation, styling, binding, etc...
@@ -267,6 +283,9 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 {
                     _documents[0].document.Close();
                 }
+
+                // unload profile if present
+                Profile = null;
             }
             base.OnClosing(e);
         }
@@ -546,7 +565,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 }
 
                 // NOTE: only install profile if not null (i.e. load succeeded)
-                SetValue(ProfileProperty, profile);
+                Profile = profile;
 
                 string layoutFileName = Path.ChangeExtension(profile.Path, "hply");
                 if (File.Exists(layoutFileName))
@@ -837,6 +856,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             try
             {
                 bool? result = dialog.ShowDialog();
+
+                // shut down async searches
+                availableInterfaces.Dispose();
+                dialog.DataContext = null;
+
+                // anything selected?
                 if (result != true || availableInterfaces.SelectedInterface == null)
                 {
                     return;

@@ -19,27 +19,42 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Windows.Media;
 
-    public class RotaryRenderer : HeliosVisualRenderer
+    public class RotaryKnobRenderer : HeliosVisualRenderer
     {
         private ImageSource _image;
         private ImageBrush _brush;
         private Rect _imageRect;
         private Point _center;
+        private static readonly Pen DragPen = new Pen(Brushes.White, 1.0)
+        {
+            DashStyle = new DashStyle(new [] {6d, 6d}, 0d)
+        };
+        private static readonly Pen HeadingPen = new Pen(Brushes.White, 1.0);
 
         protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
         {
-            Rotary rotary = Visual as Rotary;
+            RotaryKnob rotary = Visual as RotaryKnob;
             if (rotary != null)
             {
                 drawingContext.PushTransform(new RotateTransform(rotary.KnobRotation, _center.X, _center.Y));
                 drawingContext.DrawImage(_image, _imageRect);
+                if (rotary.VisualizeDragging)
+                {
+                    double length = (rotary.DragPoint - _center).Length;
+                    drawingContext.DrawLine(HeadingPen, _center, _center + new Vector(0d, -length));
+                }
                 drawingContext.Pop();
+
+                if (rotary.VisualizeDragging)
+                {
+                    drawingContext.DrawLine(DragPen, _center, rotary.DragPoint);
+                }
             }
         }
 
         protected override void OnRefresh()
         {
-            Rotary rotary = Visual as Rotary;
+            RotaryKnob rotary = Visual as RotaryKnob;
             if (rotary != null)
             {
                 _imageRect.Width = rotary.Width;

@@ -36,6 +36,20 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="VisibleIfControlTypeNameSet" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="UIElement.Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ControlTypeName}" Value="{x:Null}"/>
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
     </HeliosSdk:HeliosPropertyEditor.Resources>
     <Grid Background="Transparent" Margin="4">
         <Grid.ColumnDefinitions>
@@ -43,6 +57,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -51,23 +66,25 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right">Name</Label>
-        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="0" FontSize="10" Margin="2" Text="{Binding VisualName, ValidatesOnDataErrors=True}" />
-        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right">Left</Label>
-        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="1" FontSize="10" Text="{Binding Path=Control.Left, Mode=TwoWay}" Margin="2" />
-        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right">Top</Label>
-        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="2" FontSize="10" Text="{Binding Path=Control.Top, Mode=TwoWay}" Margin="2" />
-        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right">Width</Label>
-        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="3" FontSize="10" Text="{Binding Path=Control.Width,Mode=TwoWay}" Margin="2" />
-        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right">Height</Label>
-        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="4" FontSize="10" Text="{Binding Path=Control.Height,Mode=TwoWay}" Margin="2" />
-        <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right" Content="Rotation">
+        <Label Grid.Column="0" Grid.Row="0" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource VisibleIfControlTypeNameSet}">Control</Label>
+        <Label Grid.Column="1" Grid.Row="0" FontSize="10" Content="{Binding ControlTypeName}" Style="{StaticResource VisibleIfControlTypeNameSet}"/>
+        <Label Grid.Column="0" Grid.Row="1" FontSize="10" HorizontalAlignment="Right">Name</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" FontSize="10" Margin="2" Text="{Binding VisualName, ValidatesOnDataErrors=True}" />
+        <Label Grid.Column="0" Grid.Row="2" FontSize="10" HorizontalAlignment="Right">Left</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" FontSize="10" Text="{Binding Path=Control.Left, Mode=TwoWay}" Margin="2" />
+        <Label Grid.Column="0" Grid.Row="3" FontSize="10" HorizontalAlignment="Right">Top</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="3" VerticalContentAlignment="Center" FontSize="10" Text="{Binding Path=Control.Top, Mode=TwoWay}" Margin="2" />
+        <Label Grid.Column="0" Grid.Row="4" FontSize="10" HorizontalAlignment="Right">Width</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="4" VerticalContentAlignment="Center" FontSize="10" Text="{Binding Path=Control.Width,Mode=TwoWay}" Margin="2" />
+        <Label Grid.Column="0" Grid.Row="5" FontSize="10" HorizontalAlignment="Right">Height</Label>
+        <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="5" VerticalContentAlignment="Center" FontSize="10" Text="{Binding Path=Control.Height,Mode=TwoWay}" Margin="2" />
+        <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Content="Rotation">
             <Label.ToolTip>Rotates display of this control.</Label.ToolTip>
         </Label>
-        <ComboBox Grid.Column="1" Grid.Row="5" Margin="2" FontSize="10" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource Rotations}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.Rotation, Converter={StaticResource Rotations}}" />
-        <Label Grid.Column="0" Grid.Row="6" FontSize="10" HorizontalAlignment="Right" Content="Hidden">
+        <ComboBox Grid.Column="1" Grid.Row="6" Margin="2" FontSize="10" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource Rotations}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.Rotation, Converter={StaticResource Rotations}}" />
+        <Label Grid.Column="0" Grid.Row="7" FontSize="10" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="Hidden">
             <Label.ToolTip>When checked this control will default to being hidden when the profile is loaded or reset.</Label.ToolTip>
         </Label>
-        <CheckBox Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="{Binding Path=Control.IsDefaultHidden}" />
+        <CheckBox Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="{Binding Path=Control.IsDefaultHidden}" />
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

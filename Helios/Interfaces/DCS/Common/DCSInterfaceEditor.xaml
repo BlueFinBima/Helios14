@@ -8,7 +8,6 @@
                                  xmlns:heliosDcs="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls.DCS"
                                  xmlns:util="clr-namespace:GadrocsWorkshop.Helios.Util"
                                  xmlns:dcs="clr-namespace:GadrocsWorkshop.Helios.Interfaces.DCS.Common"
-                                 xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                                  mc:Ignorable="d"
                                  d:DataContext="{d:DesignInstance Type=dcs:DCSInterfaceEditor}"
                                  Height="Auto" Width="Auto" Background="{StaticResource ToolBackground}" Padding="5">
@@ -178,25 +177,31 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
-                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="DCS Vehicle"/>
+                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Module Format"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                    <ComboBox
+                        VerticalContentAlignment="Center"
+                        MinWidth="290"
+                        ItemsSource="{Binding Source={StaticResource ExportModuleFormatConverter}, Path=DisplayNames}"
+                        IsEnabled="{Binding Path=Interface.CanConfigureExportModuleFormat}"
+                        SelectedItem="{Binding Path=Interface.ExportModuleFormat, Converter={StaticResource ExportModuleFormatConverter}}" />
+                </StackPanel>
+                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}" 
+                           Visibility="{Binding Path=Interface.CanConfigureExportModuleFormat, Converter={StaticResource BooleanToVisibilityConverter}}">If this profile uses a third-party export module not created by Helios, select the format of the module here.</TextBlock>
+
+                <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Content="DCS Vehicle"/>
                 <ComboBox 
-                    Grid.Row="1" Grid.Column="1"
+                    Grid.Row="4" Grid.Column="1"
+                    Padding="3,4,0,0"
                     IsEditable="True"
+                    MinWidth="290"
+                    HorizontalAlignment="Left"
                     ItemsSource="{Binding Path=VehicleImpersonation.ImpersonatedVehicleName.ItemsSource}"
                     SelectedItem="{Binding Path=VehicleImpersonation.ImpersonatedVehicleName.SelectedItem}"
                     Text="{Binding Path=VehicleImpersonation.ImpersonatedVehicleName.Text, UpdateSourceTrigger=LostFocus}"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Documentation}" 
-                            Text="{Binding Path=VehicleImpersonation.InterfaceName, StringFormat='DCS Aircraft/Vehicle for which this profile can be selected. Change this only if you are using an export script that maps this aircraft to the {0} interface.'}" />
+                <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource Documentation}" 
+                           Text="{Binding Path=VehicleImpersonation.InterfaceName, StringFormat='DCS Aircraft/Vehicle for which this profile can be selected. Change this only if you are using an export script that maps this aircraft to the {0} interface.'}" />
 
-                <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Content="Module Format"/>
-                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-                    <ComboBox
-                        VerticalContentAlignment="Center"
-                        MinWidth="120"
-                        ItemsSource="{Binding Source={StaticResource ExportModuleFormatConverter}, Path=DisplayNames}" 
-                        SelectedItem="{Binding Path=Interface.ExportModuleFormat, Converter={StaticResource ExportModuleFormatConverter}}" />
-                </StackPanel>
-                <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource Documentation}">If this profile uses a third-party export module not created by Helios, select the format of the module here.</TextBlock>
 
                 <WrapPanel Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" Visibility="{Binding Path=Configuration.CanAttachModuleFile, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Label Content="Module File"/>
@@ -205,7 +210,7 @@
                     <heliosSdk:FilePicker
                         FileExtension="lua"
                         FileDescription="Lua module"
-                        Text="{Binding Path=Interface.ExportModuleBaseName}" 
+                        Text="{Binding Path=Interface.ExportModuleBaseName, Mode=OneWay, PresentationTraceSources.TraceLevel=High}" 
                         SelectedFilePath="{Binding Path=Configuration.SelectedModuleFile, Mode=TwoWay}"
                         FolderGuess="{Binding Path=Configuration.ModuleFolderGuess}"/>
                 </WrapPanel>
@@ -214,6 +219,7 @@
                 </WrapPanel>
             </Grid>
         </Expander>
+        <!--
         <Expander Header="Global DCS-related Settings (Advanced)" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -238,7 +244,6 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <!-- shielded from stretching -->
                         <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=PhantomFix.Enabled}"/>
                     </StackPanel>
                     <Label Grid.Column="2" HorizontalAlignment="Right" Content="Left Pixel" Style="{StaticResource HideIfNoPhantomFix}"/>
@@ -249,6 +254,7 @@
                 <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource Documentation}" Text="When checked, Helios Control Center will periodically move the DCS window to the specified location on the main screen."/>
             </Grid>
         </Expander>
+        -->
         <GroupBox Header="DCS Export Files Output" Style="{StaticResource BasicGroup}">
             <Grid Height="Auto">
                 <Grid.ColumnDefinitions>

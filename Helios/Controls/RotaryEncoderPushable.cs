@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Xml;
 
-    [HeliosControl("Helios.Base.RotaryEncoderPushable", "Pushable Encoder - Knob 1", "Rotary Encoders", typeof(RotaryRenderer))]
+    // [HeliosControl("Helios.Base.RotaryEncoderPushable", "Pushable Encoder - Knob 1", "Rotary Encoders", typeof(RotaryRenderer))]
     public class RotaryEncoderPushable : Rotary { 
         private double _stepValue = 0.1d;
         private double _initialRotation = 0d;
@@ -34,11 +34,8 @@ namespace GadrocsWorkshop.Helios.Controls
         private HeliosAction _pushAction;
         private HeliosAction _releaseAction;
 
-
         private HeliosTrigger _pushedTrigger;
         private HeliosTrigger _releasedTrigger;
-
-
 
         public RotaryEncoderPushable()
             : base("Pushable Rotary Encoder", new Size(100, 100))
@@ -124,28 +121,83 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #endregion
 
-        protected override void Pulse(bool increment)
-        {
-            if (increment)
-            {
-                KnobRotation += _rotationStep;
-                if (!BypassTriggers)
-                {
-                    _incrementTrigger.FireTrigger(new BindingValue(StepValue));
-                }
-            }
-            else
-            {
-                KnobRotation -= _rotationStep;
-                if (!BypassTriggers)
-                {
-                    _decrementTrigger.FireTrigger(new BindingValue(-StepValue));
-                }
-            }
+        // XXX refactor this class to RotaryEncoderBase
+        // XXX attach the editors to the base class
+        // XXX make this work
+        // XXX create additional editor for additional functionality
 
+        private double _lastPulse;
+
+        private void Increment()
+        {
+            KnobRotation += _rotationStep;
+            _lastPulse += _rotationStep;
+            if (!BypassTriggers)
+            {
+                _incrementTrigger.FireTrigger(new BindingValue(StepValue));
+            }
+        }
+
+        private void Decrement()
+        {
+            KnobRotation -= _rotationStep;
+            _lastPulse -= _rotationStep;
+            if (!BypassTriggers)
+            {
+                _decrementTrigger.FireTrigger(new BindingValue(-StepValue));
+            }
+        }
+
+        #region IRotaryControl
+
+        public override void Pulse(int pulses)
+        {
+            for (int i = pulses; i < 0; i++)
+            {
+                Decrement();
+            }
+            for (int i = 0; i < pulses; i++)
+            {
+                Increment();
+            }
             OnDisplayUpdate();
         }
- 
+
+        public override void ChangeControlAngle(double controlAngleChange)
+        {
+            // move the control and generate pulses
+            ControlAngle = KnobRotation + controlAngleChange;
+        }
+
+        public override double ControlAngle
+        {
+            set
+            {
+                // guard against infinite loops and degenerate cases
+                if (_rotationStep <= 0)
+                {
+                    return;
+                }
+
+                // NOTE: one of these loops will have a false condition already and won't run
+                while (_lastPulse >= value + _rotationStep)
+                {
+                    Decrement();
+                }
+
+                while (_lastPulse <= value - _rotationStep)
+                {
+                    Increment();
+                }
+
+                // adjust to final location because of remainder
+                KnobRotation = value;
+                OnDisplayUpdate();
+            }
+        }
+
+        #endregion
+
         public bool Pushed
         {
             get
@@ -237,9 +289,9 @@ namespace GadrocsWorkshop.Helios.Controls
             writer.WriteElementString("InitialRotation", InitialRotation.ToString(CultureInfo.InvariantCulture));
             writer.WriteStartElement("ClickType");
             writer.WriteElementString("Type", ClickType.ToString());
-            if (ClickType == Controls.ClickType.Swipe)
+            if (ClickType != ClickType.Touch)
             {
-                writer.WriteElementString("Sensitivity", SwipeSensitivity.ToString(CultureInfo.InvariantCulture));
+                writer.WriteElementString("Sensitivity", Sensitivity.ToString(CultureInfo.InvariantCulture));
             }
             writer.WriteEndElement();
         }
@@ -256,16 +308,16 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 reader.ReadStartElement("ClickType");
                 ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("Type"));
-                if (ClickType == Controls.ClickType.Swipe)
+                if (reader.Name == "Sensitivity")
                 {
-                    SwipeSensitivity = double.Parse(reader.ReadElementString("Sensitivity"), CultureInfo.InvariantCulture);
+                    Sensitivity = double.Parse(reader.ReadElementString("Sensitivity"), CultureInfo.InvariantCulture);
                 }
                 reader.ReadEndElement();
             }
             else
             {
                 ClickType = Controls.ClickType.Swipe;
-                SwipeSensitivity = 0d;
+                Sensitivity = 0d;
             }
 
             Reset();

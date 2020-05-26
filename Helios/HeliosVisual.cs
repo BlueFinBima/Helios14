@@ -426,8 +426,14 @@ namespace GadrocsWorkshop.Helios
                 }
             }
         }
-        
-        #endregion 
+
+        /// <summary>
+        /// returns true if this visual view can process more mouse wheel input right now
+        /// otherwise the mouse wheel input will be delivered to a containing view
+        /// </summary>
+        public virtual bool CanConsumeMouseWheel => false;
+
+        #endregion
 
         #region Actions
 

@@ -35,7 +35,7 @@ namespace GadrocsWorkshop.Helios
             public bool IsOurChange;
         }
 
-        private class SettingsColleciton : KeyedCollection<string, Setting>
+        private class SettingsCollection : KeyedCollection<string, Setting>
         {
             public IEnumerable<string> Keys {
                 get {
@@ -54,10 +54,10 @@ namespace GadrocsWorkshop.Helios
 
         private class Group
         {
-            private SettingsColleciton _settings = new SettingsColleciton();
+            private SettingsCollection _settings = new SettingsCollection();
 
             public string Name;
-            public SettingsColleciton Settings { get { return _settings; } }
+            public SettingsCollection Settings { get { return _settings; } }
         }
 
         private class GroupCollection : KeyedCollection<string, Group>

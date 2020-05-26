@@ -24,7 +24,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private HeliosTrigger _enterTrigger;
         private HeliosTrigger _exitTrigger;
 
-        public RotarySwitchPosition(RotarySwitch rotarySwitch, int index, string name, double rotation)
+        public RotarySwitchPosition(HeliosObject rotarySwitch, int index, string name, double rotation)
         {
             _index = index;
             _name = name;

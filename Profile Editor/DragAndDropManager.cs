@@ -23,6 +23,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
     public static class DragAndDropManager
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private static readonly string DragOffsetFormat = "DnD.DragOffset";
 
         public static readonly DependencyProperty DragSourceAdvisorProperty = DependencyProperty.RegisterAttached("DragSourceAdvisor", typeof(IDragSourceAdvisor), typeof(DragAndDropManager),
@@ -192,11 +194,13 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             Point dropPoint = e.GetPosition(sender as UIElement);
             UpdateEffects(e, dropPoint);
+            Logger.Debug("dropping over {X}, {Y} of {Target}", dropPoint.X, dropPoint.Y, sender);
 
             // Calculate displacement for (Left, Top)
             if (_overlayElement != null)
             {
                 Point offset = e.GetPosition(_overlayElement);
+                Logger.Debug("adorner offset is {X}, {Y}", offset.X, offset.Y);
                 dropPoint.X = dropPoint.X - offset.X;
                 dropPoint.Y = dropPoint.Y - offset.Y;
             }
@@ -233,7 +237,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             {
                 _adornerPosition = e.GetPosition(sender as UIElement);
                 PositionAdorner();
-
                 e.Handled = true;
             }
         }

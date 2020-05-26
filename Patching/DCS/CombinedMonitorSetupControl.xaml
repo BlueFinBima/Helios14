@@ -73,7 +73,7 @@
                         <Button Grid.Column="3" Content="&#xE74D;"
                                 Command="{Binding ElementName=CombinedMonitorSetup, Path=DataContext.DeleteCommand}"
                                 CommandParameter="{Binding}" Template="{StaticResource FontIconButton}"
-                                ToolTip="Delete the generated monitor setup associated with this Profile" />
+                                ToolTip="Delete the stored viewport data associated with this Profile (can be recreated by configuring Monitor Setup again)" />
                     </Grid>
                 </Border>
             </DataTemplate>

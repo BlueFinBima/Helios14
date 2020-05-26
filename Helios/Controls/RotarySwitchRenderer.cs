@@ -42,6 +42,12 @@ namespace GadrocsWorkshop.Helios.Controls
         private Rect _imageRect;
         private Point _center;
 
+        private static readonly Pen DragPen = new Pen(Brushes.White, 1.0)
+        {
+            DashStyle = new DashStyle(new[] { 6d, 6d }, 0d)
+        };
+        private static readonly Pen HeadingPen = new Pen(Brushes.White, 1.0);
+
         protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
         {
             RotarySwitch rotarySwitch = Visual as RotarySwitch;
@@ -55,8 +61,20 @@ namespace GadrocsWorkshop.Helios.Controls
                 {
                     drawingContext.DrawText(label.Text, label.Location);
                 }
-                _imageBrush.RelativeTransform = new RotateTransform(rotarySwitch.KnobRotation, 0.5d, 0.5d);
+
+                drawingContext.PushTransform(new RotateTransform(rotarySwitch.KnobRotation, _center.X, _center.Y));
                 drawingContext.DrawRectangle(_imageBrush, null, _imageRect);
+                if (rotarySwitch.VisualizeDragging)
+                {
+                    double length = (rotarySwitch.DragPoint - _center).Length;
+                    drawingContext.DrawLine(HeadingPen, _center, _center + new Vector(0d, -length));
+                }
+                drawingContext.Pop();
+
+                if (rotarySwitch.VisualizeDragging)
+                {
+                    drawingContext.DrawLine(DragPen, _center, rotarySwitch.DragPoint);
+                }
             }
         }
 

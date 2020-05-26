@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,6 +12,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 using System.Collections.Generic;
 using System.Windows;
@@ -43,7 +44,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 yield return new StatusReportItem
                 {
                     Status =
-                        $"The saved viewport information from profile '{name}' does not match the current monitor layout",
+                        $"The stored viewport data from profile '{name}' does not match the current monitor layout",
                     Recommendation =
                         $"Configure DCS Monitor Setup for profile '{name}' to update the merged viewport data",
                     Severity = StatusReportItem.SeverityCode.Warning,

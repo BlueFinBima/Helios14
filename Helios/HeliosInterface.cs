@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using GadrocsWorkshop.Helios.ComponentModel;
+
 namespace GadrocsWorkshop.Helios
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace GadrocsWorkshop.Helios
     /// </summary>
     public abstract class HeliosInterface : HeliosObject
     {
-        private string _typeIdentifier;
+        protected string _typeIdentifier;
 
         protected HeliosInterface(string name)
             : base(name)
@@ -81,6 +83,13 @@ namespace GadrocsWorkshop.Helios
                 return _typeIdentifier;
             }
         }
+
+        /// <summary>
+        /// this governs the behavior of Helios when loading a profile containing this interface
+        /// but the interface is not a supported interface class, for example for a plugin that is
+        /// not installed or an interface from a later version of Helios
+        /// </summary>
+        public ComponentUnsupportedSeverity UnsupportedSeverity { get; set; }
 
         #endregion
     }

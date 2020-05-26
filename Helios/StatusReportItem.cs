@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios
         /// optional time stamp or null
         /// </summary>
         [JsonProperty("TimeStamp", NullValueHandling = NullValueHandling.Ignore)]
-        public string TimeStamp { get; set; }
+        public string TimeStamp { get; set; } = CreateTimeStamp(DateTime.Now);
 
         [JsonProperty("Severity", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public SeverityCode Severity { get; set; } = SeverityCode.Info;
@@ -76,7 +76,11 @@ namespace GadrocsWorkshop.Helios
             Verbose = 1,
 
             // this status indicates that some checked configuration item was up to date and does not need to regenerated
-            ConfigurationUpToDate = 2
+            ConfigurationUpToDate = 2,
+
+            // the timestamp in this item is from a log, so correlation can be done
+            // otherwise the time stamp might be off by some milliseconds from related log entries
+            TimeStampIsPrecise = 4
         }
 
         /// <summary>
@@ -154,5 +158,7 @@ namespace GadrocsWorkshop.Helios
                     break;
             }
         }
+
+        public static string CreateTimeStamp(DateTime dateTime) => dateTime.ToString("MM/dd/yyyy hh:mm:ss.fff tt");
     }
 }

@@ -40,6 +40,7 @@
     <Compile Include="DCS\CombinedMonitorSetupViewModel.cs" />
     <Compile Include="DCS\CombinedMonitorSetupViewModel_DesignInstance.cs" />
     <Compile Include="DCS\MonitorSetupTemplate.cs" />
+    <Compile Include="DCS\SourceOfAdditionalViewports.cs" />
     <Compile Include="DCS\ViewportSetupFile.cs" />
     <Compile Include="DCS\ViewportSetupFileStatus.cs" />
     <Compile Include="DCS\ViewportSetupFileViewModel.cs" />
@@ -91,7 +92,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\Patching\Additional Simulator Viewports\**">
+    <Content Include="Templates\Patching\Additional Simulator Viewports\*.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Patches\**">

@@ -12,35 +12,14 @@
     <HeliosSdk:HeliosPropertyEditor.Resources>
         <Helios:EnumConverter Type="{x:Type HeliosBase:ClickType}" x:Key="ClickTypes" />
 
-        <Style x:Key="SwipeLabelStyle" TargetType="Label">
+        <Style x:Key="NoTouchStyle" TargetType="FrameworkElement">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="SwipeSliderStyle" TargetType="Slider">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="OneOnOneLabelStyle" TargetType="Label">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="OneOnOneCheckStyle" TargetType="CheckBox">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
+        
     </HeliosSdk:HeliosPropertyEditor.Resources>
     <Grid Background="Transparent" Margin="4,4,4,-46">
         <Grid.ColumnDefinitions>
@@ -156,15 +135,15 @@
             <Label.ToolTip>When set to touch this switch will respond to control regions (left/right) and switch the switch appropriatly. Swipe will switch the switch in the direction you swipe your finger or mouse using a circular motion.</Label.ToolTip> Click Type
         </Label>
         <ComboBox Grid.Column="1" Grid.Row="22" FontSize="10" Margin="0,29,0,-25" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource ClickTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Control.ClickType, Converter={StaticResource ClickTypes}}" Grid.ColumnSpan="2" />
-        <Label Grid.Column="0" Grid.Row="26" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource SwipeLabelStyle}" Margin="0,32,0,-51">
+        <Label Grid.Column="0" Grid.Row="26" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource NoTouchStyle}" Margin="0,32,0,-51">
             <Label.ToolTip>When set left it will take more rotation to switch a position to the right postions will move rapidly.</Label.ToolTip> Sensitivity
         </Label>
-        <Slider Grid.Column="1" Grid.Row="26" Margin="0,38,0,-51" Minimum="-1" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight" Value="{Binding Control.SwipeSensitivity}" Style="{StaticResource SwipeSliderStyle}" Grid.ColumnSpan="2" />
+        <Slider Grid.Column="1" Grid.Row="26" Margin="0,38,0,-51" Minimum="-1" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight" Value="{Binding Control.Sensitivity}" Style="{StaticResource NoTouchStyle}" Grid.ColumnSpan="2" />
 
-        <Label Grid.Column="0" Grid.Row="26" FontSize="10" HorizontalAlignment="Right" Margin="0,67,0,-85" Style="{StaticResource OneOnOneLabelStyle}">
-            <Label.ToolTip>When checked this control moves one on one with drag distance</Label.ToolTip> One on one
+        <Label Grid.Column="0" Grid.Row="26" FontSize="10" HorizontalAlignment="Right" Margin="0,67,0,-85" Style="{StaticResource NoTouchStyle}">
+            <Label.ToolTip>When checked this control moves one for one with drag distance</Label.ToolTip> 1:1
         </Label>
-        <CheckBox Grid.Column="1" Grid.Row="26" Margin="2,73,77,-77" IsChecked="{Binding Control.DragOneOnOne}" Style="{StaticResource OneOnOneCheckStyle}" Grid.ColumnSpan="2" />
+        <CheckBox Grid.Column="1" Grid.Row="26" Margin="2,73,77,-77" IsChecked="{Binding Control.DragOneForOne}" Style="{StaticResource NoTouchStyle}" Grid.ColumnSpan="2" />
 
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

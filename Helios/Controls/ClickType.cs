@@ -13,11 +13,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.ComponentModel;
+
 namespace GadrocsWorkshop.Helios.Controls
 {
+    /// <summary>
+    /// interaction styles for rotary controls
+    /// </summary>
     public enum ClickType
     {
+        [Description("Touch on right to repeatedly increment or left to decrement")]
         Touch,
-        Swipe
+
+        [Description("Swipe around the control to increment or decrement")]
+        Swipe,
+
+        [Description("Drag a radial handle for precise control")]
+        Radial
     }
 }

@@ -21,7 +21,8 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Xml;
 
-    [HeliosControl("Helios.Base.PotentiometerWithTranslate", " Potentiometer Trans & Rot", "Potentiometers", typeof( MetricRenderer ) )]
+    // XXX this is something else entirely.  this should be replaced with AffineTransformImage descendants along with an input-only linear pot
+    [HeliosControl("Helios.Base.PotentiometerWithTranslate", "Linear Potentiometer", "Potentiometers", typeof( MetricRenderer ) )]
     public class PotentiometerWithTranslate : Metric
     {
         private double _valueRotation = 0.0d;
@@ -55,16 +56,14 @@ namespace GadrocsWorkshop.Helios.Controls
         private bool _invertedHorizontal = false;
         private bool _invertedVertical = false;
 
-
-
         private HeliosValue _pottranValueRotation;
         private HeliosValue _pottranValueTranslationX;
         private HeliosValue _pottranValueTranslationY;
 
         public PotentiometerWithTranslate( )
-            : base( "Metric", new Size( 100, 100 ) )
+            : base( "Linear Potentiometer", new Size( 100, 100 ) )
         {
-            MetricImage = "{Helios}/Images/Knobs/knob1.png";
+            MetricImage = "{Helios}/Images/Custom/translate.png";
 
             _pottranValueRotation = new HeliosValue( this, new BindingValue( 0d ), "", "value rotation", "Current rotation value of the metric.", "", BindingValueUnits.Numeric );
             _pottranValueRotation.Execute += new HeliosActionHandler( SetValueRotation_Execute );
@@ -674,13 +673,13 @@ namespace GadrocsWorkshop.Helios.Controls
             writer.WriteElementString( "ClickableHorizontal", ClickableHorizontal.ToString( CultureInfo.InvariantCulture ) );
             writer.WriteElementString( "InvertedHorizontal", InvertedHorizontal.ToString( CultureInfo.InvariantCulture ) );
             writer.WriteElementString( "InvertedVertical", InvertedVertical.ToString( CultureInfo.InvariantCulture ) );
-            writer.WriteElementString( "DragOneOnOne", DragOneOnOne.ToString( CultureInfo.InvariantCulture ) );
+            writer.WriteElementString( "DragOneOnOne", DragOneForOne.ToString( CultureInfo.InvariantCulture ) );
 
             writer.WriteStartElement( "ClickType" );
             writer.WriteElementString( "Type", ClickType.ToString( ) );
             if ( ClickType == Controls.ClickType.Swipe )
             {
-                writer.WriteElementString( "Sensitivity", SwipeSensitivity.ToString( CultureInfo.InvariantCulture ) );
+                writer.WriteElementString( "Sensitivity", Sensitivity.ToString( CultureInfo.InvariantCulture ) );
             }
             writer.WriteEndElement( );
         }
@@ -713,7 +712,7 @@ namespace GadrocsWorkshop.Helios.Controls
                 ClickableHorizontal = bool.Parse( reader.ReadElementString( "ClickableHorizontal" ) );
                 InvertedHorizontal = bool.Parse( reader.ReadElementString( "InvertedHorizontal" ) );
                 InvertedVertical = bool.Parse( reader.ReadElementString( "InvertedVertical" ) );
-                DragOneOnOne = bool.Parse( reader.ReadElementString( "DragOneOnOne" ) );
+                DragOneForOne = bool.Parse( reader.ReadElementString( "DragOneOnOne" ) );
             }
             catch
             {
@@ -723,16 +722,16 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 reader.ReadStartElement( "ClickType" );
                 ClickType = (ClickType)Enum.Parse( typeof( ClickType ), reader.ReadElementString( "Type" ) );
-                if ( ClickType == Controls.ClickType.Swipe )
+                if (reader.Name == "Sensitivity")
                 {
-                    SwipeSensitivity = double.Parse( reader.ReadElementString( "Sensitivity" ), CultureInfo.InvariantCulture );
+                    Sensitivity = double.Parse( reader.ReadElementString( "Sensitivity" ), CultureInfo.InvariantCulture );
                 }
                 reader.ReadEndElement( );
             }
             else
             {
                 ClickType = Controls.ClickType.Swipe;
-                SwipeSensitivity = 0d;
+                Sensitivity = 0d;
             }
 
             BeginTriggerBypass( true );

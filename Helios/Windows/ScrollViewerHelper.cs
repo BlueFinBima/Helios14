@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Helios Contributors
+﻿// Copyright 2020 Ammo Goettsch
 // 
 // Helios is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,10 +22,11 @@ using System.Windows.Input;
 namespace GadrocsWorkshop.Helios.Windows
 {
     /// <summary>
-    /// https://serialseb.com/blog/2007/09/03/wpf-tips-6-preventing-scrollviewer-from/
     /// this behavior class keeps ScrollsViewer from capturing the scroll interaction (mouse wheel for example) when it doesn't
-    /// need
-    /// to scroll, and lets its ancestor scrollers scroll instead
+    /// need to scroll, and lets its ancestor scrollers scroll instead
+    /// 
+    /// Based on  https://serialseb.com/blog/2007/09/03/wpf-tips-6-preventing-scrollviewer-from/
+    /// modified and commented
     /// </summary>
     public class ScrollViewerHelper
     {
@@ -59,12 +60,12 @@ namespace GadrocsWorkshop.Helios.Windows
             }
         }
 
-        private static readonly List<MouseWheelEventArgs> ReentrantList = new List<MouseWheelEventArgs>();
+        public static HashSet<MouseWheelEventArgs> MouseWheelEventsOnStack { get; }= new HashSet<MouseWheelEventArgs>();
 
         private static void HandlePreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             ScrollViewer scrollControl = sender as ScrollViewer;
-            if (e.Handled || sender == null || ReentrantList.Contains(e))
+            if (e.Handled || sender == null || MouseWheelEventsOnStack.Contains(e))
             {
                 return;
             }
@@ -75,9 +76,9 @@ namespace GadrocsWorkshop.Helios.Windows
                 Source = sender
             };
             UIElement originalSource = e.OriginalSource as UIElement;
-            ReentrantList.Add(previewEventArg);
+            MouseWheelEventsOnStack.Add(previewEventArg);
             originalSource?.RaiseEvent(previewEventArg);
-            ReentrantList.Remove(previewEventArg);
+            MouseWheelEventsOnStack.Remove(previewEventArg);
 
             // at this point if no one else handled the event in our children, we do our job
 
@@ -110,6 +111,7 @@ namespace GadrocsWorkshop.Helios.Windows
                 return;
             }
 
+            // punt mouse wheel event upwards because we can't use it
             e.Handled = true;
             MouseWheelEventArgs eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
             {

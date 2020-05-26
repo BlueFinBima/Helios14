@@ -17,7 +17,7 @@ namespace GadrocsWorkshop.Helios.ComponentModel
 {
     using System;
 
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public class HeliosPropertyEditorAttribute : Attribute
     {
         private readonly string _typeIdentifier;

@@ -8,6 +8,7 @@
                                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                                  xmlns:windows="clr-namespace:GadrocsWorkshop.Helios.Windows;assembly=Helios"
+                                 xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System" xmlns:helios="clr-namespace:GadrocsWorkshop.Helios;assembly=Helios"
                                  mc:Ignorable="d"
                                  d:DesignHeight="800" d:DesignWidth="800"
                                  d:DataContext="{d:DesignInstance Type=dcs:MonitorSetupViewModel, IsDesignTimeCreatable=False}"
@@ -324,6 +325,7 @@
                 <Setter Property="StrokeDashArray" Value="3" />
                 <Setter Property="Stroke" Value="Green" />
             </Style>
+            <helios:EnumConverter Type="{x:Type dcs:SourceOfAdditionalViewports}" x:Key="SourceOfAdditionalViewports" />
         </ResourceDictionary>
     </FrameworkElement.Resources>
     <StackPanel>
@@ -524,6 +526,27 @@
                 </WrapPanel>
             </Grid>
         </GroupBox>
+        <Expander Header="Advanced Options" Margin="0,0,0,12" IsExpanded="False" Style="{StaticResource GroupBoxWithExpanderStyle}">
+            <Grid Height="Auto">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="120"/>
+                    <!-- primary labels -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- primary controls and long messages-->
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Additional Viewports"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                    <!-- shielded from stretching -->
+                    <ComboBox VerticalAlignment="Center" MinWidth="280"  ItemsSource="{Binding Source={StaticResource SourceOfAdditionalViewports}, Path=DisplayNames}" SelectedItem="{Binding SourceOfAdditionalViewports, Converter={StaticResource SourceOfAdditionalViewports}}" />
+                </StackPanel>
+            </Grid>
+        </Expander>
         <GroupBox Header="DCS Monitor Setup File Output" Style="{StaticResource BasicGroup}">
             <Grid>
                 <Grid.RowDefinitions>

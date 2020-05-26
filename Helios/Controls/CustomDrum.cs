@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows.Media;
 	using System.Xml;
 
-	[HeliosControl("Helios.Base.CustomDrum", "Custom Drum", "Miscellaneous", typeof(Gauges.GaugeRenderer))]
+	[HeliosControl("Helios.Base.CustomDrum", "Custom Drum", "Custom Controls", typeof(Gauges.GaugeRenderer))]
 
     public class CustomDrum : Gauges.BaseGauge
 	{

@@ -13,10 +13,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for MonitorDocument.xaml
@@ -28,6 +31,36 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             InitializeComponent();
 
             MonitorEditor.SelectedItems.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(SelectedItems_CollectionChanged);
+
+            PreviewMouseWheel += Window_PreviewMouseWheel;
+        }
+
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers != ModifierKeys.Control)
+                return;
+
+            const double zoomChange = 0.25;
+            if (e.Delta > 0)
+            {
+                if (!(MonitorEditor.ZoomLevel < 4d))
+                {
+                    return;
+                }
+
+                MonitorEditor.ZoomLevel = Math.Min(MonitorEditor.ZoomLevel + zoomChange, 4d);
+                e.Handled = true;
+            }
+            else if (e.Delta < 0)
+            {
+                if (!(MonitorEditor.ZoomLevel > -4d))
+                {
+                    return;
+                }
+
+                MonitorEditor.ZoomLevel = Math.Max(MonitorEditor.ZoomLevel - zoomChange, -4d);
+                e.Handled = true;
+            }
         }
 
         public MonitorDocument(Monitor monitor) : this()

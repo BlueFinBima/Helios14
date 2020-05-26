@@ -48,10 +48,12 @@ namespace GadrocsWorkshop.Helios
 #endif
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+        // deserialization constructor
         public HeliosBinding()
         {
         }
 
+        // constructor used when building new binding
         public HeliosBinding(IBindingTrigger trigger, IBindingAction action)
         {
             Trigger = trigger;

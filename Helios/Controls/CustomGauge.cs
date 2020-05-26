@@ -21,7 +21,7 @@ namespace GadrocsWorkshop.Helios.Controls
     using System.Windows;
     using System.Xml;
 
-    [HeliosControl("Helios.Base.CustomGauge", "Custom Gauge", "Miscellaneous", typeof(CustomGaugeRenderer))]
+    [HeliosControl("Helios.Base.CustomGauge", "Custom Gauge", "Custom Controls", typeof(CustomGaugeRenderer))]
     public class CustomGauge : CustomNeedle
     {
         private double _value = 0.0d;

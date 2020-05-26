@@ -1,14 +1,26 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright 2020 Ammo Goettsch
+// 
+// Helios is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Helios is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using GadrocsWorkshop.Helios.Util;
-using System.Reflection;
+using Newtonsoft.Json;
 
 namespace GadrocsWorkshop.Helios.Windows.ViewModel
 {
@@ -52,14 +64,11 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         internal class ReportWrapper<TStatusItem>
         {
-            [JsonProperty("Product")]
-            public string Product { get; } = Assembly.GetExecutingAssembly().GetName().Name;
+            [JsonProperty("Product")] public string Product { get; } = Assembly.GetExecutingAssembly().GetName().Name;
 
-            [JsonProperty("Version")]
-            public string Version { get; } = VersionChecker.RunningVersion.ToString();
+            [JsonProperty("Version")] public string Version { get; } = VersionChecker.RunningVersion.ToString();
 
-            [JsonProperty("Items")]
-            public IList<TStatusItem> Items { get; internal set; }
+            [JsonProperty("Items")] public IList<TStatusItem> Items { get; internal set; }
 
             public ReportWrapper(IList<TStatusItem> items)
             {
@@ -82,7 +91,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
             public override void WriteJson(JsonWriter writer, string value, JsonSerializer serializer)
             {
-                writer.WriteValue(Util.Anonymizer.Anonymize(value));
+                writer.WriteValue(Anonymizer.Anonymize(value));
             }
         }
 
@@ -144,11 +153,12 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
             string repo = KnownLinks.GitRepoUrl();
             if (repo != null)
             {
-            // NOTE: github claims to support paste for attachments, but it doesn't work so we have to drag and drop a file
+                // NOTE: github claims to support paste for attachments, but it doesn't work so we have to drag and drop a file
                 string fileName = PrepareStatusReportFile(out string tempPath);
                 System.Diagnostics.Process.Start(tempPath);
 
-                string encoded = Uri.EscapeDataString($"[Helios has written the report to the file '{fileName}' and opened its containing folder in Explorer.  Please drag and drop it from Explorer to here and replace this message with a description of the problem you are reporting.]\n\n");
+                string encoded = Uri.EscapeDataString(
+                    $"[Helios has written the report to the file '{fileName}' and opened its containing folder in Explorer.  Please drag and drop it from Explorer to here and replace this message with a description of the problem you are reporting.]\n\n");
 
                 // launch the default browser
                 string url = $"{repo}issues/new?body={encoded}";
@@ -165,7 +175,7 @@ namespace GadrocsWorkshop.Helios.Windows.ViewModel
 
         private string PrepareStatusReportFile(out string tempPath)
         {
-            long timeStamp = System.DateTime.Now.ToFileTime();
+            long timeStamp = DateTime.Now.ToFileTime();
             string fileName = $"Helios_status_report_{timeStamp}.txt";
             tempPath = Path.Combine(Path.GetTempPath(), $"Helios_status_report_{timeStamp}");
             Directory.CreateDirectory(tempPath);

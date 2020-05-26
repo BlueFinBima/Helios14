@@ -74,7 +74,12 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 return;
             }
 
-            _target.SnapManager.Location = dragPoint;
+            if (Math.Abs(_target.ZoomFactor) < 0.0001)
+            {
+                return;
+            }
+            Point scaledPoint = new Point(dragPoint.X / _target.ZoomFactor, dragPoint.Y / _target.ZoomFactor); 
+            _target.SnapManager.Location = scaledPoint;
 
             item.Left = Math.Max(0d, _target.SnapManager.NewLocation.X);
             item.Top = Math.Max(0d, _target.SnapManager.NewLocation.Y);

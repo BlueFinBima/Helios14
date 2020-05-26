@@ -167,6 +167,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
             }
         }
 
+        public bool CanConfigureExportModuleFormat { get; protected set; } = true;
+
         /// <summary>
         /// the full text of an export module to be attached to the interface in the profile
         /// </summary>

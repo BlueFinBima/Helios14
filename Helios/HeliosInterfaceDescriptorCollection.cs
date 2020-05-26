@@ -49,6 +49,11 @@ namespace GadrocsWorkshop.Helios
             }
         }
 
+        internal void AddAlias(string additionalTypeId, HeliosInterfaceDescriptor item)
+        {
+            _typeIdentifiers.Add(additionalTypeId, item);
+        }
+
         #region ICollection<HeliosInterfaceDescriptor> Members
 
         public void Add(HeliosInterfaceDescriptor item)

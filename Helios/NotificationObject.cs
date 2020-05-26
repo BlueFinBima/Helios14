@@ -24,16 +24,20 @@ namespace GadrocsWorkshop.Helios
     {
         #region INotifyPropertyChanged Members
 
+        /// <summary>
+        /// WARNING:  This is an event that is declared to have the correct signature for
+        /// IPropertyNotification, but we actually pass our own extended PropertyNotificationEventArgs
+        /// argument instead, to tunnel the old and new values.  This means any all of our handlers
+        /// assume this event is only raised from our classes and cast this event DOWN to our derived
+        /// event.
+        /// </summary>
         [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(PropertyNotificationEventArgs args)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, args);
-            }
+            handler?.Invoke(this, args);
         }
 
         public void OnPropertyChanged(string childPropertyName, PropertyNotificationEventArgs args)

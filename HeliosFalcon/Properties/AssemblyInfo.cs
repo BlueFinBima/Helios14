@@ -12,7 +12,7 @@ using GadrocsWorkshop.Helios.ComponentModel;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Helios")]
 [assembly: AssemblyProduct("HeliosFalcon")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright 2020 Helios Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

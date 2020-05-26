@@ -39,6 +39,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Generic
         public GenericInterface()
             : base("DCS Generic", "DCSGeneric", "pack://application:,,,/Helios;component/Interfaces/DCS/Generic/ExportFunctions.lua")
         {
+            ExportModuleFormat = DCSExportModuleFormat.CaptZeenModule1;
+            CanConfigureExportModuleFormat = false;
+
             for (int i = 1; i < 200; i++)   // 200 Network values
             {
                 Functions.Add(new NetworkValue(this, i.ToString(), "NetWork Values", "NetWorkValue_" + i.ToString(), "Float values from DCS", "", BindingValueUnits.Numeric, null));
