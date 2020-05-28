@@ -7,7 +7,7 @@
              xmlns:helios="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls;assembly=Helios"
              xmlns:vm="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Name="ToolboxPane" Background="{StaticResource ToolBackground}">
+             d:DesignHeight="300" d:DesignWidth="300" Background="{StaticResource ToolBackground}">
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="ToolboxControlLayout" DataType="{x:Type vm:ToolboxItem}">
@@ -17,8 +17,8 @@
                             <RowDefinition Height="60" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <helios:HeliosVisualView Grid.Row="0" IsEnabled="False" Visual="{Binding Path=ControlIconInstance}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
-                        <TextBlock Grid.Row="1" Text="{Binding Path=Name}" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1" TextWrapping="Wrap" />
+                        <helios:HeliosVisualView Grid.Row="0" IsEnabled="False" Visual="{Binding ControlIconInstance}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1" />
+                        <TextBlock Grid.Row="1" Text="{Binding Name}" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1" TextWrapping="Wrap" />
                     </Grid>
                 </Border>
                 <DataTemplate.Triggers>
@@ -30,7 +30,7 @@
             </DataTemplate>
 
             <DataTemplate x:Key="ToolboxGroupLayout" DataType="{x:Type vm:ToolboxGroup}">
-                <Expander Header="{Binding Path=Name}" BorderThickness="0">
+                <Expander Header="{Binding Name}" BorderThickness="0">
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding}" ItemTemplate="{StaticResource ToolboxControlLayout}" >
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -48,7 +48,7 @@
     </UserControl.Style>-->
     <Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="6">
-            <ItemsControl ItemsSource="{Binding ElementName=ToolboxPane,Path=ToolboxGroups}" BorderThickness="0" ItemTemplate="{StaticResource ToolboxGroupLayout}" HorizontalContentAlignment="Stretch" />
+            <ItemsControl ItemsSource="{Binding ToolboxGroups}" BorderThickness="0" ItemTemplate="{StaticResource ToolboxGroupLayout}" HorizontalContentAlignment="Stretch" />
         </ScrollViewer>
     </Grid>
 </UserControl>

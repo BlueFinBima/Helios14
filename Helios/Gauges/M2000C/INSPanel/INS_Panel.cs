@@ -64,7 +64,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
                 size: size,
                 knobImage: knobImage,
                 defaultPosition: 0, 
-                clickType: ClickType.Touch,
+                clickType: RotaryClickType.Touch,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: fromCenter);

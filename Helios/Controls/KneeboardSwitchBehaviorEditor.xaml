@@ -14,7 +14,7 @@
         <Helios:EnumConverter Type="{x:Type HeliosTouch:KneeboardSwitchType}" x:Key="ToggleSwitchTypes" />
         <Helios:EnumConverter Type="{x:Type HeliosTouch:ToggleSwitchOrientation}" x:Key="ToggleSwitchOrientation" />
         <Helios:EnumConverter Type="{x:Type HeliosTouch:KneeboardSwitchPosition}" x:Key="KneeboardSwitchPosition" />
-        <Helios:EnumConverter Type="{x:Type HeliosTouch:ClickType}" x:Key="ClickTypes" />
+        <Helios:EnumConverter Type="{x:Type HeliosTouch:LinearClickType}" x:Key="ClickTypes" />
     </HeliosSdk:HeliosPropertyEditor.Resources>
     <Grid>
         <Grid.ColumnDefinitions>

@@ -26,7 +26,6 @@ namespace GadrocsWorkshop.Helios.Controls
         private double _value_inc=1;
         private double _value_dec=0;
 
-
         private KneeboardSwitchType _switchType = KneeboardSwitchType.MomOnMom;
         private KneeboardSwitchPosition _position = KneeboardSwitchPosition.Two;
         private string _positionOneImage;
@@ -40,7 +39,6 @@ namespace GadrocsWorkshop.Helios.Controls
 
         private HeliosValue _positionValue;
         private HeliosValue _KneeboardPosition;
-       
 
         public KneeboardSwitch()
             : base("Kneeboard Switch", new System.Windows.Size(50, 100))
@@ -366,11 +364,11 @@ namespace GadrocsWorkshop.Helios.Controls
             Orientation = (ToggleSwitchOrientation)Enum.Parse(typeof(ToggleSwitchOrientation), reader.ReadElementString("Orientation"));
             if (reader.Name.Equals("ClickType"))
             {
-                ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("ClickType"));
+                ClickType = (LinearClickType)Enum.Parse(typeof(LinearClickType), reader.ReadElementString("ClickType"));
             }
             else
             {
-                ClickType = Controls.ClickType.Swipe;
+                ClickType = LinearClickType.Swipe;
             }
             PositionOneImage = reader.ReadElementString("PositionOneImage");
             PositionTwoImage = reader.ReadElementString("PositionTwoImage");

@@ -70,6 +70,7 @@ namespace GadrocsWorkshop.Helios.Windows
                 return;
             }
 
+            // re-originate as bubbling preview mouse wheel event at the original source
             MouseWheelEventArgs previewEventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
             {
                 RoutedEvent = UIElement.PreviewMouseWheelEvent,
@@ -91,6 +92,7 @@ namespace GadrocsWorkshop.Helios.Windows
             if (previewEventArg.Handled)
             {
                 // already handled
+                e.Handled = true;
                 return;
             }
 

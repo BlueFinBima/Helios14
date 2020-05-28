@@ -31,7 +31,6 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             InitializeComponent();
 
             MonitorEditor.SelectedItems.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(SelectedItems_CollectionChanged);
-
             PreviewMouseWheel += Window_PreviewMouseWheel;
         }
 

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor.ViewModel"
-             d:DesignHeight="300" d:DesignWidth="300" Name="PanelControls" Focusable="False"  Background="{StaticResource ToolBackground}">
+             d:DesignHeight="300" d:DesignWidth="300" Focusable="False" Background="{StaticResource ToolBackground}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ControlTemplate x:Key="HiddenCheckBoxTemplate" TargetType="{x:Type CheckBox}">
@@ -53,7 +53,7 @@
     </UserControl.Style>-->
     <Border BorderBrush="#FF808080" BorderThickness="0,1,0,0">
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Focusable="False">
-            <ItemsControl BorderThickness="0" ItemsSource="{Binding ElementName=PanelControls,Path=Controls}" Focusable="False">
+            <ItemsControl BorderThickness="0" ItemsSource="{Binding Controls}" Focusable="False">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type local:VisualsListItem}">
                         <Border BorderBrush="#FF808080" BorderThickness="0,0,0,1">
@@ -64,16 +64,16 @@
                                     <ColumnDefinition Width="25" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <CheckBox Grid.Column="0" HorizontalAlignment="Center" IsChecked="{Binding Path=Control.IsHidden}" VerticalAlignment="Center" Margin="2" Focusable="false" Style="{StaticResource HiddenCheckBox}" />
-                                <CheckBox Grid.Column="1" HorizontalAlignment="Center" IsChecked="{Binding Path=Control.IsLocked}" VerticalAlignment="Center" Style="{StaticResource LockCheckBox}" Checked="ItemLockChecked" Tag="{Binding Control}" Margin="0,2,2,2" Focusable="False" />
+                                <CheckBox Grid.Column="0" HorizontalAlignment="Center" IsChecked="{Binding Control.IsHidden}" VerticalAlignment="Center" Margin="2" Focusable="false" Style="{StaticResource HiddenCheckBox}" />
+                                <CheckBox Grid.Column="1" HorizontalAlignment="Center" IsChecked="{Binding Control.IsLocked}" VerticalAlignment="Center" Style="{StaticResource LockCheckBox}" Checked="ItemLockChecked" Tag="{Binding Control}" Margin="0,2,2,2" Focusable="False" />
                                 <Border Grid.Column="2" BorderBrush="#FF808080" BorderThickness="0,0,1,0">
-                                    <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Path=Control.IsSnapTarget}" VerticalAlignment="Center" Style="{StaticResource SnapCheckBox}" Margin="0,2,2,2" Focusable="False" />
+                                    <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Control.IsSnapTarget}" VerticalAlignment="Center" Style="{StaticResource SnapCheckBox}" Margin="0,2,2,2" Focusable="False" />
                                 </Border>
-                                <TextBlock Grid.Column="3" Name="ItemText" Text="{Binding Path=Control.Name}" Tag="{Binding Path=Control}" MouseDown="ControlMouseDown" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="2" />
+                                <TextBlock Grid.Column="3" Name="ItemText" Text="{Binding Control.Name}" Tag="{Binding Control}" MouseDown="ControlMouseDown" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="2" />
                             </Grid>
                         </Border>
                         <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                 <Setter TargetName="ItemText" Property="Background" Value="LightBlue" />
                             </DataTrigger>
                         </DataTemplate.Triggers>

@@ -314,7 +314,7 @@ namespace GadrocsWorkshop.Helios
         protected Potentiometer AddPot(string name, Point posn, Size size, string knobImage,
             double initialRotation, double rotationTravel, double minValue, double maxValue,
             double initialValue, double stepValue,
-            string interfaceDeviceName, string interfaceElementName, bool fromCenter, ClickType clickType = ClickType.Swipe, bool isContinuous = false)
+            string interfaceDeviceName, string interfaceElementName, bool fromCenter, RotaryClickType clickType = RotaryClickType.Swipe, bool isContinuous = false)
         {
             string componentName = GetComponentName(name);
             if (fromCenter)
@@ -578,12 +578,12 @@ namespace GadrocsWorkshop.Helios
            string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, string interfaceDeviceName, string interfaceElementName,
            bool fromCenter, bool horizontal = false)
         {
-            return AddToggleSwitch(name, posn, size, defaultPosition, positionOneImage, positionTwoImage, defaultType, ClickType.Touch, interfaceDeviceName, interfaceElementName,
+            return AddToggleSwitch(name, posn, size, defaultPosition, positionOneImage, positionTwoImage, defaultType, LinearClickType.Touch, interfaceDeviceName, interfaceElementName,
                 fromCenter, horizontal);
         }
 
         protected ToggleSwitch AddToggleSwitch(string name, Point posn, Size size, ToggleSwitchPosition defaultPosition,
-            string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, ClickType clickType, string interfaceDeviceName, string interfaceElementName,
+            string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, LinearClickType clickType, string interfaceDeviceName, string interfaceElementName,
             bool fromCenter, bool horizontal = false)
         {
             if (fromCenter)
@@ -702,7 +702,7 @@ namespace GadrocsWorkshop.Helios
             string positionOneImage = "{Helios}/Images/Toggles/round-up.png",
             string positionTwoImage = "{Helios}/Images/Toggles/round-norm.png",
             string positionThreeImage = "{Helios}/Images/Toggles/round-down.png",
-            ClickType clickType = ClickType.Swipe,
+            LinearClickType clickType = LinearClickType.Swipe,
             bool horizontal = false)
         {
             string componentName = GetComponentName(name);
@@ -822,7 +822,8 @@ namespace GadrocsWorkshop.Helios
             gauge.Top = posn.Y;
             gauge.Left = posn.X;
             gauge.Width = size.Width;
-            gauge.Height = size.Height;
+            gauge.Height = size.Height;
+
             string componentName = GetComponentName(name);
             gauge.Name = componentName;
 

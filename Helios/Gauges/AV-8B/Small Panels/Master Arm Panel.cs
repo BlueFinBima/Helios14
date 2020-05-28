@@ -83,7 +83,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 positionTwoImage: _imageLocation + "WQHD/Switch/" + name + " Down.png",
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
-                clickType: ClickType.Swipe,
+                clickType: LinearClickType.Swipe,
                 fromCenter: false
                 );
             toggle.Name = "Master Arm Panel_" + name;

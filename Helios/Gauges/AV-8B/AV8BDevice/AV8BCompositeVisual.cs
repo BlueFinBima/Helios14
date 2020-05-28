@@ -152,7 +152,7 @@ namespace GadrocsWorkshop.Helios
             return _knob;
         }
         protected ToggleSwitch AddToggleSwitch(string name, Point posn, Size size, ToggleSwitchPosition defaultPosition,
-            string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, ClickType clickType, string interfaceDeviceName, string interfaceElementName,
+            string positionOneImage, string positionTwoImage, ToggleSwitchType defaultType, LinearClickType clickType, string interfaceDeviceName, string interfaceElementName,
             bool fromCenter, bool horizontal = false, string interfaceIndicatorElementName = "")
         {
             if (fromCenter)

@@ -19,8 +19,10 @@ namespace GadrocsWorkshop.Helios.Controls
 {
     /// <summary>
     /// interaction styles for rotary controls
+    ///
+    /// WARNING: these value names must never be changed, as they are serialized to Profile XML
     /// </summary>
-    public enum ClickType
+    public enum RotaryClickType
     {
         [Description("Touch on right to repeatedly increment or left to decrement")]
         Touch,
@@ -30,5 +32,19 @@ namespace GadrocsWorkshop.Helios.Controls
 
         [Description("Drag a radial handle for precise control")]
         Radial
+    }
+
+    /// <summary>
+    /// interaction styles for linear controls
+    ///
+    /// WARNING: these value names must never be changed, as they are serialized to Profile XML
+    /// </summary>
+    public enum LinearClickType
+    {
+        [Description("Touch the location towards which the control should move")]
+        Touch,
+
+        [Description("Swipe over the control in the direction it should move")]
+        Swipe,
     }
 }

@@ -5,7 +5,7 @@
     "isHeliosTemplate": true,
     "viewports": [
       {
-        "viewportName": "SHIVAL",
+        "viewportName": "SHKVAL",
         "relativeInitFilePath": "Mods/aircraft/Ka-50/Cockpit/Scripts/SHKVAL/SHKVAL_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -16,7 +16,7 @@
         "height": 320
       },
       {
-        "viewportName": "ABVRIS",
+        "viewportName": "ABRIS",
         "relativeInitFilePath": "Mods/aircraft/Ka-50/Cockpit/Scripts/ABRIS/ABRIS_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,

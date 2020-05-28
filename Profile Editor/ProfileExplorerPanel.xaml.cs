@@ -46,6 +46,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     {
         public ProfileExplorerPanel()
         {
+            DataContext = this;
             ProfileExplorerItems = new ProfileExplorerTreeItemCollection();
             InitializeComponent();
         }

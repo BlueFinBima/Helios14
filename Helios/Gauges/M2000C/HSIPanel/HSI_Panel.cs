@@ -98,7 +98,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: true,
-                clickType: ClickType.Touch);
+                clickType: RotaryClickType.Touch);
         }
 
         private void AddRotarySwitch(string name, Point posn, Size size, string imagePrefix)
@@ -108,7 +108,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
                 size: size,
                 knobImage: "{M2000C}/Images/HSIPanel/" + imagePrefix + ".png",
                 defaultPosition: 0,
-                clickType: ClickType.Touch,
+                clickType: RotaryClickType.Touch,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: true);

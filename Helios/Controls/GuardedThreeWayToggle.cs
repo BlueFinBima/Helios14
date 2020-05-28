@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Controls
         private static readonly Rect SwitchRegion = new Rect(0, 123, 65, 80);
         private static readonly Rect GuardDownRegion = new Rect(0, 75, 65, 174);
 
-        private ClickType _clickType = ClickType.Swipe;
+        private LinearClickType _clickType = LinearClickType.Swipe;
         private ToggleSwitchOrientation _orientation;
 
         private ThreeWayToggleSwitchType _switchType = ThreeWayToggleSwitchType.OnOnOn;
@@ -107,7 +107,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #region Properties
 
-        public ClickType ClickType
+        public LinearClickType ClickType
         {
             get
             {
@@ -117,7 +117,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 if (!_clickType.Equals(value))
                 {
-                    ClickType oldValue = _clickType;
+                    LinearClickType oldValue = _clickType;
                     _clickType = value;
                     OnPropertyChanged("ClickType", oldValue, value, true);
                 }
@@ -439,12 +439,12 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void MouseDown(Point location)
         {
-            if (ClickType == Controls.ClickType.Swipe)
+            if (ClickType == LinearClickType.Swipe)
             {
                 _mouseDownLocation = location;
                 _mouseAction = false;
             }
-            else if (ClickType == Controls.ClickType.Touch)
+            else if (ClickType == LinearClickType.Touch)
             {
                 switch (GuardPosition)
                 {
@@ -601,11 +601,11 @@ namespace GadrocsWorkshop.Helios.Controls
             Orientation = (ToggleSwitchOrientation)Enum.Parse(typeof(ToggleSwitchOrientation), reader.ReadElementString("Orientation"));
             if (reader.Name.Equals("ClickType"))
             {
-                ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("ClickType"));
+                ClickType = (LinearClickType)Enum.Parse(typeof(LinearClickType), reader.ReadElementString("ClickType"));
             }
             else
             {
-                ClickType = Controls.ClickType.Swipe;
+                ClickType = LinearClickType.Swipe;
             }
 
             reader.ReadStartElement("GuardUp");

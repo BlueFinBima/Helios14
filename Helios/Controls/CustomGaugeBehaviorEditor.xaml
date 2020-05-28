@@ -9,25 +9,6 @@
              xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"                      
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              Height="Auto" d:DesignWidth="180">
-    <HeliosSdk:HeliosPropertyEditor.Resources>
-        <Helios:EnumConverter Type="{x:Type HeliosBase:ClickType}" x:Key="ClickTypes" />
-
-        <Style x:Key="SwipeLabelStyle" TargetType="Label">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="SwipeSliderStyle" TargetType="Slider">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </HeliosSdk:HeliosPropertyEditor.Resources>
     <Grid Background="Transparent" Margin="4" Height="146">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -61,8 +42,5 @@
             <Label.ToolTip>Value to increment and decrement by with each turn.</Label.ToolTip> Step
         </Label>
         <HeliosSdk:HeliosTextBox Grid.Column="1" Grid.Row="4" FontSize="10" Margin="2" Text="{Binding Control.StepValue}" />
-
-        
-       
     </Grid>
 </HeliosSdk:HeliosPropertyEditor>

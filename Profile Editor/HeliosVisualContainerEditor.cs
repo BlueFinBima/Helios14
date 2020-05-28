@@ -13,6 +13,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows.Controls;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.ProfileEditor.UndoEvents;
@@ -40,8 +42,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         // Mouse state vairables for mouse interactions
         private EditorMouseState _mouseState;     // Current mode for mouse interactions
         private Point _mouseDownPosition;   // Location (relative to this control) where mouse button was pressed
-
         private Vector _dragVector = new Vector(0d, 0d);  // Offset of current mouse position based off of mouse down position
+        private Point _virtualPanningPosition; // the relative location to which we have updated the panning, accumulates small changes until we step
 
         private SnapManager _snapManager = new SnapManager();
 
@@ -384,6 +386,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
+        /// <summary>
+        /// intercept all left mouse clicks because we contain a lot of controls that would otherwise
+        /// process these events, but we need to consider them "passive" for purposes of editing in the Profile Editor
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             if (PreviewMode)
@@ -481,44 +488,52 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             CaptureMouse();
         }
 
-        protected override void OnPreviewMouseMove(MouseEventArgs e)
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
-        //    base.OnPreviewMouseMove(e);
-        //}
-
-
-        //protected override void OnMouseMove(MouseEventArgs e)
-        //{
-            if (PreviewMode)
+            if (PreviewMode || e.ChangedButton != MouseButton.Middle || _mouseState != EditorMouseState.Idle)
             {
-                //Point mousePosition = e.GetPosition(this);
-                //VisualContainer.MouseDrag(new Point(mousePosition.X / ZoomFactor, mousePosition.Y / ZoomFactor));
-                //e.Handled = true;
+                base.OnPreviewMouseDown(e);
                 return;
             }
 
-            Point resizePosition = e.GetPosition(this);
+            _mouseState = EditorMouseState.Panning;
 
-            _dragVector = e.GetPosition(Window.GetWindow(this)) - _mouseDownPosition;
+            // we don't need this location, but keep it for debugging
+            _mouseDownPosition = e.GetPosition(Window.GetWindow(this));
 
-            if (e.LeftButton == MouseButtonState.Pressed &&
-                    (Math.Abs(_dragVector.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                     Math.Abs(_dragVector.Y) > SystemParameters.MinimumVerticalDragDistance))
+            // this is the location for which we have updated the panning
+            _virtualPanningPosition = _mouseDownPosition;
+
+            // REVISIT set an adorner and clear it when we are done panning
+
+            e.Handled = true;
+            CaptureMouse();
+        }
+
+        protected override void OnPreviewMouseMove(MouseEventArgs e)
+        {
+            if (PreviewMode)
             {
-                switch (_mouseState)
-                {
-                    case EditorMouseState.SelectStart:
-                        if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-                        {
-                            SelectedItems.Clear();
-                        }
-                        _mouseState = EditorMouseState.Selecting;
-                        break;
-                }
+                return;
             }
+
+            Point currentPosition = e.GetPosition(Window.GetWindow(this));
+            _dragVector = currentPosition - _mouseDownPosition;
 
             switch (_mouseState)
             {
+                case EditorMouseState.SelectStart:
+                {
+                    if (e.LeftButton == MouseButtonState.Pressed &&
+                        (Math.Abs(_dragVector.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                         Math.Abs(_dragVector.Y) > SystemParameters.MinimumVerticalDragDistance) &&
+                         !Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        SelectedItems.Clear();
+                        _mouseState = EditorMouseState.Selecting;
+                    }
+                    break;
+                }
                 case EditorMouseState.Move:
                     _snapManager.ForceProportions = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
                     _snapManager.IgnoreTargets = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
@@ -529,22 +544,75 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 case EditorMouseState.Selecting:
                     GetDragSelectionAdorner().DragVector = _dragVector;
                     break;
+
+                case EditorMouseState.Panning:
+                    HandleMiddleMouseButtonPanning(e, currentPosition);
+                    break;
             }
 
             e.Handled = true;
         }
 
-        protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
+        private void HandleMiddleMouseButtonPanning(MouseEventArgs e, Point currentPosition)
         {
-        //    base.OnPreviewMouseLeftButtonUp(e);
-        //}
-        //protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        //{
-            if (PreviewMode)
+            // find a scrollviewer that can move horizontally and vertically, at least if shrunk enough
+            ScrollViewer scroller = VisualAncestors
+                .OfType<ScrollViewer>()
+                .Where(v => (v.HorizontalScrollBarVisibility == ScrollBarVisibility.Auto) ||
+                            (v.HorizontalScrollBarVisibility == ScrollBarVisibility.Visible))
+                .FirstOrDefault(v => (v.VerticalScrollBarVisibility == ScrollBarVisibility.Auto) ||
+                                     (v.VerticalScrollBarVisibility == ScrollBarVisibility.Visible));
+            if (scroller == null)
             {
-                //Point mousePosition = e.GetPosition(this);
-                //VisualContainer.MouseUp(new Point(mousePosition.X / ZoomFactor, mousePosition.Y / ZoomFactor));
-                //e.Handled = true;
+                return;
+            }
+
+            const double smallStep = 20d;
+            if (currentPosition.X > _virtualPanningPosition.X + smallStep)
+            {
+                // consume the X change
+                _virtualPanningPosition.X += smallStep;
+                scroller.LineRight();
+            }
+            else if (currentPosition.X < _virtualPanningPosition.X - smallStep)
+            {
+                // consume the X change
+                _virtualPanningPosition.X -= smallStep;
+                scroller.LineLeft();
+            }
+
+            if (currentPosition.Y > _virtualPanningPosition.Y + smallStep)
+            {
+                // consume the Y change
+                _virtualPanningPosition.Y += smallStep;
+                scroller.LineDown();
+            }
+            else if (currentPosition.Y < _virtualPanningPosition.Y - smallStep)
+            {
+                // consume the Y change
+                _virtualPanningPosition.Y -= smallStep;
+                scroller.LineUp();
+            }
+        }
+
+        private IEnumerable<UIElement> VisualAncestors
+        {
+            get
+            {
+                UIElement parent = Parent as UIElement;
+                while (parent != null)
+                {
+                    yield return parent;
+                    parent = (parent as FrameworkElement)?.Parent as UIElement;
+                }
+            }
+        }
+
+        protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
+        {
+            if (PreviewMode || (e.ChangedButton != MouseButton.Left && e.ChangedButton != MouseButton.Middle))
+            {
+                base.OnPreviewMouseUp(e);
                 return;
             }
 

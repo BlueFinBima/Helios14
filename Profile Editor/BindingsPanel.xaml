@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
              xmlns:vm="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor.ViewModel"             
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600" Name="BindingsPane" Background="{StaticResource ToolBackground}">
+             d:DesignHeight="300" d:DesignWidth="600" Background="{StaticResource ToolBackground}">
     <UserControl.Resources>
         <ResourceDictionary>
             
@@ -15,7 +15,7 @@
 
             <Style x:Key="PropertiesTabs" TargetType="TabControl">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding ElementName=BindingsPane,Path=SelectedBinding}" Value="{x:Null}">
+                    <DataTrigger Binding="{Binding SelectedBinding}" Value="{x:Null}">
                         <Setter Property="IsEnabled" Value="false" />
                     </DataTrigger>
                 </Style.Triggers>
@@ -24,7 +24,7 @@
             <Style x:Key="LuaHelpTextStyle" TargetType="TextBlock">
                 <Setter Property="Visibility" Value="Collapsed" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding ElementName=BindingsPane,Path=SelectedBinding.ValueSource}" Value="LuaScript">
+                    <DataTrigger Binding="{Binding SelectedBinding.ValueSource}" Value="LuaScript">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
                 </Style.Triggers>
@@ -33,10 +33,10 @@
             <Style x:Key="ErrorMessageStyle" TargetType="TextBlock">
                 <Setter Property="Visibility" Value="Visible" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.ErrorMessage}" Value="">
+                    <DataTrigger Binding="{Binding SelectedBinding.ErrorMessage}" Value="">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding}" Value="{x:Null}">
+                    <DataTrigger Binding="{Binding SelectedBinding}" Value="{x:Null}">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
                 </Style.Triggers>
@@ -46,7 +46,7 @@
             
             <Style x:Key="ValueExpanderStyle" TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">      
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.Action.ActionRequiresValue}" Value="false">
+                    <DataTrigger Binding="{Binding SelectedBinding.Action.ActionRequiresValue}" Value="false">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
                 </Style.Triggers>
@@ -57,15 +57,15 @@
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.ValueSource}" Value="TriggerValue"/>
-                            <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
+                            <Condition Binding="{Binding SelectedBinding.ValueSource}" Value="TriggerValue"/>
+                            <Condition Binding="{Binding SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
                         </MultiDataTrigger.Conditions>
                         <Setter Property="Width" Value="*" />
                     </MultiDataTrigger>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.ValueSource}" Value="LuaScript"/>
-                            <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
+                            <Condition Binding="{Binding SelectedBinding.ValueSource}" Value="LuaScript"/>
+                            <Condition Binding="{Binding SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
                         </MultiDataTrigger.Conditions>
                         <Setter Property="Width" Value="*" />
                     </MultiDataTrigger>
@@ -74,7 +74,7 @@
 
             <Style x:Key="ActionTriggerLabel" TargetType="Label" BasedOn="{StaticResource Heading1Label}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding ElementName=BindingsPane,Path=BindingType}" Value="Input">
+                    <DataTrigger Binding="{Binding BindingType}" Value="Input">
                         <Setter Property="Content" Value="Triggers" />
                     </DataTrigger>
                 </Style.Triggers>
@@ -95,15 +95,15 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TabControl Name="IOTab" Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="6" SelectedValuePath="Tag" SelectedValue="{Binding ElementName=BindingsPane,Path=BindingType}">
+        <TabControl Name="IOTab" Grid.RowSpan="2" Grid.ColumnSpan="3" Margin="6" SelectedValuePath="Tag" SelectedValue="{Binding BindingType}">
             <TabItem Header="Input" Tag="Input" />
             <TabItem Header="Output" Tag="Output" />
         </TabControl>
         <Label Grid.Row="0" Grid.Column="0" Margin="12,29,0,0" Style="{StaticResource ActionTriggerLabel}">Actions</Label>
         <Label Grid.Row="0" Grid.Column="1" Margin="3,29,0,0" Style="{StaticResource Heading1Label}">Bindings</Label>
         <Label Grid.Row="0" Grid.Column="2" Margin="3,29,0,0" Style="{StaticResource Heading1Label}">Properties</Label>
-        <TreeView Grid.Row="1" Grid.Column="0" Margin="12,0,3,12" ItemsSource="{Binding ElementName=BindingsPane,Path=ProfileExplorerItems}" Style="{StaticResource ProfileExplorerTreeStyle}" local:DragAndDropManager.DragSourceAdvisor="{StaticResource DropAdvisor}" />
-        <TreeView Grid.Row="1" Grid.Column="1" Margin="3,0,6,12" Name="BindingTree" ItemsSource="{Binding ElementName=BindingsPane,Path=BindingItems}" Style="{StaticResource ProfileExplorerTreeStyle}" local:DragAndDropManager.DropTargetAdvisor="{StaticResource DropAdvisor}" SelectedItemChanged="BindingsTree_SelectedItemChanged" />
+        <TreeView Grid.Row="1" Grid.Column="0" Margin="12,0,3,12" ItemsSource="{Binding ProfileExplorerItems}" Style="{StaticResource ProfileExplorerTreeStyle}" local:DragAndDropManager.DragSourceAdvisor="{StaticResource DropAdvisor}" />
+        <TreeView Grid.Row="1" Grid.Column="1" Margin="3,0,6,12" Name="BindingTree" ItemsSource="{Binding BindingItems}" Style="{StaticResource ProfileExplorerTreeStyle}" local:DragAndDropManager.DropTargetAdvisor="{StaticResource DropAdvisor}" SelectedItemChanged="BindingsTree_SelectedItemChanged" />
         <ScrollViewer Grid.Row="1" Grid.Column="2" Margin="0,0,12,12" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <Expander Header="Value" IsExpanded="True" Style="{StaticResource ValueExpanderStyle}">
@@ -121,7 +121,7 @@
                         
                         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2" Margin="6,0,4,0">
                             <TextBlock Style="{StaticResource PropertyName}" VerticalAlignment="Center">Value Source</TextBlock>
-                            <ComboBox MinWidth="120" ItemsSource="{Binding Source={StaticResource BindingSourceValues}, Path=DisplayNames}" SelectedItem="{Binding ElementName=BindingsPane,Path=SelectedBinding.ValueSource, Converter={StaticResource BindingSourceValues}, Mode=TwoWay}" SelectionChanged="ValueSource_SelectionChanged" HorizontalAlignment="Left" FontSize="10" Margin="4" />
+                            <ComboBox MinWidth="120" ItemsSource="{Binding Source={StaticResource BindingSourceValues}, Path=DisplayNames}" SelectedItem="{Binding SelectedBinding.ValueSource, Converter={StaticResource BindingSourceValues}, Mode=TwoWay}" SelectionChanged="ValueSource_SelectionChanged" HorizontalAlignment="Left" FontSize="10" Margin="4" />
                         </StackPanel>
 
                         <Border Grid.Row="1" Grid.Column="0" BorderBrush="#FF808080" BorderThickness="1" CornerRadius="2" Margin="4" Padding="4">
@@ -131,15 +131,15 @@
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.ValueSource}" Value="TriggerValue"/>
-                                                <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
+                                                <Condition Binding="{Binding SelectedBinding.ValueSource}" Value="TriggerValue"/>
+                                                <Condition Binding="{Binding SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="Visibility" Value="Visible" />
                                         </MultiDataTrigger>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.ValueSource}" Value="LuaScript"/>
-                                                <Condition Binding="{Binding ElementName=BindingsPane, Path=SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
+                                                <Condition Binding="{Binding SelectedBinding.ValueSource}" Value="LuaScript"/>
+                                                <Condition Binding="{Binding SelectedBinding.Trigger.TriggerSuppliesValue}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="Visibility" Value="Visible" />
                                         </MultiDataTrigger>
@@ -150,8 +150,8 @@
                                 <TextBlock Style="{StaticResource PropertyName}">Trigger Value</TextBlock>
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="80">
                                     <StackPanel>
-                                        <TextBlock Text="{Binding ElementName=BindingsPane, Path=SelectedBinding.Trigger.Unit.LongName}" />
-                                        <TextBlock Text="{Binding ElementName=BindingsPane, Path=SelectedBinding.Trigger.TriggerValueDescription}" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding SelectedBinding.Trigger.Unit.LongName}" />
+                                        <TextBlock Text="{Binding SelectedBinding.Trigger.TriggerValueDescription}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </ScrollViewer>
                             </StackPanel>
@@ -162,17 +162,17 @@
                                 <TextBlock Style="{StaticResource PropertyName}">Action Value</TextBlock>
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="80">
                                     <StackPanel>
-                                        <TextBlock Text="{Binding ElementName=BindingsPane, Path=SelectedBinding.Action.Unit.LongName}" />
-                                        <TextBlock Text="{Binding ElementName=BindingsPane, Path=SelectedBinding.Action.ActionValueDescription}" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding SelectedBinding.Action.Unit.LongName}" />
+                                        <TextBlock Text="{Binding SelectedBinding.Action.ActionValueDescription}" TextWrapping="Wrap" />
                                     </StackPanel>
                                 </ScrollViewer>
                             </StackPanel>
                         </Border>
 
-                        <ContentPresenter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="2" Content="{Binding ElementName=BindingsPane,Path=ValueEditor}" MaxHeight="200" />
+                        <ContentPresenter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="2" Content="{Binding ValueEditor}" MaxHeight="200" />
 
                         <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-                            <TextBlock FontSize="10" TextWrapping="Wrap" Margin="4,4,4,0" Text="{Binding ElementName=BindingsPane, Path=SelectedBinding.ErrorMessage}" Foreground="Red" Style="{StaticResource ErrorMessageStyle}" />
+                            <TextBlock FontSize="10" TextWrapping="Wrap" Margin="4,4,4,0" Text="{Binding SelectedBinding.ErrorMessage}" Foreground="Red" Style="{StaticResource ErrorMessageStyle}" />
                             <TextBlock FontSize="9" TextWrapping="Wrap" Margin="4,1,4,4" Style="{StaticResource Documentation}">
                             <TextBlock.Text>Return value from the script will be passed to the action. A global variable named "TriggerValue" will be populated with the value passed in from the trigger.</TextBlock.Text>
                             </TextBlock>
@@ -192,11 +192,11 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding ElementName=BindingsPane,Path=SelectedBinding.BypassCascadingTriggers}" HorizontalAlignment="Center" Margin="4,12,8,4" />
+                        <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding SelectedBinding.BypassCascadingTriggers}" HorizontalAlignment="Center" Margin="4,12,8,4" />
                         <TextBlock Grid.Row="0" Grid.Column="1" Margin="4,8,0,0" Style="{StaticResource PropertyName}" VerticalAlignment="Center">Bypass Cascading Triggers</TextBlock>
                         <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Documentation}">When checked any triggers which would normally occur because of this action are surpressed.</TextBlock>
                         <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,12,0,0" Style="{StaticResource PropertyName}" VerticalAlignment="Center">Conditional Expression</TextBlock>
-                        <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,4,4,0" Height="60" Text="{Binding ElementName=BindingsPane, Path=SelectedBinding.Condition}" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+                        <TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,4,4,0" Height="60" Text="{Binding SelectedBinding.Condition}" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
                         <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="4,0,0,0" Style="{StaticResource Documentation}">If this LUA script returns false then this binding will abort without executing the action.</TextBlock>
                     </Grid>
                 </Expander>

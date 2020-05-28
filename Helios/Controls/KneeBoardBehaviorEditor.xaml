@@ -35,24 +35,6 @@
                 </Grid>
             </Border>
         </DataTemplate>
-
-        <Helios:EnumConverter Type="{x:Type HeliosBase:ClickType}" x:Key="ClickTypes" />
-        
-        <Style x:Key="SwipeLabelStyle" TargetType="Label">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="SwipeSliderStyle" TargetType="Slider">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Control.ClickType}" Value="Touch">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
     </HeliosSdk:HeliosPropertyEditor.Resources>
     <Grid Margin="4">
         <Grid.ColumnDefinitions>

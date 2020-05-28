@@ -157,7 +157,7 @@ namespace GadrocsWorkshop.Helios.Controls
             Helios.Controls.ThreeWayToggleSwitch rocker = new Helios.Controls.ThreeWayToggleSwitch();
             rocker.Name = name;
             rocker.SwitchType = Helios.Controls.ThreeWayToggleSwitchType.MomOnMom;
-            rocker.ClickType = Helios.Controls.ClickType.Touch;
+            rocker.ClickType = Helios.Controls.LinearClickType.Touch;
             rocker.PositionTwoImage = "{AV-8B}/Images/" + imagePrefix + " " + imageOrientation + " Mid.png";
 
             rocker.Top = y;

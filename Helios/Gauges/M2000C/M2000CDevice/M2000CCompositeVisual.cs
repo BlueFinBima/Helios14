@@ -80,7 +80,7 @@ namespace GadrocsWorkshop.Helios.M2000C
         }
 
         protected RotarySwitch AddRotarySwitch(string name, Point posn, Size size,
-            string knobImage, int defaultPosition, ClickType clickType,
+            string knobImage, int defaultPosition, RotaryClickType clickType,
             string interfaceDeviceName, string interfaceElementName, bool fromCenter, NonClickableZone[] nonClickableZones = null)
         {
             if (fromCenter)
@@ -310,7 +310,7 @@ namespace GadrocsWorkshop.Helios.M2000C
             ToggleSwitch newSwitch = new ToggleSwitch();
             newSwitch.Name = componentName;
             newSwitch.SwitchType = defaultType;
-            newSwitch.ClickType = ClickType.Touch;
+            newSwitch.ClickType = LinearClickType.Touch;
             newSwitch.DefaultPosition = defaultPosition;
             newSwitch.PositionOneImage = positionOneImage;
             newSwitch.PositionTwoImage = positionTwoImage;
@@ -431,7 +431,7 @@ namespace GadrocsWorkshop.Helios.M2000C
             string positionOneImage = "{Helios}/Images/Toggles/round-up.png",
             string positionTwoImage = "{Helios}/Images/Toggles/round-norm.png",
             string positionThreeImage = "{Helios}/Images/Toggles/round-down.png",
-            ClickType clickType = ClickType.Swipe,
+            LinearClickType clickType = LinearClickType.Swipe,
             bool horizontal = false,
             bool horizontalRender = false)
         {

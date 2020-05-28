@@ -9,7 +9,7 @@
              xmlns:HeliosSdk="clr-namespace:GadrocsWorkshop.Helios.Windows.Controls"                      
              Height="Auto" d:DesignWidth="180">
     <Grid.Resources>
-        <Helios:EnumConverter Type="{x:Type HeliosBase:ClickType}" x:Key="ClickTypes" />
+        <Helios:EnumConverter Type="{x:Type HeliosBase:RotaryClickType}" x:Key="ClickTypes" />
 
         <Style x:Key="SwipeLabelStyle" TargetType="Label">
             <Style.Triggers>

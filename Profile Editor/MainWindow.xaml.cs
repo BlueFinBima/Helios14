@@ -38,8 +38,8 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     using System.Windows.Input;
     using System.Windows.Interop;
     using System.Windows.Threading;
-    using Xceed.Wpf.AvalonDock.Layout;
-    using Xceed.Wpf.AvalonDock.Layout.Serialization;
+    using AvalonDock.Layout;
+    using AvalonDock.Layout.Serialization;
 
     /// <summary>
     /// we may refactor profile loading into here if we can untangle it enough
@@ -390,6 +390,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             // therefore the LayoutDocumentPane 'DocumentPane' must be referred to dynamically
             LayoutDocumentPane documentPane = DockManager.Layout.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
             documentPane?.Children.Add(document);
+            document.IsSelected = true;
             document.Closed += Document_Closed;
 
             meta = AddDocumentMeta(profileObject, document, editor);
@@ -650,6 +651,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
                 {
                     // there is a named panel in this version of the software that
                     // would be removed if we load this layout
+                    Logger.Info($"ignoring saved editor layout because it does not specify a location for the required control '{match.Groups[0].Value}'");
                     return false;
                 }
             }
@@ -667,7 +669,11 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void ConfigurationCheck_Triggered(object sender, EventArgs e)
         {
             // REVISIT: this is expensive.  add tracking whether it is currently closed or hidden, so we don't have to search?
-            ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
+            LayoutAnchorable interfaceStatus = ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
+            if (interfaceStatus != null)
+            {
+                interfaceStatus.IsSelected = true;
+            }
         }
 
         private void LoadVisual(HeliosVisual visual)
@@ -763,7 +769,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            Splash.About dialog = new Splash.About {Owner = this};
+            About dialog = new About {Owner = this};
             dialog.ShowDialog();
         }
 
@@ -995,31 +1001,33 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         /// are replaced so we don't keep references to them.
         /// </summary>
         /// <param name="withContent"></param>
-        private void ShowCurrentLayoutAnchorable(object withContent)
+        /// <returns>the LayoutAnchorable associated with the content or null</returns>
+        private LayoutAnchorable ShowCurrentLayoutAnchorable(object withContent)
         {
             // LayoutAnchorable current = FindLayoutAnchorable(DockManager.Layout, withContent);
             LayoutAnchorable current = DockManager.Layout.Descendents().OfType<LayoutAnchorable>().First(l => l.Content == withContent);
             current?.Show();
+            return current;
         }
 
         private void Show_Explorer(object sender, RoutedEventArgs e)
         {
-            ShowCurrentLayoutAnchorable(ExplorerPanel);
+            _ = ShowCurrentLayoutAnchorable(ExplorerPanel);
         }
 
         private void Show_Properties(object sender, RoutedEventArgs e)
         {
-            ShowCurrentLayoutAnchorable(PropertiesPanel);
+            _ = ShowCurrentLayoutAnchorable(PropertiesPanel);
         }
 
         private void Show_Bindings(object sender, RoutedEventArgs e)
         {
-            ShowCurrentLayoutAnchorable(BindingsPanel);
+            _ = ShowCurrentLayoutAnchorable(BindingsPanel);
         }
 
         private void Show_Layers(object sender, RoutedEventArgs e)
         {
-            ShowCurrentLayoutAnchorable(LayersPanel);
+            _ = ShowCurrentLayoutAnchorable(LayersPanel);
         }
 
         private void Show_TemplateManager(object sender, RoutedEventArgs e)

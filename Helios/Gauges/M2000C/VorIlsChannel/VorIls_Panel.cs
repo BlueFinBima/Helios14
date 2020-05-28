@@ -88,7 +88,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.VorIlsChannel
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: fromCenter,
-                clickType: ClickType.Touch,
+                clickType: RotaryClickType.Touch,
                 isContinuous: true);
         }
 
@@ -99,7 +99,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.VorIlsChannel
                 size: size,
                 knobImage: "{M2000C}/Images/VorIlsPanel/" + imagePrefix + ".png",
                 defaultPosition: 0,
-                clickType: ClickType.Touch,
+                clickType: RotaryClickType.Touch,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: true);

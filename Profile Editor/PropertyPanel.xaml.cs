@@ -28,6 +28,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
     {
         public PropertyPanel()
         {
+            DataContext = this;
             InitializeComponent();
             PropertyEditorGroups = new PropertyEditorGroupCollection();
         }

@@ -146,7 +146,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
                 interfaceElementName: interfaceElement,
                 horizontal: horizontal,
                 horizontalRender: horizontal,
-                clickType: ClickType.Touch,
+                clickType: LinearClickType.Touch,
                 fromCenter: false
                 );
         }

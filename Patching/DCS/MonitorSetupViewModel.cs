@@ -114,6 +114,7 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 return;
             }
             model.Data.UsingViewportProvider = ((SourceOfAdditionalViewports)e.NewValue) == SourceOfAdditionalViewports.AdditionalViewportsInterface;
+            model.Data.InvalidateStatusReport();
         }
 
         private void ProtectLastMonitor(List<MonitorViewModel> monitors, Action<MonitorViewModel, bool> setter)

@@ -13,6 +13,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Windows.Input;
+using System.Windows.Threading;
+
 namespace GadrocsWorkshop.Helios.ProfileEditor
 {
     using GadrocsWorkshop.Helios.Controls;
@@ -30,7 +33,36 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         {
             InitializeComponent();
 
-            PanelEditor.SelectedItems.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(SelectedItems_CollectionChanged);
+            PanelEditor.SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
+            PreviewMouseWheel += Window_PreviewMouseWheel;
+        }
+
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers != ModifierKeys.Control)
+                return;
+
+            const double zoomChange = 0.25;
+            if (e.Delta > 0)
+            {
+                if (!(PanelEditor.ZoomLevel < 4d))
+                {
+                    return;
+                }
+
+                PanelEditor.ZoomLevel = Math.Min(PanelEditor.ZoomLevel + zoomChange, 4d);
+                e.Handled = true;
+            }
+            else if (e.Delta < 0)
+            {
+                if (!(PanelEditor.ZoomLevel > -4d))
+                {
+                    return;
+                }
+
+                PanelEditor.ZoomLevel = Math.Max(PanelEditor.ZoomLevel - zoomChange, -4d);
+                e.Handled = true;
+            }
         }
 
         public PanelDocument(HeliosPanel panel)

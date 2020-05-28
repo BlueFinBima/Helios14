@@ -334,7 +334,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 positionTwoImage: "{Helios}/Images/Toggles/round-down.png",
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
-                clickType: ClickType.Swipe,
+                clickType: LinearClickType.Swipe,
                 fromCenter: false
                 );
             toggle.Name = "UFC_" + name;

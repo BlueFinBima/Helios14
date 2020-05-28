@@ -133,7 +133,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 positionOneImage: _up,
                 positionTwoImage: _down,
                 horizontal: false,
-                clickType: ClickType.Swipe,
+                clickType: LinearClickType.Swipe,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
                 interfaceIndicatorElementName: indicator,

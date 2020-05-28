@@ -29,7 +29,6 @@ namespace GadrocsWorkshop.Helios.ControlCenter
     using System.Windows.Input;
     using System.Windows.Interop;
     using System.Windows.Threading;
-    using GadrocsWorkshop.Helios.Splash;
     using GadrocsWorkshop.Helios.Windows;
     using GadrocsWorkshop.Helios.Windows.Controls;
 

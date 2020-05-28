@@ -1531,7 +1531,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9DFD2AA5EE8E4A2EADB0D881248C3BE8"
             {
-            "SourcePath" = "8:..\\Helios\\_Documents\\Helios.Read.Me.txt"
+            "SourcePath" = "8:..\\Helios\\Documents\\Helios.Read.Me.txt"
             "TargetName" = "8:Helios.Read.Me.txt"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"
@@ -1571,7 +1571,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A38184EF0FAB4236B0041C15A012552E"
             {
-            "SourcePath" = "8:..\\Helios\\_Documents\\Helios.Install.Read.Me.rtf"
+            "SourcePath" = "8:..\\Helios\\Documents\\Helios.Install.Read.Me.rtf"
             "TargetName" = "8:Helios.Install.Read.Me.rtf"
             "Tag" = "8:"
             "Folder" = "8:_E384890BFB804E8DBFE6ADCE0EDB8172"

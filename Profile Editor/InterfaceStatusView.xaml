@@ -12,8 +12,7 @@
              d:DesignHeight="490" 
              d:DesignWidth="800"
              Background="{StaticResource EmptySpaceBetweenWhiteItems}"
-             d:DataContext="{d:DesignInstance Type=heliosViewModel:MockInterfaceStatusViewModel, IsDesignTimeCreatable=true}"
-             Name="InterfaceStatusWindow">
+             d:DataContext="{d:DesignInstance Type=heliosViewModel:MockInterfaceStatusViewModel, IsDesignTimeCreatable=true}">
     <Grid.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -294,7 +293,7 @@
             </Expander>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Margin="0,6" VerticalAlignment="Bottom">
-            <Button Command="{Binding ShareCommand}" CommandParameter="{Binding ElementName=InterfaceStatusWindow}"  Style="{StaticResource SettingsButton}" Content="Share Report" ToolTip="Share an anonymized version of this report for help or bug reporting."/>
+            <Button Command="{Binding ShareCommand}" CommandParameter="{Binding ElementName=InterfaceStatusPanel}"  Style="{StaticResource SettingsButton}" Content="Share Report" ToolTip="Share an anonymized version of this report for help or bug reporting."/>
             <Button Command="{Binding ReloadCommand}" Style="{StaticResource SettingsButton}" ToolTip="Manually reload the interface status if some interface does not update itself.">Reload Status</Button>
         </StackPanel>
     </DockPanel>

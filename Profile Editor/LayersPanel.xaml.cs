@@ -33,6 +33,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         public LayersPanel()
         {
+            DataContext = this;
             Focusable = false;
             InitializeComponent();
         }

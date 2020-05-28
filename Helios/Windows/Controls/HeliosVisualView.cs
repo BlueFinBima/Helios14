@@ -478,18 +478,21 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (this.IsEnabled)
+            if (!IsEnabled)
             {
-                if (SuppressMouseClick())
-                {
-                    e.Handled = true;
-                    return;
-                }
-                Point location = e.GetPosition(this);
-                Visual.MouseDown(location);
-                CaptureMouse();
-                e.Handled = true;
+                return;
             }
+
+            if (SuppressMouseClick())
+            {
+                e.Handled = true;
+                return;
+            }
+
+            Point location = e.GetPosition(this);
+            Visual.MouseDown(location);
+            CaptureMouse();
+            e.Handled = true;
         }
 
         protected override void OnTouchDown(TouchEventArgs e)
@@ -563,22 +566,18 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             if (IsEnabled && (Visual?.CanConsumeMouseWheel ?? false))
             {
                 // we want to process this mouse wheel interaction, but we have no default
-                // handler for preview mouse wheel, so we raise the event instead
-                e.Handled = true;
-                RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
-                {
-                    RoutedEvent = MouseWheelEvent,
-                    Source = this
-                });
+                // handler for preview mouse wheel, so we just short circuit it
+                ProcessMouseWheel(e);
             }
 
-            // remainder of this code is based on https://serialseb.com/blog/2007/09/03/wpf-tips-6-preventing-scrollviewer-from/
+            // based on https://serialseb.com/blog/2007/09/03/wpf-tips-6-preventing-scrollviewer-from/
             if (e.Handled || ScrollViewerHelper.MouseWheelEventsOnStack.Contains(e))
             {
                 // infinite loop prevented
                 return;
             }
 
+            // re-originate as bubbling preview mouse wheel event at the original source
             MouseWheelEventArgs previewEventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
             {
                 RoutedEvent = UIElement.PreviewMouseWheelEvent,
@@ -611,15 +610,19 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            // we won't normally receive this event if these are not both true, but check anyway in
+            // we won't normally receive this event if these conditions are not true, but check anyway in
             // case of synthetic event
-            if (IsEnabled && Visual.CanConsumeMouseWheel)
+            if (IsEnabled && Visual != null && Visual.CanConsumeMouseWheel)
             {
-                int delta = e.Delta;
-                Visual.MouseWheel(delta);
-                e.Handled = true;
+                ProcessMouseWheel(e);
             }
         }
 
+        private void ProcessMouseWheel(MouseWheelEventArgs e)
+        {
+            int delta = e.Delta;
+            Visual.MouseWheel(delta);
+            e.Handled = true;
+        }
     }
 }

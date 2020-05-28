@@ -387,9 +387,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.DCS.Common
                         ExportModuleText = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
                         break;
                     default:
-                        string discard = reader.ReadElementString(reader.Name);
+                        string elementName = reader.Name;
+                        string discard = reader.ReadElementString(elementName);
                         Logger.Warn(
-                            $"Ignored unsupported DCS Interface setting '{reader.Name}' with value '{discard}'");
+                            $"Ignored unsupported DCS Interface setting '{elementName}' with value '{discard}'");
                         break;
                 }
             }

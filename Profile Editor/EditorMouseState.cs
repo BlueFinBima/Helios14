@@ -21,6 +21,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         Move,
         Dropping,
         SelectStart,
-        Selecting
+        Selecting,
+        Panning
     }
 }

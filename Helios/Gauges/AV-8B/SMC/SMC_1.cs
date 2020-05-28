@@ -168,7 +168,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 positionOneImage: "{AV-8B}/Images/SMC Cool Switch Up.png",
                 positionTwoImage: "{AV-8B}/Images/SMC Cool Switch Dn.png",
                 horizontal: false,
-                clickType: ClickType.Swipe, 
+                clickType: LinearClickType.Swipe, 
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
                 fromCenter: false

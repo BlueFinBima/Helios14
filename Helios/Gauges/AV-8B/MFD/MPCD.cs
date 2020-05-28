@@ -136,7 +136,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
                 positionTwoImage: "{AV-8B}/Images/" + imagePrefix + " " + imageOrientation + " Mid.png",
-                clickType: ClickType.Touch,
+                clickType: LinearClickType.Touch,
                 fromCenter: false
                 );
             rocker.Name = _side + "_" + name;

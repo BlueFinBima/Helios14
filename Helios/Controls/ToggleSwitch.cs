@@ -329,11 +329,11 @@ namespace GadrocsWorkshop.Helios.Controls
             Orientation = (ToggleSwitchOrientation)Enum.Parse(typeof(ToggleSwitchOrientation), reader.ReadElementString("Orientation"));
             if (reader.Name.Equals("ClickType"))
             {
-                ClickType = (ClickType)Enum.Parse(typeof(ClickType), reader.ReadElementString("ClickType"));
+                ClickType = (LinearClickType)Enum.Parse(typeof(LinearClickType), reader.ReadElementString("ClickType"));
             }
             else
             {
-                ClickType = Controls.ClickType.Swipe;
+                ClickType = LinearClickType.Swipe;
             }
             PositionOneImage = reader.ReadElementString("PositionOneImage");
             PositionTwoImage = reader.ReadElementString("PositionTwoImage");

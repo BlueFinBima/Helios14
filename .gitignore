@@ -46,3 +46,4 @@ Lua/DCS/Scripts/HeliosExport/Mods
 /Lua/runExportLua.ps1
 /*.code-workspace
 /Helios_with*.sln
+/Tools/*NonHelios*

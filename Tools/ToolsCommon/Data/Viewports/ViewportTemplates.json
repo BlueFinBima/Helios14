@@ -6,7 +6,7 @@
     "viewports": [
       {
         "viewportName": "UHF_ARC159_M",
-        "relativeInitFilePath": "Mods/Aircraft/F14/Cockpit/Scripts/VHF_Radio/Indicator/Main/init.lua",
+        "relativeInitFilePath": "Mods/Aircraft/F14/Cockpit/Scripts/UHF_Radio/Indicator/Main/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 452,
@@ -16,7 +16,7 @@
       },
       {
         "viewportName": "UHF_ARC159_RP",
-        "relativeInitFilePath": "Mods/Aircraft/F14/Cockpit/Scripts/VHF_Radio/Indicator/RemotePilot/init.lua",
+        "relativeInitFilePath": "Mods/Aircraft/F14/Cockpit/Scripts/UHF_Radio/Indicator/RemotePilot/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "x": 1452,
@@ -73,7 +73,7 @@
     "viewports": [
       {
         "viewportName": "VHF_ARC182_M",
-        "relativeInitFilePath": "Mods/Aircraft/F14/Cockpit/Scripts/UHF_Radio/Indicator/Main/init.lua",
+        "relativeInitFilePath": "Mods/Aircraft/F14/Cockpit/Scripts/VHF_Radio/Indicator/Main/init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
         "seatIndex": 1,
@@ -92,17 +92,6 @@
         "y": 352,
         "width": 108,
         "height": 24
-      },
-      {
-        "viewportName": "VHF_ARC182_RP",
-        "relativeInitFilePath": "Mods/Aircraft/F14/Cockpit/Scripts/VHF_Radio/Indicator/RemotePilot/init.lua",
-        "originalDisplayWidth": 1920,
-        "originalDisplayHeight": 1080,
-        "seatIndex": 1,
-        "x": 1452,
-        "y": 354,
-        "width": 120,
-        "height": 30
       },
       {
         "viewportName": "TID",
@@ -232,7 +221,7 @@
     "isHeliosTemplate": true,
     "viewports": [
       {
-        "viewportName": "SHIVAL",
+        "viewportName": "SHKVAL",
         "relativeInitFilePath": "Mods/aircraft/Ka-50/Cockpit/Scripts/SHKVAL/SHKVAL_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,
@@ -243,7 +232,7 @@
         "height": 320
       },
       {
-        "viewportName": "ABVRIS",
+        "viewportName": "ABRIS",
         "relativeInitFilePath": "Mods/aircraft/Ka-50/Cockpit/Scripts/ABRIS/ABRIS_init.lua",
         "originalDisplayWidth": 1920,
         "originalDisplayHeight": 1080,

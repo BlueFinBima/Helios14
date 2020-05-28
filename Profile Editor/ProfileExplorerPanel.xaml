@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor"
              xmlns:vm="clr-namespace:GadrocsWorkshop.Helios.ProfileEditor.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Name="ProfileExplorerPane" Background="{StaticResource ToolBackground}">
+             d:DesignHeight="300" d:DesignWidth="300" Background="{StaticResource ToolBackground}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,6 +18,6 @@
         <CommandBinding Command="Delete" Executed="Delete_Executed" CanExecute="Delete_CanExecute" />
     </UserControl.CommandBindings>
     <Grid>
-        <TreeView Name="ProfileExplorerTree" BorderThickness="0" ItemsSource="{Binding ElementName=ProfileExplorerPane,Path=ProfileExplorerItems}" Style="{StaticResource ProfileExplorerTreeStyle}" PreviewMouseDoubleClick="TreeView_PreviewMouseDoubleClick" />
+        <TreeView Name="ProfileExplorerTree" BorderThickness="0" ItemsSource="{Binding ProfileExplorerItems}" Style="{StaticResource ProfileExplorerTreeStyle}" PreviewMouseDoubleClick="TreeView_PreviewMouseDoubleClick" />
     </Grid>
 </UserControl>

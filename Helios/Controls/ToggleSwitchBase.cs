@@ -26,7 +26,7 @@ namespace GadrocsWorkshop.Helios.Controls
             Decrement
         }
 
-        private ClickType _clickType = ClickType.Swipe;
+        private LinearClickType _clickType = LinearClickType.Swipe;
 
         private Point _mouseDownLocation;
         private bool _mouseAction;
@@ -50,7 +50,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         #region Properties
 
-        public ClickType ClickType
+        public LinearClickType ClickType
         {
             get
             {
@@ -60,7 +60,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 if (!_clickType.Equals(value))
                 {
-                    ClickType oldValue = _clickType;
+                    LinearClickType oldValue = _clickType;
                     _clickType = value;
                     OnPropertyChanged("ClickType", oldValue, value, true);
                 }
@@ -143,7 +143,7 @@ namespace GadrocsWorkshop.Helios.Controls
         {
             _mouseAction = false;
 
-            if (ClickType == Controls.ClickType.Swipe)
+            if (ClickType == LinearClickType.Swipe)
             {
                 _mouseDownLocation = location;
                 if (DesignMode && HasIndicator)
@@ -151,7 +151,7 @@ namespace GadrocsWorkshop.Helios.Controls
                     IndicatorOn = !IndicatorOn;
                 }
             }
-            else if (ClickType == Controls.ClickType.Touch)
+            else if (ClickType == LinearClickType.Touch)
             {
                 SwitchAction action = SwitchAction.Increment;
 
@@ -182,7 +182,7 @@ namespace GadrocsWorkshop.Helios.Controls
 
         public override void MouseDrag(Point location)
         {
-            if (ClickType == Controls.ClickType.Swipe)
+            if (ClickType == LinearClickType.Swipe)
             {
                 Vector swipeVector = location - _mouseDownLocation;
 

@@ -15,7 +15,7 @@
         <Helios:EnumConverter Type="{x:Type HeliosTouch:ToggleSwitchType}" x:Key="ToggleSwitchTypes" />
         <Helios:EnumConverter Type="{x:Type HeliosTouch:GuardPosition}" x:Key="GuardPositions" />
         <Helios:EnumConverter Type="{x:Type HeliosTouch:ToggleSwitchPosition}" x:Key="ToggleSwitchPosition" />
-        <Helios:EnumConverter Type="{x:Type HeliosTouch:ClickType}" x:Key="ClickTypes" />
+        <Helios:EnumConverter Type="{x:Type HeliosTouch:LinearClickType}" x:Key="ClickTypes" />
     </HeliosSdk:HeliosPropertyEditor.Resources>
     <Grid>
         <Grid.ColumnDefinitions>

@@ -86,7 +86,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.TACANChannel
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: true,
-                clickType: ClickType.Touch,
+                clickType: RotaryClickType.Touch,
                 isContinuous: true);
         }
 
@@ -97,7 +97,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C.TACANChannel
                 size: size,
                 knobImage: "{M2000C}/Images/TacanPanel/" + imagePrefix + ".png",
                 defaultPosition: 0,
-                clickType: ClickType.Touch,
+                clickType: RotaryClickType.Touch,
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: true);

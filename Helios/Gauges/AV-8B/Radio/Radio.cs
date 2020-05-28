@@ -217,7 +217,7 @@ namespace GadrocsWorkshop.Helios.Gauges.AV8B
                 positionTwoImage: _imageLocation + imageStem + "down.png",
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: interfaceElementName,
-                clickType: ClickType.Swipe,
+                clickType: LinearClickType.Swipe,
                 fromCenter: false
                 );
         }

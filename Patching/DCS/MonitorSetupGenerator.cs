@@ -618,9 +618,23 @@ namespace GadrocsWorkshop.Helios.Patching.DCS
                 };
             }
 
-            // check if any referenced viewports require patches to work
-            IEnumerable<IViewportProvider> viewportProviders =
+            // gather viewport providers from this profile
+            List<IViewportProvider> viewportProviders =
                 _parent.Profile.Interfaces.OfType<IViewportProvider>().ToList();
+            if (!_parent.UsingViewportProvider)
+            {
+                foreach (HeliosInterface viewportProvider in viewportProviders.OfType<HeliosInterface>())
+                {
+                    yield return new StatusReportItem
+                    {
+                        Status = $"interface '{viewportProvider.Name}' is providing additional viewport patches but this profile uses a third-party solution for those",
+                        Severity = StatusReportItem.SeverityCode.Warning,
+                        Recommendation = $"Remove the '{viewportProvider.Name}' interface since this profile is configured to expect a third-party solution to provide viewport modifications"
+                    };
+                }
+            } 
+
+            // check if any referenced viewports require patches to work
             foreach (IViewportExtent viewport in _parent.Viewports
                 .Select(shadow => shadow.Viewport)
                 .Where(v => v.RequiresPatches))

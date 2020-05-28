@@ -82,7 +82,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
                 interfaceDeviceName: _interfaceDeviceName,
                 interfaceElementName: name,
                 fromCenter: true,
-                clickType: ClickType.Touch);
+                clickType: RotaryClickType.Touch);
         }
 
         private ToggleSwitch AddSwitch(string name, string imagePrefixPos1, string imagePrefixPos2, Point posn, ToggleSwitchPosition defaultPosition, ToggleSwitchType defaultType)
@@ -117,7 +117,7 @@ namespace GadrocsWorkshop.Helios.Gauges.M2000C
                 interfaceElementName: name,
                 horizontal: false,
                 horizontalRender: false,
-                clickType: ClickType.Touch,
+                clickType: LinearClickType.Touch,
                 fromCenter: true
                 );
         }

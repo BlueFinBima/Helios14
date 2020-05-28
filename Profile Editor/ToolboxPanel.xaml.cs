@@ -31,6 +31,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         public ToolboxPanel()
         {
+            DataContext = this;
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
                 _toolboxGroups = new ToolboxGroupCollection();
