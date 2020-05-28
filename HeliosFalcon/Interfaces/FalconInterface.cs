@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
 using GadrocsWorkshop.Helios.Interfaces.Capabilities;
@@ -28,6 +29,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconTypes _falconType;
         private string _falconPath;
         private string _keyFile;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
 
@@ -121,7 +123,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                 }
             }
         }
-
 
         public string FalconPath
         {
@@ -219,8 +220,23 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         
         public override void ReadXml(XmlReader reader)
         {
-            FalconType = (FalconTypes)Enum.Parse(typeof(FalconTypes), reader.ReadElementString("FalconType"));
-            KeyFileName = reader.ReadElementString("KeyFile");
+            while (reader.NodeType == XmlNodeType.Element)
+            {
+                switch (reader.Name)
+                {
+                    case "FalconType":
+                        FalconType = (FalconTypes)Enum.Parse(typeof(FalconTypes), reader.ReadElementString("FalconType"));
+                        break;
+                    case "KeyFile":
+                        KeyFileName = reader.ReadElementString("KeyFile");
+                        break;
+                    default:
+                        // ignore unsupported settings
+                        string discard = reader.ReadElementString(reader.Name);
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        break;
+                }
+            }
         }
 
         public override void WriteXml(XmlWriter writer)
