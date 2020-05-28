@@ -63,39 +63,94 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
         public BMSFalconDataExporter(FalconInterface falconInterface)
             : base(falconInterface)
         {
-            AddValue("Right Eyebrow", "oxy low indicator", "OXY LOW indicator on right eyebrow", "True if lit", BindingValueUnits.Boolean);
-            AddValue("Caution", "equip hot indicator", "Equip hot indicator on caution panel", "True if lit", BindingValueUnits.Boolean);
-            AddValue("Test Panel", "FLCS channel lamps", "FLCS channel lamps on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
-            AddValue("Right Eyebrow", "flcs indicator", "FLCS Indicator", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Altimeter", "altitidue", "Current altitude of the aircraft.", "Altitude in feet.", BindingValueUnits.Feet, "altitude");
+            AddValue("Altimeter", "indicated altitude", "Inidicated barometric altitude. (Depends on calibration)", "Altitiude in feet.", BindingValueUnits.Feet);
+            AddValue("Altimeter", "barimetric pressure", "Calibrated barimetric pressure.", "", BindingValueUnits.InchesOfMercury);
+            
+            AddValue("Altitude", "Cabin Altitude", "Current cabin altitude", "", BindingValueUnits.Numeric);
 
-            AddValue("Autopilot", "on indicator", "Indicates whether the autopilot is on.", "True if on", BindingValueUnits.Boolean);
+            AddValue("ADI", "pitch", "Pitch of the aircraft", "", BindingValueUnits.Radians);
+            AddValue("ADI", "roll", "Roll of the aircraft", "", BindingValueUnits.Radians);
+            AddValue("ADI", "ils horizontal", "Position of horizontal ils bar.", "(-1 full left, 1 full right)", BindingValueUnits.Numeric);
+            AddValue("ADI", "ils vertical", "Position of vertical ils bar.", "(-1 highest, 1 lowest)", BindingValueUnits.Numeric);
 
-            AddValue("General", "on ground", "Indicates weight on wheels.", "True if wheight is on wheels.", BindingValueUnits.Boolean);
-            AddValue("Flight Control", "run light", "Run light on the flight control panel indicating bit is running.", "True if lit", BindingValueUnits.Boolean);
-            AddValue("Flight Control", "fail light", "Fail light on the flight control panel indicating bit failure.", "True if lit", BindingValueUnits.Boolean);
-            AddValue("Right Eyebrow", "dbu on indicator", "DBU Warning light on the right eyebrow.", "True if lit", BindingValueUnits.Boolean);
-            AddValue("General", "parking brake engaged", "Indicates if the parking brake is engaged.", "True if engaged", BindingValueUnits.Boolean);
-            AddValue("Caution", "cadc indicator", "CADC indicator lamp on the caution panel.", "True if lit", BindingValueUnits.Boolean);
-            AddValue("General", "speed barke", "Indicates if the speed brake is deployed.", "True if speed breake is in any other position than stowed.", BindingValueUnits.Boolean);
-
+            AddValue("HSI", "bearing to beacon", "Compass heading in degrees to the currently selected beacon.", "", BindingValueUnits.Degrees);
+            AddValue("HSI", "desired course", "Currently selected desired course in degrees.", "", BindingValueUnits.Degrees);
+            AddValue("HSI", "current heading", "Current heading of the aircraft.", "", BindingValueUnits.Degrees);
+            AddValue("HSI", "distance to beacon", "Distance to the currently selected beacon.", "", BindingValueUnits.NauticalMiles);
+            AddValue("HSI", "desired heading", "Currently selected desired heading.", "", BindingValueUnits.Degrees);
+            AddValue("HSI", "course deviation", "Current location of course deviation bar.", "(-1 full left to 1 full right)", BindingValueUnits.Numeric);
             AddValue("HSI", "Outer marker indicator", "Outer marker indicator on HSI", "True if lit", BindingValueUnits.Boolean);
             AddValue("HSI", "Middle marker indicator", "Middle marker indicator on HSI", "True if lit", BindingValueUnits.Boolean);
-
             AddValue("HSI", "nav mode", "Nav mode currently selected for the HSI/eHSI", "", BindingValueUnits.Numeric);
+
+            AddValue("VVI", "vertical velocity", "Current vertical velocity of the aircraft.", "", BindingValueUnits.FeetPerSecond);
+            AddValue("AOA", "angle of attack", "Current angle of attack of the aircraft.", "", BindingValueUnits.Degrees);
+
+            AddValue("IAS", "mach", "Current mach speed of the aircraft.", "", BindingValueUnits.Numeric);
+            AddValue("IAS", "indicated air speed", "Current indicated air speed in knots.", "", BindingValueUnits.Knots);
+            AddValue("IAS", "true air speed", "Current true air speed in feet per second.", "", BindingValueUnits.FeetPerSecond);
+
+            AddValue("General", "Gs", "Current g-force load", "", BindingValueUnits.Numeric);
+            AddValue("General", "speed brake position", "Speed brake position", "0(Fully Closed) to 1(Fully Open)", BindingValueUnits.Degrees);
+            AddValue("General", "speed brake indicator", "Speed brake open indicator.", "True if the speed brake is open at all.", BindingValueUnits.Boolean);
+            AddValue("General", "on ground", "Indicates weight on wheels.", "True if wheight is on wheels.", BindingValueUnits.Boolean);
+            AddValue("General", "parking brake engaged", "Indicates if the parking brake is engaged.", "True if engaged", BindingValueUnits.Boolean);
+            AddValue("General", "speed barke", "Indicates if the speed brake is deployed.", "True if speed breake is in any other position than stowed.", BindingValueUnits.Boolean,"speed brake");
+
+            AddValue("Engine", "nozzle position", "Current afterburner nozzel position.", "Percent open (0-100)", BindingValueUnits.Numeric);
+            AddValue("Engine", "fuel flow", "Current fuel flow to the engine.", "", BindingValueUnits.PoundsPerHour);
+            AddValue("Engine", "rpm", "Current RPM of the engine.", "Percent (0-103)", BindingValueUnits.RPMPercent);
+            AddValue("Engine", "ftit", "Forward turbine intake temperature", "", BindingValueUnits.Celsius);
+            AddValue("Engine", "oil pressure", "Current oil pressure in the engine.", "Percent (0-100)", BindingValueUnits.Numeric);
+            AddValue("Engine", "nozzle 2 position", "Current engine nozzle2.", "Percent open (0-100)", BindingValueUnits.Numeric);
+            AddValue("Engine", "rpm2", "Current engine rpm2.", "Percent (0-103)", BindingValueUnits.Numeric);
+            AddValue("Engine", "ftit2", "Current forward turbine inlet temp2", "Degrees C", BindingValueUnits.Numeric);
+            AddValue("Engine", "oil pressure 2", "Current oil pressure 2 in the engine.", "Percent (0-100)", BindingValueUnits.Numeric);
+            AddValue("Engine", "fuel flow 2", "Current fuel flow to the engine 2.", "", BindingValueUnits.PoundsPerHour);
+
+            AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "total fuel", "Amount of total fuel", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "internal fuel", "Amount of fuel in the internal tanks.", "", BindingValueUnits.Pounds);
+            AddValue("Fuel", "external fuel", "Amount of fuel in the external tanks.", "", BindingValueUnits.Pounds);
+            AddValue("EPU", "fuel", "Remaining EPU fuel.", "Percent (0-100)", BindingValueUnits.Numeric);
+
+            AddValue("Landging Gear", "position", "Landing gear current position.", "True for down, false for up", BindingValueUnits.Boolean, "Landing Gear");
+
+            AddValue("CMDS", "chaff remaining", "Number chaff charges remaining.", "", BindingValueUnits.Numeric);
+            AddValue("CMDS", "flares remaining", "Number of flares remaining.", "", BindingValueUnits.Numeric);
+            AddValue("CMDS", "CMDS Mode", "Current CMDS mode", "(0 off, 1 stby, 2 Man, 3 Semi, 4 Auto, 5 BYP)", BindingValueUnits.Numeric);
+
+            AddValue("Trim", "roll trim", "Amount of roll trim currently set.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
+            AddValue("Trim", "pitch trim", "Number of flares remaining.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
+            AddValue("Trim", "yaw trim", "Number of flares remaining.", "(-0.5 to 0.5)", BindingValueUnits.Numeric);
+
+            AddValue("Tacan", "ufc tacan chan", "Tacan channel set with the UFC.", "", BindingValueUnits.Numeric);
+            AddValue("Tacan", "aux tacan chan", "Tacan channel set with the AUX COM panel.", "", BindingValueUnits.Numeric);
             AddValue("Tacan", "ufc tacan band", "Tacan band set with the UFC.", "1 = X, 2 = Y", BindingValueUnits.Numeric);
             AddValue("Tacan", "aux tacan band", "Tacan band set with the AUX COM panel.", "1 = X, 2 = Y", BindingValueUnits.Numeric);
             AddValue("Tacan", "ufc tacan mode", "Tacan mode set with the UFC.", "1 = TR, 2 = AA", BindingValueUnits.Numeric);
             AddValue("Tacan", "aux tacan mode", "Tacan mode set with the AUX COM panel.", "1 = TR, 2 = AA", BindingValueUnits.Numeric);
 
+            AddValue("Right Eyebrow", "oxy low indicator", "OXY LOW indicator on right eyebrow", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Right Eyebrow", "flcs indicator", "FLCS Indicator", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Right Eyebrow", "dbu on indicator", "DBU Warning light on the right eyebrow.", "True if lit", BindingValueUnits.Boolean);
+
+            AddValue("Caution", "cadc indicator", "CADC indicator lamp on the caution panel.", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Caution", "equip hot indicator", "Equip hot indicator on caution panel", "True if lit", BindingValueUnits.Boolean);
+
+            AddValue("Test Panel", "FLCS channel lamps", "FLCS channel lamps on test panel (abcd)", "True if lit", BindingValueUnits.Boolean);
+
+            AddValue("Autopilot", "on indicator", "Indicates whether the autopilot is on.", "True if on", BindingValueUnits.Boolean);
+
+            AddValue("Flight Control", "run light", "Run light on the flight control panel indicating bit is running.", "True if lit", BindingValueUnits.Boolean);
+            AddValue("Flight Control", "fail light", "Fail light on the flight control panel indicating bit failure.", "True if lit", BindingValueUnits.Boolean);
+
             AddValue("AVTR", "avtr indicator", "Indicates whether the acmi is recording", "True if lit", BindingValueUnits.Boolean);
 
-            //BMS 4.33 addition
             AddValue("Threat Warning Prime", "systest indicator", "Threat warning prime systest indicator", "True if lit", BindingValueUnits.Boolean);
-            AddValue("Engine", "nozzle 2 position", "Current engine nozzle2.", "Percent open (0-100)", BindingValueUnits.Numeric);
-            AddValue("Engine", "rpm2", "Current engine rpm2.", "Percent (0-103)", BindingValueUnits.Numeric);
-            AddValue("Engine", "ftit2", "Current forward turbine inlet temp2", "Degrees C", BindingValueUnits.Numeric);
-            AddValue("Engine", "oil pressure 2", "Current oil pressure 2 in the engine.", "Percent (0-100)", BindingValueUnits.Numeric);
-            AddValue("CMDS", "CMDS Mode", "Current CMDS mode", "(0 off, 1 stby, 2 Man, 3 Semi, 4 Auto, 5 BYP)", BindingValueUnits.Numeric);
+
             AddValue("UHF", "Backup channel", "Current Backup UHF channel", "", BindingValueUnits.Numeric);
             AddValue("UHF", "Backup frequency", "Current Backup UHF frequency", "", BindingValueUnits.Numeric);
             AddValue("UHF", "Backup frequency digit 1", "Current Backup UHF frequency digit 1", "", BindingValueUnits.Numeric);
@@ -103,11 +158,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("UHF", "Backup frequency digit 3", "Current Backup UHF frequency digit 3", "", BindingValueUnits.Numeric);
             AddValue("UHF", "Backup frequency digit 4", "Current Backup UHF frequency digit 4", "", BindingValueUnits.Numeric);
             AddValue("UHF", "Backup frequency digit 5,6", "Current Backup UHF frequency digit 5,6", "", BindingValueUnits.Numeric);
-            AddValue("Altitude", "Cabin Altitude", "Current cabin altitude", "", BindingValueUnits.Numeric);
+
             AddValue("Hydraulic", "Pressure A", "Current hydraulic pressure a", "", BindingValueUnits.PoundsPerSquareInch);
             AddValue("Hydraulic", "Pressure B", "Current hydraulic pressure b", "", BindingValueUnits.PoundsPerSquareInch);
+
             AddValue("Time", "Time", "Current tine in seconds", "(max 60 * 60 * 24)", BindingValueUnits.Seconds);
-            AddValue("Engine", "fuel flow 2", "Current fuel flow to the engine 2.", "", BindingValueUnits.PoundsPerHour);
 
             //AltBits
             AddValue("Altimeter", "altimeter calibration type", "", "True if hg otherwise hpa.", BindingValueUnits.Boolean);
@@ -122,21 +177,118 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("POWER", "standby generator", "standby generator is online", "True if online", BindingValueUnits.Boolean);
             AddValue("POWER", "Jetfuel starter", "JFS is running, can be used for magswitch", "True if running", BindingValueUnits.Boolean);
 
-            //Fuel
-            AddValue("Fuel", "fwd fuel", "Amount of fuel in the fwd tanks", "", BindingValueUnits.Pounds);
-            AddValue("Fuel", "aft fuel", "Amount of fuel in the aft tanks", "", BindingValueUnits.Pounds);
-            AddValue("Fuel", "total fuel", "Amount of total fuel", "", BindingValueUnits.Pounds);
-
             //AV8B values
             AddValue("AV8B", "vtol exhaust angle position", "angle of vtol exhaust", "", BindingValueUnits.Degrees);
-            //DED
+
+            //DED Lines
             AddValue("DED", "DED Line 1", "Data entry display line 1", "", BindingValueUnits.Text);
             AddValue("DED", "DED Line 2", "Data entry display line 2", "", BindingValueUnits.Text);
             AddValue("DED", "DED Line 3", "Data entry display line 3", "", BindingValueUnits.Text);
             AddValue("DED", "DED Line 4", "Data entry display line 4", "", BindingValueUnits.Text);
             AddValue("DED", "DED Line 5", "Data entry display line 5", "", BindingValueUnits.Text);
 
+            //PFL Lines
+            AddValue("PFL", "PFL Line 1", "Pilot fault list line 1", "", BindingValueUnits.Text);
+            AddValue("PFL", "PFL Line 2", "Pilot fault list line 2", "", BindingValueUnits.Text);
+            AddValue("PFL", "PFL Line 3", "Pilot fault list line 3", "", BindingValueUnits.Text);
+            AddValue("PFL", "PFL Line 4", "Pilot fault list line 4", "", BindingValueUnits.Text);
+            AddValue("PFL", "PFL Line 5", "Pilot fault list line 5", "", BindingValueUnits.Text);
 
+            // HSI Bits
+            AddValue("HSI", "to flag", "HSI to flag indicating we are heading to the beacon.", "True if displayed and aircraft is heading towards beacon.", BindingValueUnits.Boolean);
+            AddValue("HSI", "from flag", "HSI from flag indicating we are heading away from the beacon.", "True if displayed and aircraft is moving away from the beacon.", BindingValueUnits.Boolean);
+            AddValue("HSI", "ils warning flag", "HSI ils warning flag indicating if course steering data is available.", "True if displayed and data is not accurate or available.", BindingValueUnits.Boolean);
+            AddValue("HSI", "dme flag", "HSI dem flag indicating distance to beacon is not available.", "True if displayed.", BindingValueUnits.Boolean);
+            AddValue("HSI", "off flag", "HSI off flag indicating hsi is not receiving data.", "True if displayed and HSI data is not available.", BindingValueUnits.Boolean);
+            AddValue("HSI", "init flag", "HSI init flag", "True if displayed.", BindingValueUnits.Boolean);
+            AddValue("ADI", "off flag", "ADI off flag indicating ADI is powered off or not receiving data.", "True if displayed and ADI is off or not receiving data.", BindingValueUnits.Boolean);
+            AddValue("ADI", "aux flag", "ADI aux flag", "True if displayed.", BindingValueUnits.Boolean);
+            AddValue("ADI", "gs flag", "ADI gs flag", "True if displayed.", BindingValueUnits.Boolean);
+            AddValue("ADI", "loc flag", "ADI loc flag", "True if displayed.", BindingValueUnits.Boolean);
+            AddValue("Backup ADI", "off flag", "Backup ADI off flag", "True if displayed.", BindingValueUnits.Boolean);
+            AddValue("VVI", "off flag", "VVI Off flag indicating VVI is turned off or not receiving data.", "True if displayed.", BindingValueUnits.Boolean);
+            AddValue("AOA", "off flag", "AOA Off flag indicating AOA is turned off or not receiving data.", "True if displayed.", BindingValueUnits.Boolean);
+
+            // Lightbits
+            AddValue("Left Eyebrow", "master caution indicator", "", "True if master caution light is turned on.", BindingValueUnits.Boolean);
+            AddValue("Left Eyebrow", "tf-fail indicator", "", "True if TF switch in MAN TF position.", BindingValueUnits.Boolean);
+            AddValue("Right Eyebrow", "engine fire indicator", "", "True if engine fire is detected.", BindingValueUnits.Boolean);
+            AddValue("Right Eyebrow", "hydraulic/oil indicator", "", "True if hydraulic pressure is to high.", BindingValueUnits.Boolean);
+            AddValue("Right Eyebrow", "canopy indicator", "", "True if canopy is not closed or is damaged", BindingValueUnits.Boolean);
+            AddValue("Right Eyebrow", "takeoff landing config indicator", "", "True if configuration is incorrect for takeoff or landing.", BindingValueUnits.Boolean);
+            AddValue("Caution", "stores config indicator", "Caution panel stores config indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("AOA Indexer", "above indicator", "AOA Indexer above indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("AOA Indexer", "on indicator", "AOA Indexer on indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("AOA Indexer", "below indicator", "AOA Indexer below indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Refuel Indexer", "ready indicator", "Refuel Indexer ready indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Refuel Indexer", "air/nws indicator", "Refuel Indexer Air/NWS indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Refuel Indexer", "disconnect indicator", "Refuel Indexer disconnect indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "flight control system indicator", "Caution panel flight control indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "leading edge flaps indicator", "Caution panel leading edge flaps indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "engine fault indticator", "Caution panel engine fault indicator.", "True if lit.", BindingValueUnits.Boolean, "engine fault indicator");
+            AddValue("Caution", "overheat indicator", "Caution panel overheat indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "low fuel indicator", "Caution panel low fuel indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "avionics indicator", "Caution panel avionics indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "radar altimeter indicator", "Caution panel radar altimeter indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "iff indicator", "Caution iff indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "ecm indicator", "Caution ecm indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "hook indicator", "Caution panel hook indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "nws fail indicator", "Caution panel nose wheel steering fail indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "cabin pressure indicator", "Caution panel cabin pressure indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Misc", "tfs stanby indicator", "Misc panel Terrain Following(TFS) standby indicator.", "True if lit.", BindingValueUnits.Boolean, "tfs standby indicator");
+
+            // Lightbits2
+            AddValue("Threat Warning Prime", "handoff indicator", "Threat warning prime handoff dot indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Threat Warning Prime", "launch indicator", "Threat warning prime launch indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Threat Warning Prime", "prioirty mode indicator", "Threat warning prime priority mode indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Threat Warning Prime", "open mode indicator", "Threat warning prime open mode indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Threat Warning Prime", "naval indicator", "Threat warning prime naval indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Threat Warning Prime", "unknown mode indicator", "Threat warning prime unknown mode indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Threat Warning Prime", "target step indicator", "Threat warning prime target step indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Aux Threat Warning", "search indicator", "Aux threat warning search indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Aux Threat Warning", "activity indicator", "Aux threat warning activity indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Aux Threat Warning", "low altitude indicator", "Aux threat warning low altitude indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Aux Threat Warning", "power indicator", "Aux threat warning system power indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("CMDS", "Go", "CMDS is on and operating normally.", "True if CMDS is on and operating", BindingValueUnits.Boolean);
+            AddValue("CMDS", "NoGo", "CMDS is on but a malfunction is present.", "True if CMDS is on but malfunctioning", BindingValueUnits.Boolean);
+            AddValue("CMDS", "Degr", "Status message AUTO DEGR should be displayed.", "True if AUTO DEGR should be displayed", BindingValueUnits.Boolean);
+            AddValue("CMDS", "Rdy", "Status message DISPENSE RDY should be displayed.", "True if DISPENSE RDY should be displayed", BindingValueUnits.Boolean);
+            AddValue("CMDS", "ChaffLo", "Indicates bingo chaff quantity is reached.", "True if bingo quantity reached", BindingValueUnits.Boolean);
+            AddValue("CMDS", "FlareLo", "Inidcates bingo flare quantity is reached.", "True if bingo quantity reached", BindingValueUnits.Boolean);
+            AddValue("ECM", "power indicator", "ECM power indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("ECM", "fail indicator", "ECM failure indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "forward fuel low indicator", "Caution panel forward fuel low indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "aft fuel low indicator", "Caution panel aft fuel low indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("EPU", "on indicator", "EPU on indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("JFS", "run indicator", "JFS run indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "second engine compressor indicator", "Caution panel second engine compressor indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "oxygen low indicator", "Caution panel oxygen low indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "probe heat indicator", "Caution panel probe heat indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "seat arm indicator", "Caution panel seat not armed indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "backup fuel control indicator", "Caution panel backup fuel control indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "fuel oil hot indicator", "Caution panel oil hot indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "anti skid indicator", "Caution panel anti skid indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Misc", "tfs engaged indicator", "Misc panel Terrain Following(TFS) engaged indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Gear Handle", "handle indicator", "Landing gear handle indicator light.", "True if lit.", BindingValueUnits.Boolean, "Landing Gear");
+            AddValue("Right Eyebrow", "engine indicator", "Right eyebrow engine indicator.", "True if lit.", BindingValueUnits.Boolean);
+
+            // Lightbits3
+            AddValue("Electronic", "flcs pmg indicator", "Electronic panel flcs pmg indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Electronic", "main gen indicator", "Electronic panel main generator indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Electronic", "standby generator indicator", "Electronic panel standby generator indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Electronic", "epu gen indicator", "Electronic panel epu gen indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Electronic", "epu pmg indicator", "Electronic panel epu pmg indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Electronic", "to flcs indicator", "Electronic panel to flcs indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Electronic", "flcs rly indicator", "Electronic panel flcs rly indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Electronic", "bat fail indicator", "Electronic panel battery fail indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("EPU", "hydrazine indicator", "EPU hydrazine indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("EPU", "air indicator", "EPU air indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "electric bus fail indicator", "Caution panel electric bus fail indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Caution", "lef fault indicator", "Caution panel leading edge fault indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("General", "power off", "Flag indicating if the cockpit has any power.", "True if the cockpit does not have any power.", BindingValueUnits.Boolean);
+            AddValue("Landing Gear", "nose gear indicator", "Landing gear panel nose gear indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Landing Gear", "left gear indicator", "Landing gear panel left gear indicator.", "True if lit.", BindingValueUnits.Boolean);
+            AddValue("Landing Gear", "right gear indicator", "Landing gear panel right gear indicator.", "True if lit.", BindingValueUnits.Boolean);
         }
 
         internal override void InitData()
