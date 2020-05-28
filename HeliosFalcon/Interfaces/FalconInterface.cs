@@ -230,13 +230,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "KeyFile":
                         KeyFileName = reader.ReadElementString("KeyFile");
                         break;
-                    case "CockpitDatFile":
-                        Logger.Warn($"Ignored unsupported {GetType().Name} setting CockpitDatFile");
-                        break;
                     default:
                         // ignore unsupported settings
+                        string elementName = reader.Name;
                         string discard = reader.ReadElementString(reader.Name);
-                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
                         break;
                 }
             }
