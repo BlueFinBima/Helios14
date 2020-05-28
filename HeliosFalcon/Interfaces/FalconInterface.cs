@@ -28,7 +28,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconTypes _falconType;
         private string _falconPath;
         private string _keyFile;
-        private string _cockpitDatFile;
 
         private FalconDataExporter _dataExporter;
 
@@ -38,9 +37,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public FalconInterface()
             : base("Falcon")
         {
-            FalconType = FalconTypes.OpenFalcon;
-            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
-            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
 
             HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text);
             sendAction.ActionBindingDescription = "send %value% callback for falcon.";
@@ -88,17 +84,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     switch (_falconType)
                     {
                         case FalconTypes.BMS:
-                            _dataExporter = new BMS.BMSFalconDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS.key");
-                            break;
-                        case FalconTypes.OpenFalcon:
-                            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
-                            break;
-                        case FalconTypes.AlliedForces:
                         default:
-                            _dataExporter = new AlliedForces.AlliedForcesDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\keystrokes.key");
+                            _dataExporter = new BMS.BMSFalconDataExporter(this);
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
                             break;
                     }
 
@@ -134,23 +122,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
         }
 
-        public string CockpitDatFile
-        {
-            get
-            {
-                return _cockpitDatFile;
-            }
-            set
-            {
-                if ((_cockpitDatFile == null && value != null)
-                    || (_cockpitDatFile != null && !_cockpitDatFile.Equals(value)))
-                {
-                    string oldValue = _cockpitDatFile;
-                    _cockpitDatFile = value;
-                    OnPropertyChanged("CockpitDatFile", oldValue, value, true);
-                }
-            }
-        }
 
         public string FalconPath
         {
@@ -162,15 +133,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     switch (FalconType)
                     {
                         case FalconTypes.BMS:
-                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Benchmark Sims\Falcon BMS 4.32");
-                            break;
-
-                        case FalconTypes.OpenFalcon:
-                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\MicroProse\Falcon\4.0");
-                            break;
-
-                        case FalconTypes.AlliedForces:
-                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Lead Pursuit\Battlefield Operations\Falcon");
+                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Benchmark Sims\Falcon BMS 4.34");
                             break;
                     }
                     
@@ -258,14 +221,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             FalconType = (FalconTypes)Enum.Parse(typeof(FalconTypes), reader.ReadElementString("FalconType"));
             KeyFileName = reader.ReadElementString("KeyFile");
-            CockpitDatFile = reader.ReadElementString("CockpitDatFile");
         }
 
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
-            writer.WriteElementString("CockpitDatFile", CockpitDatFile);
         }
 
         #region IReadyCheck
