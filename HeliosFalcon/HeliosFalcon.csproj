@@ -45,8 +45,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\AlliedForces\AlliedForcesDataExporter.cs" />
-    <Compile Include="Interfaces\AlliedForces\FlightData.cs" />
     <Compile Include="Interfaces\BMS\BMSFalconDataExporter.cs" />
     <Compile Include="Interfaces\BMS\BMSLightBits.cs" />
     <Compile Include="Interfaces\BMS\BMSLightBits2.cs" />
@@ -67,15 +65,9 @@
     <Compile Include="Interfaces\FalconTypes.cs" />
     <Compile Include="Interfaces\HeliosValueWithCorrectedDeviceName.cs" />
     <Compile Include="Interfaces\HsiBits.cs" />
-    <Compile Include="Interfaces\LightBits.cs" />
-    <Compile Include="Interfaces\LightBits2.cs" />
-    <Compile Include="Interfaces\LightBits3.cs" />
     <Compile Include="Interfaces\Textures\DED.cs" />
-    <Compile Include="Interfaces\OpenFalcon\FlightData.cs" />
-    <Compile Include="Interfaces\OpenFalcon\FlightData2.cs" />
     <Compile Include="Interfaces\Textures\HUD.cs" />
     <Compile Include="Interfaces\Textures\LeftMFD.cs" />
-    <Compile Include="Interfaces\OpenFalcon\OpenFalconDataExporter.cs" />
     <Compile Include="Interfaces\Textures\FalconTextureDisplay.cs" />
     <Compile Include="Interfaces\Textures\FalconTextureDisplayRenderer.cs" />
     <Compile Include="Interfaces\Textures\PFL.cs" />
@@ -86,7 +78,6 @@
     <Compile Include="Interfaces\RadarSymbols.cs" />
     <Compile Include="Interfaces\RWR\RWR.cs" />
     <Compile Include="Interfaces\RWR\RWRRenderer.cs" />
-    <Compile Include="Interfaces\TextLines.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Helios\Helios.csproj">
@@ -99,22 +90,22 @@
     <Resource Include="Images\RWR\rwr_bezel.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\ded.png" />
+    <Resource Include="Images\Textures\ded.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\hud.png" />
+    <Resource Include="Images\Textures\hud.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\mfd_left.png" />
+    <Resource Include="Images\Textures\mfd_left.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\mfd_right.png" />
+    <Resource Include="Images\Textures\mfd_right.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\pfl.png" />
+    <Resource Include="Images\Textures\pfl.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\rwr.png" />
+    <Resource Include="Images\Textures\rwr.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Interfaces\FalconCallbackValueEditor.xaml">
