@@ -29,7 +29,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconTypes _falconType;
         private string _falconPath;
         private string _keyFile;
+
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private string _cockpitDatFile;
 
         private FalconDataExporter _dataExporter;
 
@@ -39,6 +41,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public FalconInterface()
             : base("Falcon")
         {
+            FalconType = FalconTypes.OpenFalcon;
+            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
+            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
 
             HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text);
             sendAction.ActionBindingDescription = "send %value% callback for falcon.";
@@ -86,9 +91,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     switch (_falconType)
                     {
                         case FalconTypes.BMS:
-                        default:
                             _dataExporter = new BMS.BMSFalconDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS.key");
+                            break;
+                        case FalconTypes.OpenFalcon:
+                            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
+                            break;
+                        case FalconTypes.AlliedForces:
+                        default:
+                            _dataExporter = new AlliedForces.AlliedForcesDataExporter(this);
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\keystrokes.key");
                             break;
                     }
 
@@ -124,6 +137,25 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
             }
         }
 
+
+        public string CockpitDatFile
+        {
+            get
+            {
+                return _cockpitDatFile;
+            }
+            set
+            {
+                if ((_cockpitDatFile == null && value != null)
+                    || (_cockpitDatFile != null && !_cockpitDatFile.Equals(value)))
+                {
+                    string oldValue = _cockpitDatFile;
+                    _cockpitDatFile = value;
+                    OnPropertyChanged("CockpitDatFile", oldValue, value, true);
+                }
+            }
+        }
+
         public string FalconPath
         {
             get
@@ -135,6 +167,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     {
                         case FalconTypes.BMS:
                             pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Benchmark Sims\Falcon BMS 4.34");
+                            break;
+
+                        case FalconTypes.OpenFalcon:
+                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\MicroProse\Falcon\4.0");
+                            break;
+
+                        case FalconTypes.AlliedForces:
+                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Lead Pursuit\Battlefield Operations\Falcon");
                             break;
                     }
                     
@@ -220,6 +260,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         
         public override void ReadXml(XmlReader reader)
         {
+
             while (reader.NodeType == XmlNodeType.Element)
             {
                 switch (reader.Name)
@@ -246,6 +287,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
+            writer.WriteElementString("CockpitDatFile", CockpitDatFile);
         }
 
         #region IReadyCheck
