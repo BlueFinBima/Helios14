@@ -19,6 +19,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
 {
     public enum FalconTypes
     {
+        [Description("Open Falcon 4.7")]
+        OpenFalcon,
+        [Description("Allied Forces")]
+        AlliedForces,
         [Description("BMS 4.34")]
         BMS
     }
