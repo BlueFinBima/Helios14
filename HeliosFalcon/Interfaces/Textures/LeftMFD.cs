@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 
         internal override string DefaultImage
         {
-            get { return "{HeliosFalcon}/Images/Textures/mfd_left.png"; }
+            get { return "{HeliosFalcon}/Images/OpenFalcon/mfd_left.png"; }
         }
 
         protected override Rect DefaultRect
