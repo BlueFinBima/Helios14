@@ -81,7 +81,6 @@
     <Compile Include="Interfaces\RadarSymbols.cs" />
     <Compile Include="Interfaces\RWR\RWR.cs" />
     <Compile Include="Interfaces\RWR\RWRRenderer.cs" />
-    <Compile Include="Interfaces\TextLines.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Helios\Helios.csproj">
