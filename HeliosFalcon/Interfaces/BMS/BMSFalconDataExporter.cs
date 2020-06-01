@@ -161,7 +161,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.BMS
             AddValue("HSI", "distance to beacon", "Distance to the currently selected beacon.", "", BindingValueUnits.NauticalMiles);
             AddValue("HSI", "desired heading", "Currently selected desired heading.", "", BindingValueUnits.Degrees);
             AddValue("HSI", "course deviation", "Current location of course deviation bar.", "(-1 full left to 1 full right)", BindingValueUnits.Numeric);
-
             AddValue("HSI", "to flag", "HSI to flag indicating we are heading to the beacon.", "True if displayed and aircraft is heading towards beacon.", BindingValueUnits.Boolean);
             AddValue("HSI", "from flag", "HSI from flag indicating we are heading away from the beacon.", "True if displayed and aircraft is moving away from the beacon.", BindingValueUnits.Boolean);
             AddValue("HSI", "ils warning flag", "HSI ils warning flag indicating if course steering data is available.", "True if displayed and data is not accurate or available.", BindingValueUnits.Boolean);
