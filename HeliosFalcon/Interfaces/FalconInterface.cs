@@ -30,9 +30,8 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private FalconTypes _falconType;
         private string _falconPath;
         private string _keyFile;
-
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private string _cockpitDatFile;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private FalconDataExporter _dataExporter;
 
