@@ -41,9 +41,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public FalconInterface()
             : base("Falcon")
         {
-            FalconType = FalconTypes.OpenFalcon;
-            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
-            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
+            FalconType = FalconTypes.BMS;
+            _dataExporter = new BMS.BMSFalconDataExporter(this);
+            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
 
             HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text);
             sendAction.ActionBindingDescription = "send %value% callback for falcon.";
@@ -92,7 +92,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     {
                         case FalconTypes.BMS:
                             _dataExporter = new BMS.BMSFalconDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS.key");
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
                             break;
                         case FalconTypes.OpenFalcon:
                             _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
@@ -271,13 +271,11 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "KeyFile":
                         KeyFileName = reader.ReadElementString("KeyFile");
                         break;
-                    case "CockpitDatFile":
-                        Logger.Warn($"Ignored unsupported {GetType().Name} setting CockpitDatFile");
-                        break;
                     default:
                         // ignore unsupported settings
+                        string elementName = reader.Name;
                         string discard = reader.ReadElementString(reader.Name);
-                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
                         break;
                 }
             }
@@ -287,7 +285,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
-            writer.WriteElementString("CockpitDatFile", CockpitDatFile);
         }
 
         #region IReadyCheck
