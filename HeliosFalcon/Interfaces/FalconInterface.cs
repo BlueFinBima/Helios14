@@ -31,7 +31,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         private string _keyFile;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        private string _cockpitDatFile;
 
         private FalconDataExporter _dataExporter;
 
@@ -125,25 +124,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     _callbacks = new FalconKeyFile(_keyFile);
                     OnPropertyChanged("KeyFileName", oldValue, value, true);
                     OnPropertyChanged("KeyFile", oldKeyFile, _callbacks, false);
-                }
-            }
-        }
-
-
-        public string CockpitDatFile
-        {
-            get
-            {
-                return _cockpitDatFile;
-            }
-            set
-            {
-                if ((_cockpitDatFile == null && value != null)
-                    || (_cockpitDatFile != null && !_cockpitDatFile.Equals(value)))
-                {
-                    string oldValue = _cockpitDatFile;
-                    _cockpitDatFile = value;
-                    OnPropertyChanged("CockpitDatFile", oldValue, value, true);
                 }
             }
         }
@@ -269,7 +249,6 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
-            writer.WriteElementString("CockpitDatFile", CockpitDatFile);
         }
 
         #region IReadyCheck
