@@ -48,6 +48,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\AlliedForces\AlliedForcesDataExporter.cs" />
+    <Compile Include="Interfaces\AlliedForces\FlightData.cs" />
     <Compile Include="Interfaces\BMS\BMSFalconDataExporter.cs" />
     <Compile Include="Interfaces\BMS\BMSLightBits.cs" />
     <Compile Include="Interfaces\BMS\BMSLightBits2.cs" />
@@ -68,9 +70,15 @@
     <Compile Include="Interfaces\FalconTypes.cs" />
     <Compile Include="Interfaces\HeliosValueWithCorrectedDeviceName.cs" />
     <Compile Include="Interfaces\HsiBits.cs" />
+    <Compile Include="Interfaces\LightBits.cs" />
+    <Compile Include="Interfaces\LightBits2.cs" />
+    <Compile Include="Interfaces\LightBits3.cs" />
     <Compile Include="Interfaces\Textures\DED.cs" />
+    <Compile Include="Interfaces\OpenFalcon\FlightData.cs" />
+    <Compile Include="Interfaces\OpenFalcon\FlightData2.cs" />
     <Compile Include="Interfaces\Textures\HUD.cs" />
     <Compile Include="Interfaces\Textures\LeftMFD.cs" />
+    <Compile Include="Interfaces\OpenFalcon\OpenFalconDataExporter.cs" />
     <Compile Include="Interfaces\Textures\FalconTextureDisplay.cs" />
     <Compile Include="Interfaces\Textures\FalconTextureDisplayRenderer.cs" />
     <Compile Include="Interfaces\Textures\PFL.cs" />
