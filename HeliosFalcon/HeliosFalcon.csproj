@@ -102,22 +102,22 @@
     <Resource Include="Images\RWR\rwr_bezel.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\ded.png" />
+    <Resource Include="Images\ded.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\hud.png" />
+    <Resource Include="Images\hud.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\mfd_left.png" />
+    <Resource Include="Images\mfd_left.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\mfd_right.png" />
+    <Resource Include="Images\mfd_right.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\pfl.png" />
+    <Resource Include="Images\pfl.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\OpenFalcon\rwr.png" />
+    <Resource Include="Images\rwr.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Interfaces\FalconCallbackValueEditor.xaml">
