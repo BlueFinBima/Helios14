@@ -36,7 +36,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
 
         internal override string DefaultImage
         {
-            get { return "{HeliosFalcon}/Images/OpenFalcon/hud.png"; }
+            get { return "{HeliosFalcon}/Images/hud.png"; }
         }
 
         protected override Rect DefaultRect
