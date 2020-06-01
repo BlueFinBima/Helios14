@@ -130,8 +130,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
         {
             if (_textureMemory != null && _textureMemory.IsDataAvailable)
             {
+                FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
+
                 //If the profile was started prior to BMS running then get the texture area from shared memory
-                if (_textureRectangles.Count == 0)
+                if (_textureRectangles.Count == 0 && falconInterface.FalconType == FalconTypes.BMS)
                 {
                     GetTextureArea(Texture);
                 }
@@ -144,8 +146,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
         {
             if (Parent != null && Parent.Profile != null && Parent.Profile.Interfaces.ContainsKey("Falcon"))
             {
-                GetTextureArea(Texture);
+                FalconInterface falconInterface = Parent.Profile.Interfaces["Falcon"] as FalconInterface;
+                if(falconInterface.FalconType == FalconTypes.BMS)
+                {
+                    GetTextureArea(Texture);
+                }
+            else if (falconInterface.FalconType == FalconTypes.OpenFalcon)
+                {
+                    ParseDatFile(falconInterface.CockpitDatFile);
+                }
             }
+            
 
             _textureMemory = new SharedMemory("FalconTexturesSharedMemoryArea");
             _textureMemory.CheckValue = 0;
@@ -176,6 +187,59 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
             }
         }
 
+        private void ParseDatFile(string datFile)
+        {
+            _textureRectangles.Clear();
+            if (File.Exists(datFile))
+            {
+                StreamReader reader = new StreamReader(datFile);
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    string[] tokens = line.Split(new string[] { " ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (tokens.Length > 1)
+                    {
+                        switch (tokens[0].ToLower())
+                        {
+                            case "hud":
+                                _textureRectangles.Add(FalconTextures.HUD, ParseRttRectangle(tokens));
+                                break;
+
+                            case "pfl":
+                                _textureRectangles.Add(FalconTextures.PFL, ParseRttRectangle(tokens));
+                                break;
+
+                            case "ded":
+                                _textureRectangles.Add(FalconTextures.DED, ParseRttRectangle(tokens));
+                                break;
+
+                            case "rwr":
+                                _textureRectangles.Add(FalconTextures.RWR, ParseRttRectangle(tokens));
+                                break;
+
+                            case "mfdleft":
+                                _textureRectangles.Add(FalconTextures.MFDLeft, ParseRttRectangle(tokens));
+                                break;
+
+                            case "mfdright":
+                                _textureRectangles.Add(FalconTextures.MFDRight, ParseRttRectangle(tokens));
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private Rect ParseRttRectangle(string[] tokens)
+        {
+            int rttX1 = int.Parse(tokens[10]);
+            int rttX2 = int.Parse(tokens[12]);
+            int rttY1 = int.Parse(tokens[11]);
+            int rttY2 = int.Parse(tokens[13]);
+
+            return new Rect(rttX1, rttY1, rttX2 - rttX1, rttY2 - rttY1);
+        }
         public override void MouseDown(Point location)
         {
             // No-Op

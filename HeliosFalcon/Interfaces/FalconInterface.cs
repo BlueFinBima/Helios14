@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using GadrocsWorkshop.Helios.ComponentModel;
@@ -271,6 +272,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "KeyFile":
                         KeyFileName = reader.ReadElementString("KeyFile");
                         break;
+                    case "CockpitDatFile":
+                        CockpitDatFile = reader.ReadElementString("CockpitDatFile");
+                        break;
                     default:
                         // ignore unsupported settings
                         string elementName = reader.Name;
@@ -285,6 +289,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         {
             writer.WriteElementString("FalconType", FalconType.ToString());
             writer.WriteElementString("KeyFile", KeyFileName);
+            writer.WriteElementString("CockpitDatFile", CockpitDatFile);
         }
 
         #region IReadyCheck
