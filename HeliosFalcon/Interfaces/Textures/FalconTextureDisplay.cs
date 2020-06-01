@@ -151,13 +151,12 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon.interfaces.Textures
                 {
                     GetTextureArea(Texture);
                 }
-            else if (falconInterface.FalconType == FalconTypes.OpenFalcon)
+                else if (falconInterface.FalconType == FalconTypes.OpenFalcon)
                 {
                     ParseDatFile(falconInterface.CockpitDatFile);
                 }
             }
             
-
             _textureMemory = new SharedMemory("FalconTexturesSharedMemoryArea");
             _textureMemory.CheckValue = 0;
             _textureMemory.Open();
