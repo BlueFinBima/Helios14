@@ -42,7 +42,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" FontSize="11" Margin="4" FontStyle="Italic" TextWrapping="Wrap">Select which version of falcon you are running.</TextBlock>
                 <Label Grid.Column="0" Grid.Row="1">Falcon Version</Label>
-                <ComboBox Grid.Column="1" Grid.Row="1" Margin="2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource FalconTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Interface.FalconType, Converter={StaticResource FalconTypes}}" />
+                <ComboBox Grid.Column="1" Grid.Row="1" Margin="2" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource FalconTypes}, Path=DisplayNames}" SelectedItem="{Binding Path=Interface.FalconType, Converter={StaticResource FalconTypes}}" SelectedIndex="1" IsEnabled="False" />
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Header="Open Falcon Texture Export" Margin="4" Style="{StaticResource TextueSettingsSidebar}">
