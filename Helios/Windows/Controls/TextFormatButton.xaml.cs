@@ -85,6 +85,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
                     TextFormat.FontStyle = dialog.SelectedTypeface.Style;
                     TextFormat.FontWeight = dialog.SelectedTypeface.Weight;
                     TextFormat.FontSize = dialog.SelectedSize;
+                    TextFormat.ConfiguredFontSize = dialog.SelectedSize;
 
                     TextDecorations newDecorations = 0;
                     if (dialog.IsUnderline)

@@ -25,7 +25,7 @@
             <TextBlock Grid.Row="2" Grid.Column="0" Margin="18,0,12,10" VerticalAlignment="Top" HorizontalAlignment="Right" Text="Authors:"/>
             <TextBlock Grid.Row="2" Grid.Column="1" Margin="3,0,6,10" Grid.RowSpan="2" VerticalAlignment="Top" TextWrapping="Wrap" Name="AuthorsBlock" Text="(Authors names are shown here)"/>
             <TextBlock Grid.Row="3" Grid.Column="0" Margin="18,0,12,10" VerticalAlignment="Top" HorizontalAlignment="Right" Text="Contributors:"/>
-            <TextBlock Grid.Row="3" Grid.Column="1" Margin="3,0,6,10" Grid.RowSpan="2" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="ContributionBlock"><Run Text="(Contributors names are shown here)"/><LineBreak/><Run Text="this"/><LineBreak/><Run Text="will"/><LineBreak/><Run Text="be "/><LineBreak/><Run Text="several"/><LineBreak/><Run Text="lines"/></TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="1" Margin="3,0,6,0" Grid.RowSpan="2" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="ContributionBlock" Height="101"><Run Text="(Contributors names are shown here)"/><LineBreak/><Run Text="this"/><LineBreak/><Run Text="will"/><LineBreak/><Run Text="be "/><LineBreak/><Run Text="several"/><LineBreak/><Run Text="lines"/></TextBlock>
             <TextBlock Grid.Row="3" Grid.Column="2" Margin="12,0,6,10" VerticalAlignment="Top" HorizontalAlignment="Right" Text="Status:"/>
             <TextBlock Grid.Row="3" Grid.Column="3" Margin="4,0,6,10" VerticalAlignment="Top" Name="StatusBlock" Text="Released" />
         </Grid>

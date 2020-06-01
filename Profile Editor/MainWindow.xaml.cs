@@ -669,11 +669,16 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
         private void ConfigurationCheck_Triggered(object sender, EventArgs e)
         {
             // REVISIT: this is expensive.  add tracking whether it is currently closed or hidden, so we don't have to search?
+#if true
+            _ = ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
+#else
+            // XXX do this only on profile load if there are issues
             LayoutAnchorable interfaceStatus = ShowCurrentLayoutAnchorable(InterfaceStatusPanel);
             if (interfaceStatus != null)
             {
                 interfaceStatus.IsSelected = true;
             }
+#endif
         }
 
         private void LoadVisual(HeliosVisual visual)
@@ -765,7 +770,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             return false;
         }
 
-        #endregion
+#endregion
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
@@ -778,7 +783,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             VersionChecker.CheckVersion();
         }
 
-        #region Commands
+#region Commands
 
         private void New_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -978,7 +983,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
             }
         }
 
-        #endregion
+#endregion
 
         private void Show_Preview(object sender, RoutedEventArgs e)
         {

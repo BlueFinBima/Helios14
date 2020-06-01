@@ -36,10 +36,16 @@ namespace GadrocsWorkshop.Helios
         private TextDecorations _decorations;
         private TextDecorationCollection _formattedDecorations;
 
-        private double _textPaddingLeft = 0d;
-        private double _textPaddingTop = 0d;
-        private double _textPaddingRight = 0d;
-        private double _textPaddingBottom = 0d;
+        private double _textPaddingLeft;
+        private double _textPaddingTop;
+        private double _textPaddingRight;
+        private double _textPaddingBottom;
+
+        /// <summary>
+        /// backing field for property ConfiguredFontSize, contains
+        /// the font size we actually configured via the UI
+        /// </summary>
+        private double _configuredFontSize = 12f;
 
         public TextFormat()
         {
@@ -123,6 +129,26 @@ namespace GadrocsWorkshop.Helios
                     double oldValue = _size;
                     _size = value;
                     OnPropertyChanged("FontSize", oldValue, value, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// the font size we actually configured via the UI
+        /// </summary>
+        public double ConfiguredFontSize
+        {
+            get
+            {
+                return _configuredFontSize;
+            }
+            set
+            {
+                if (!_configuredFontSize.Equals(value))
+                {
+                    double oldValue = _configuredFontSize;
+                    _configuredFontSize = value;
+                    OnPropertyChanged("ConfiguredFontSize", oldValue, value, true);
                 }
             }
         }
@@ -339,6 +365,7 @@ namespace GadrocsWorkshop.Helios
             _style = (FontStyle)fsc.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("FontStyle"));
             _weight = (FontWeight)fwc.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, reader.ReadElementString("FontWeight"));
             _size = double.Parse(reader.ReadElementString("FontSize"), CultureInfo.InvariantCulture);
+            _configuredFontSize = _size;
 
             if (reader.Name.Equals("HorizontalAlignment"))
             {

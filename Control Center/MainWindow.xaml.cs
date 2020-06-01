@@ -902,7 +902,8 @@ namespace GadrocsWorkshop.Helios.ControlCenter
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (ActiveProfile != null)
+            bool loaded = ActiveProfile != null;
+            if (loaded)
             {
                 if (ActiveProfile.IsStarted)
                 {
@@ -923,7 +924,7 @@ namespace GadrocsWorkshop.Helios.ControlCenter
             //Properties.PreferencesFile.Default.ControlCenterPlacement = wp;
             PreferencesFile.SaveSetting("ControlCenter", "WindowLocation", wp.normalPosition);
 
-            if (ActiveProfile != null && _profileIndex >= 0 && _profileIndex < _profiles.Count)
+            if (loaded && _profileIndex >= 0 && _profileIndex < _profiles.Count)
             {
                 PreferencesFile.SaveSetting("ControlCenter", "LastProfile", _profiles[_profileIndex]);
             }

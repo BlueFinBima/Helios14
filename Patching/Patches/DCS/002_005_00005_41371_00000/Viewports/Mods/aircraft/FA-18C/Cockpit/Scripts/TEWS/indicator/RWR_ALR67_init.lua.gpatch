@@ -1,3 +1,11 @@
-﻿@@ -1589,8 +1589,124 @@
+﻿@@ -136,16 +136,113 @@
+ %3D true%0D%0A
++-- modified by Helios%0D%0AshaderLineDefaultThickness %3D 0.05%0D%0AshaderLineDefaultFuzziness %3D 0.015%0D%0A-- 
+ shaderLi
+@@ -267,16 +267,19 @@
+  %3D 0.8%0D%0A
++-- 
+ shaderLi
+@@ -1689,8 +1689,124 @@
  GE_BIT%0D%0A
 +dofile(LockOn_Options.common_script_path..%22ViewportHandling.lua%22)%0D%0Atry_find_assigned_viewport(%22FA_18C_RWR%22%2C %22RWR%22)%0D%0A

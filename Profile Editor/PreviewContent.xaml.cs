@@ -35,6 +35,7 @@ namespace GadrocsWorkshop.Helios.ProfileEditor
 
         public PreviewContent()
         {
+            DataContext = this;
             InitializeComponent();
         }
 

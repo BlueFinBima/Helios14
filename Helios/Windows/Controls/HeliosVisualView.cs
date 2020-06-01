@@ -593,6 +593,7 @@ namespace GadrocsWorkshop.Helios.Windows.Controls
             if (previewEventArg.Handled)
             {
                 // already handled
+                e.Handled = true;
                 return;
             }
 
