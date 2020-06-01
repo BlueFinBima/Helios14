@@ -41,9 +41,9 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
         public FalconInterface()
             : base("Falcon")
         {
-            FalconType = FalconTypes.BMS;
-            _dataExporter = new BMS.BMSFalconDataExporter(this);
-            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
+            FalconType = FalconTypes.OpenFalcon;
+            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
+            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
 
             HeliosAction sendAction = new HeliosAction(this, "", "callback", "send", "Press and releases a keyboard callback for falcon.", "Callback name", BindingValueUnits.Text);
             sendAction.ActionBindingDescription = "send %value% callback for falcon.";
@@ -91,9 +91,17 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     switch (_falconType)
                     {
                         case FalconTypes.BMS:
-                        default:
                             _dataExporter = new BMS.BMSFalconDataExporter(this);
-                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS - Full.key");
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "User\\Config\\BMS.key");
+                            break;
+                        case FalconTypes.OpenFalcon:
+                            _dataExporter = new OpenFalcon.OpenFalconDataExporter(this);
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\OFKeystrokes.key");
+                            break;
+                        case FalconTypes.AlliedForces:
+                        default:
+                            _dataExporter = new AlliedForces.AlliedForcesDataExporter(this);
+                            KeyFileName = System.IO.Path.Combine(FalconPath, "config\\keystrokes.key");
                             break;
                     }
 
@@ -159,6 +167,14 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     {
                         case FalconTypes.BMS:
                             pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Benchmark Sims\Falcon BMS 4.34");
+                            break;
+
+                        case FalconTypes.OpenFalcon:
+                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\MicroProse\Falcon\4.0");
+                            break;
+
+                        case FalconTypes.AlliedForces:
+                            pathKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Lead Pursuit\Battlefield Operations\Falcon");
                             break;
                     }
                     
@@ -255,11 +271,13 @@ namespace GadrocsWorkshop.Helios.Interfaces.Falcon
                     case "KeyFile":
                         KeyFileName = reader.ReadElementString("KeyFile");
                         break;
+                    case "CockpitDatFile":
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting CockpitDatFile");
+                        break;
                     default:
                         // ignore unsupported settings
-                        string elementName = reader.Name;
                         string discard = reader.ReadElementString(reader.Name);
-                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{elementName}' with value '{discard}'");
+                        Logger.Warn($"Ignored unsupported {GetType().Name} setting '{reader.Name}' with value '{discard}'");
                         break;
                 }
             }
