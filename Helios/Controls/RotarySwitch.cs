@@ -382,7 +382,7 @@ namespace GadrocsWorkshop.Helios.Controls
                         {
                             Positions[oldValue-1].ExitTrigger.FireTrigger(BindingValue.Empty);
                         }
-                        Positions[_currentPosition-1].EnterTriggger.FireTrigger(BindingValue.Empty);
+                        Positions[_currentPosition-1].EnterTrigger.FireTrigger(BindingValue.Empty);
                     }
 
                     OnPropertyChanged("CurrentPosition", oldValue, value, false);
@@ -432,7 +432,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 foreach (RotarySwitchPosition position in e.OldItems)
                 {
-                    Triggers.Remove(position.EnterTriggger);
+                    Triggers.Remove(position.EnterTrigger);
                     Triggers.Remove(position.ExitTrigger);
                 }
 
@@ -450,7 +450,7 @@ namespace GadrocsWorkshop.Helios.Controls
             {
                 foreach (RotarySwitchPosition position in e.NewItems)
                 {
-                    Triggers.Add(position.EnterTriggger);
+                    Triggers.Add(position.EnterTrigger);
                     Triggers.Add(position.ExitTrigger);
                 }
             }

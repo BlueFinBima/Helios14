@@ -93,7 +93,7 @@ namespace GadrocsWorkshop.Helios.Controls
             }
         }
 
-        public HeliosTrigger EnterTriggger
+        public HeliosTrigger EnterTrigger
         {
             get { return _enterTrigger; }
         }

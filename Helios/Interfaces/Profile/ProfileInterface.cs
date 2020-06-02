@@ -22,6 +22,10 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
     [HeliosInterface("Helios.Base.ProfileInterface", "Profile", null, typeof(UniqueHeliosInterfaceFactory), AutoAdd = true)]
     public class ProfileInterface : HeliosInterface
     {
+        private HeliosTrigger _profileStartedTrigger;
+        private HeliosTrigger _profileResetTrigger;
+        private HeliosTrigger _profileStoppedTrigger;
+
         public ProfileInterface()
             : base("Profile")
         {
@@ -44,6 +48,19 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             HeliosAction launchApplication = new HeliosAction(this, "", "", "launch application", "Launches an external application", "Full path to appliation or document you want to launch or URL to a web page.", BindingValueUnits.Text);
             launchApplication.Execute += LaunchApplication_Execute;
             Actions.Add(launchApplication);
+
+            HeliosAction killApplication = new HeliosAction(this, "", "", "kill application", "Kills an external process", "Process Image name of the process to be killed.", BindingValueUnits.Text);
+            killApplication.Execute += KillApplication_Execute;
+            Actions.Add(killApplication);
+
+            _profileStartedTrigger = new HeliosTrigger(this, "", "", "Started", "Fired when a profile is started.");
+            Triggers.Add(_profileStartedTrigger);
+
+            _profileResetTrigger = new HeliosTrigger(this, "", "", "Reset", "Fired when a profile has been reset.");
+            Triggers.Add(_profileResetTrigger);
+
+            _profileStoppedTrigger = new HeliosTrigger(this, "", "", "Stopped", "Fired when a profile is stopped.");
+            Triggers.Add(_profileStoppedTrigger);
         }
 
         void LaunchApplication_Execute(object action, HeliosActionEventArgs e)
@@ -55,6 +72,21 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             catch (Exception ex)
             {
                 ConfigManager.LogManager.LogError("Error caught launching external application (path=\"" + e.Value.StringValue + "\")", ex);
+            }
+        }
+
+        void KillApplication_Execute(object action, HeliosActionEventArgs e)
+        {
+            try
+            {
+                Process[] _localProcessesByName = Process.GetProcessesByName(e.Value.StringValue);
+                foreach (Process _proc in _localProcessesByName) {
+                    _proc.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                ConfigManager.LogManager.LogError("Error caught killing process image \"" + e.Value.StringValue + "\")", ex);
             }
         }
 
@@ -88,6 +120,20 @@ namespace GadrocsWorkshop.Helios.Interfaces.Profile
             {
                 Profile.Reset();
             }
+        }
+        public void Start()
+        {
+            _profileStartedTrigger.FireTrigger(BindingValue.Empty);
+        }
+
+        public override void Reset()
+        {
+            _profileResetTrigger.FireTrigger(BindingValue.Empty);
+            base.Reset();
+        }
+        public void Stop()
+        {
+            _profileStoppedTrigger.FireTrigger(BindingValue.Empty);
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)

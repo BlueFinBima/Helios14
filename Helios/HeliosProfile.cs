@@ -21,6 +21,8 @@ namespace GadrocsWorkshop.Helios
     using System.Windows.Threading;
 
     using GadrocsWorkshop.Helios.ComponentModel;
+    using GadrocsWorkshop.Helios.Controls;
+    using GadrocsWorkshop.Helios.Interfaces.Profile;
 
     public class HeliosProfile : NotificationObject
     {
@@ -39,7 +41,7 @@ namespace GadrocsWorkshop.Helios
         private MonitorCollection _monitors = new MonitorCollection();
         private HeliosInterfaceCollection _interfaces = new HeliosInterfaceCollection();
 
-        public HeliosProfile() : this(true)
+         public HeliosProfile() : this(true)
         {
         }
 
@@ -295,6 +297,14 @@ namespace GadrocsWorkshop.Helios
                 ConfigManager.LogManager.LogInfo("Profile starting. (Name=\"" + Name + "\")");
                 OnProfileStarted();
                 IsStarted = true;
+                foreach (ProfileInterface heliosInterface in Interfaces)
+                {
+                    if (heliosInterface.Name == "Profile")
+                    {
+                        heliosInterface.Start();
+                        break;
+                    }
+                }
                 ConfigManager.LogManager.LogInfo("Profile started. (Name=\"" + Name + "\")");
             }
         }
@@ -310,7 +320,7 @@ namespace GadrocsWorkshop.Helios
 
         public void Reset()
         {
-            ConfigManager.LogManager.LogInfo("Profile reseting. (Name=\"" + Name + "\")");
+            ConfigManager.LogManager.LogInfo("Profile resetting. (Name=\"" + Name + "\")");
             foreach (Monitor monitor in Monitors)
             {
                 monitor.Reset();
@@ -330,6 +340,15 @@ namespace GadrocsWorkshop.Helios
                 ConfigManager.LogManager.LogInfo("Profile stopping. (Name=\"" + Name + "\")");
                 OnProfileStopped();
                 IsStarted = false;
+                foreach (ProfileInterface heliosInterface in Interfaces)
+                {
+                    if (heliosInterface.Name == "Profile")
+                    {
+                        heliosInterface.Stop();
+                        break;
+                    }
+                }
+
                 ConfigManager.LogManager.LogInfo("Profile stopped. (Name=\"" + Name + "\")");
             }
         }
