@@ -1,5 +1,10 @@
 ## Full change log
 
+### 1.4.2020.06xx Release
+----------------------------
+* Added STARTED, STOPPED and RESET triggers for the profile
+* Added a Kill Process action to allow external processes to be ended by a running profile
+
 ### 1.4.2020.0530 Release
 ----------------------------
 #### Great work in this release for BMS carried out primarily by wheelchock, on the corrections and improvements for BMS users.  This incorporated work from WillianG83.  Thanks also to those who tested.
