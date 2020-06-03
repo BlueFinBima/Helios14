@@ -1,6 +1,6 @@
 ## Full change log
 
-### 1.4.2020.06xx Release
+### 1.4.2020.0603 Release
 ----------------------------
 * Added STARTED, STOPPED and RESET triggers for the profile
 * Added a Kill Process action to allow external processes to be ended by a running profile
